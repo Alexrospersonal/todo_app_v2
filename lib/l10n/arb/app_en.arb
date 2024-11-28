@@ -1,0 +1,7 @@
+{
+    "@@locale": "en",
+    "greeting": "Hello!",
+    "@greeting": {
+        "description": "Привітання з ім'ям користувача"
+    }
+}
