@@ -3,5 +3,29 @@
     "greeting": "Привіт!",
     "@greeting": {
         "description": "Привітання з ім'ям користувача"
+    },
+    "userProfile": "Профіль",
+    "@userProfile": {
+        "description": ""
+    },
+    "lists": "Списки",
+    "@lists": {
+        "description": ""
+    },
+    "archive": "Архів",
+    "@archive": {
+        "description": ""
+    },
+    "settings": "Налаштування",
+    "@settings": {
+        "description": ""
+    },
+    "feedback": "Відгук",
+    "@feedback": {
+        "description": ""
+    },
+    "faq": "FAQ",
+    "@faq": {
+        "description": ""
     }
 }

@@ -14,12 +14,16 @@ class AppTheme {
         onPrimary: Colors.white,
       ),
       textTheme: const TextTheme(
-        displaySmall: TextStyle(
-          fontSize: 36,
-          fontWeight: FontWeight.w800,
-          fontFamily: 'Fixel',
-        ),
-      ),
+          displaySmall: TextStyle(
+            fontSize: 36,
+            fontWeight: FontWeight.w800,
+            fontFamily: 'Fixel',
+          ),
+          titleMedium: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
+            fontFamily: 'Fixel',
+          )),
     );
   }
 }

@@ -1,13 +1,9 @@
-import 'dart:io';
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:todo_app_v2/home/bloc/home_bloc.dart';
+import 'package:todo_app_v2/home/cubit/home_cubit.dart';
 import 'package:todo_app_v2/home/models/title_date_format_extension.dart';
-import 'package:todo_app_v2/home/widgets/widget.dart';
-import 'package:todo_app_v2/l10n/l10n.dart';
+import 'package:todo_app_v2/home/widgets/widgets.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -15,16 +11,12 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => HomeBloc(),
+      create: (context) => HomeCubit(),
       child: const HomeView(),
     );
   }
 }
 
-// TODO: додати кнопки у вигляді острову
-// TODO: додати можливіст заміни контейнерів для списку та календаря
-// TODO: додати стан в Блок щоб залежно він стану мінявся функціонал в нижнього меню
-// TODO: рефактор коду
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
 
@@ -32,18 +24,26 @@ class HomeView extends StatefulWidget {
   State<HomeView> createState() => _HomeViewState();
 }
 
-class _HomeViewState extends State<HomeView>
-    with SingleTickerProviderStateMixin {
-  bool _isoOpenMenu = false;
+class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
+  bool _isSettingsOpen = false;
 
   late AnimationController _animationController;
+  late AnimationController _tabAnimationController;
   late Animation<double> _animation;
+  late Animation<double> _tabAnimation;
   late Animation<double> _scalAnimation;
   late Animation<double> _opacityAnimation;
   late Animation<double> _blurAnimation;
 
   @override
   void initState() {
+    _tabAnimationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    )..addListener(() {
+        setState(() {});
+      });
+
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 200),
@@ -55,6 +55,13 @@ class _HomeViewState extends State<HomeView>
       CurvedAnimation(
         parent: _animationController,
         curve: Curves.fastOutSlowIn,
+      ),
+    );
+
+    _tabAnimation = Tween<double>(begin: 1, end: 0).animate(
+      CurvedAnimation(
+        parent: _tabAnimationController,
+        curve: Curves.easeOut,
       ),
     );
 
@@ -84,25 +91,52 @@ class _HomeViewState extends State<HomeView>
   @override
   void dispose() {
     _animationController.dispose();
+    _tabAnimationController.dispose();
     super.dispose();
+  }
+
+  List<Widget> getNestedTabs() {
+    return <Widget>[
+      AnimatedNestedContainer(
+        translateAnimValue: _tabAnimation.value,
+        child: Container(color: Colors.blue),
+      ),
+      AnimatedNestedContainer(
+        translateAnimValue: _tabAnimation.value,
+        child: Container(color: Colors.red),
+      ),
+      AnimatedNestedContainer(
+        translateAnimValue: _tabAnimation.value,
+        child: Container(color: Colors.yellow),
+      ),
+    ];
+  }
+
+  void updateTab(HomeTab tab) {
+    _tabAnimationController.reset();
+    context.read<HomeCubit>().setTab(tab);
   }
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.l10n;
+    final tabs = getNestedTabs();
+    final selectedTab = context.select((HomeCubit cubit) => cubit.state.tab);
+
+    final tabIdx = selectedTab.index;
+    _tabAnimationController.forward();
 
     return Scaffold(
       appBar: CustomAppBar(
         title: DateFormat().formatDateForTitle(DateTime.now()),
         leading: GestureDetector(
           onTap: () {
-            if (!_isoOpenMenu) {
+            if (!_isSettingsOpen) {
               _animationController.forward();
             } else {
               _animationController.reverse();
             }
             setState(() {
-              _isoOpenMenu = !_isoOpenMenu;
+              _isSettingsOpen = !_isSettingsOpen;
             });
           },
           child: Padding(
@@ -121,96 +155,31 @@ class _HomeViewState extends State<HomeView>
         child: SafeArea(
           child: Stack(
             children: [
-              Transform.translate(
-                offset: Offset(_animation.value * 270, 0),
-                child: Transform.scale(
-                  scale: _scalAnimation.value,
-                  child: Opacity(
-                    opacity: _opacityAnimation.value,
-                    child: Container(
-                      color: Colors.blue,
-                    ),
-                  ),
-                ),
+              MainStackContainer(
+                selectedTabIndex: tabIdx,
+                translateAnimValue: _animation.value,
+                scaleAnimValue: _scalAnimation.value,
+                opacityAnimValue: _opacityAnimation.value,
+                children: tabs,
               ),
-              BackdropFilter(
-                filter: ImageFilter.blur(
-                  sigmaX: _blurAnimation.value * 15,
-                  sigmaY: _blurAnimation.value * 15,
-                ),
-                child: Container(
-                  color: Colors.transparent,
-                ),
-              ),
-              AnimatedPositioned(
-                duration: const Duration(milliseconds: 200),
-                curve: Curves.fastOutSlowIn,
-                width: 270,
-                left: _isoOpenMenu ? 0 : -270,
-                height: MediaQuery.of(context).size.height,
-                child: Container(
-                  color: Colors.pink,
-                ),
+              BluringFilter(blurAnimationValue: _blurAnimation.value),
+              SideBodyContainer(
+                isOpen: _isSettingsOpen,
+                child: const SidePanel(),
               ),
             ],
           ),
         ),
       ),
-      floatingActionButton: Container(
-        margin: const EdgeInsets.only(top: 36),
-        height: 54,
-        width: 54,
-        child: FloatingActionButton(
-          backgroundColor: Theme.of(context).colorScheme.primary,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(100),
-            side: BorderSide(
-              strokeAlign: 0,
-              width: 6,
-              color: Theme.of(context).colorScheme.primaryContainer,
-            ),
-          ),
-          child: const Icon(Icons.add),
-          onPressed: () {},
-        ),
+      floatingActionButton: FloatingNavButton(
+        tab: selectedTab,
+        callback: () => updateTab(HomeTab.edit),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(boxShadow: [BoxShadow()]),
-        margin: EdgeInsets.fromLTRB(16, 0, 16, Platform.isAndroid ? 16 : 0),
-        child: BottomAppBar(
-          padding: EdgeInsets.symmetric(horizontal: 50),
-          height: 54,
-          elevation: 0,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-            child: Container(
-              color: Theme.of(context).colorScheme.primaryContainer,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    InkWell(
-                      onTap: () {},
-                      child: Icon(
-                        Icons.home_filled,
-                        size: 34,
-                      ),
-                    ),
-                    InkWell(
-                      onTap: () {},
-                      child: Icon(
-                        Icons.calendar_month,
-                        size: 34,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
+      bottomNavigationBar: BottomNavBar(
+        tab: selectedTab,
+        leftBtnCallback: () => updateTab(HomeTab.list),
+        rightBtnCallback: () => updateTab(HomeTab.calendar),
       ),
     );
   }

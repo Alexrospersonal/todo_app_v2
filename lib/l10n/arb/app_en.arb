@@ -3,5 +3,29 @@
     "greeting": "Hello!",
     "@greeting": {
         "description": "Привітання з ім'ям користувача"
+    },
+    "userProfile": "User profile",
+    "@userProfile": {
+        "description": ""
+    },
+    "lists": "Lists",
+    "@lists": {
+        "description": ""
+    },
+    "archive": "Archive",
+    "@archive": {
+        "description": ""
+    },
+    "settings": "Settings",
+    "@settings": {
+        "description": ""
+    },
+    "feedback": "Feedback",
+    "@feedback": {
+        "description": ""
+    },
+    "faq": "FAQ",
+    "@faq": {
+        "description": ""
     }
 }
