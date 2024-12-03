@@ -1,7 +1,7 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
+import 'package:todo_app_v2/common/utils/navigation.dart';
 import 'package:todo_app_v2/l10n/l10n.dart';
+import 'package:todo_app_v2/settings/view/settings_page.dart';
 
 class SideBodyContainer extends StatelessWidget {
   const SideBodyContainer({
@@ -27,6 +27,7 @@ class SideBodyContainer extends StatelessWidget {
   }
 }
 
+// TODO: додати нафігатор з нафігацією до кожної сторінки в налаштуваннях
 class SidePanel extends StatelessWidget {
   const SidePanel({super.key});
 
@@ -50,26 +51,38 @@ class SidePanel extends StatelessWidget {
                 CustomListTile(
                   leadingIcon: Icons.account_circle,
                   title: l10n.userProfile,
+                  callback: () => Navigator.of(context)
+                      .pushNamed(RouteNames.userProfile.name),
                 ),
                 CustomListTile(
                   leadingIcon: Icons.list_alt_outlined,
                   title: l10n.lists,
+                  callback: () =>
+                      Navigator.of(context).pushNamed(RouteNames.lists.name),
                 ),
                 CustomListTile(
                   leadingIcon: Icons.folder_delete,
                   title: l10n.archive,
+                  callback: () =>
+                      Navigator.of(context).pushNamed(RouteNames.archive.name),
                 ),
                 CustomListTile(
                   leadingIcon: Icons.settings,
                   title: l10n.settings,
+                  callback: () =>
+                      Navigator.of(context).pushNamed(RouteNames.settings.name),
                 ),
                 CustomListTile(
                   leadingIcon: Icons.feedback_rounded,
                   title: l10n.feedback,
+                  callback: () =>
+                      Navigator.of(context).pushNamed(RouteNames.feedback.name),
                 ),
                 CustomListTile(
                   leadingIcon: Icons.chat_rounded,
                   title: l10n.faq,
+                  callback: () =>
+                      Navigator.of(context).pushNamed(RouteNames.faq.name),
                 ),
               ],
             ),
