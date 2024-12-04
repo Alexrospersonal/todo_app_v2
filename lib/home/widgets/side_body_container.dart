@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todo_app_v2/common/utils/navigation.dart';
 import 'package:todo_app_v2/l10n/l10n.dart';
-import 'package:todo_app_v2/settings/view/settings_page.dart';
 
 class SideBodyContainer extends StatelessWidget {
   const SideBodyContainer({
@@ -27,7 +26,6 @@ class SideBodyContainer extends StatelessWidget {
   }
 }
 
-// TODO: додати нафігатор з нафігацією до кожної сторінки в налаштуваннях
 class SidePanel extends StatelessWidget {
   const SidePanel({super.key});
 
