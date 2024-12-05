@@ -27,5 +27,13 @@
     "faq": "FAQ",
     "@faq": {
         "description": ""
+    },
+    "yourStatus": "Твій статус:",
+    "@yourStatus": {
+        "description": ""
+    },
+    "statusProductive": "Легкість та продуктивність",
+    "@statusProductive": {
+        "description": ""
     }
 }

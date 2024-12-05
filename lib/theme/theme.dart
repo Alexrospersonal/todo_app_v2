@@ -24,6 +24,18 @@ class AppTheme {
           fontWeight: FontWeight.w700,
           fontFamily: 'Fixel',
         ),
+        titleSmall: TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w700,
+          fontFamily: 'Fixel',
+          color: Colors.white,
+        ),
+        bodyMedium: TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.normal,
+          fontFamily: 'Fixel',
+          color: Color.fromARGB(255, 191, 191, 191),
+        ),
       ),
     );
   }

@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:todo_app_v2/home/cubit/home_cubit.dart';
 import 'package:todo_app_v2/home/models/title_date_format_extension.dart';
 import 'package:todo_app_v2/home/widgets/widgets.dart';
+import 'package:todo_app_v2/todos/todos.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -99,7 +100,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
     return <Widget>[
       AnimatedNestedContainer(
         translateAnimValue: _tabAnimation.value,
-        child: Container(color: Colors.blue),
+        child: const TodosPage(),
       ),
       AnimatedNestedContainer(
         translateAnimValue: _tabAnimation.value,
@@ -117,6 +118,17 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
     context.read<HomeCubit>().setTab(tab);
   }
 
+  void showAndHideSideMenu() {
+    if (!_isSettingsOpen) {
+      _animationController.forward();
+    } else {
+      _animationController.reverse();
+    }
+    setState(() {
+      _isSettingsOpen = !_isSettingsOpen;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final tabs = getNestedTabs();
@@ -129,16 +141,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
       appBar: CustomAppBar(
         title: DateFormat().formatDateForTitle(DateTime.now()),
         leading: GestureDetector(
-          onTap: () {
-            if (!_isSettingsOpen) {
-              _animationController.forward();
-            } else {
-              _animationController.reverse();
-            }
-            setState(() {
-              _isSettingsOpen = !_isSettingsOpen;
-            });
-          },
+          onTap: showAndHideSideMenu,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 14),
             child: AnimatedIcon(

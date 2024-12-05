@@ -3,6 +3,10 @@ description: A repository that handles todo related requests.
 version: 0.1.0+1
 publish_to: none
 
+dependencies:
+  todo_db_api:
+    path: ../todo_db_api
+
 environment:
   sdk: ^3.5.0
 

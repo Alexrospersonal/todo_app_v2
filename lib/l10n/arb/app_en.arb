@@ -27,5 +27,13 @@
     "faq": "FAQ",
     "@faq": {
         "description": ""
+    },
+    "yourStatus": "Your status:",
+    "@yourStatus": {
+        "description": ""
+    },
+    "statusProductive": "Easy and productive",
+    "@statusProductive": {
+        "description": ""
     }
 }
