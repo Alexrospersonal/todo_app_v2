@@ -10,9 +10,9 @@ class TodosPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => TodosBloc(),
-      child: Container(
+      child: const ColoredBox(
         color: Colors.amber,
-        child: const TodosView(),
+        child: TodosView(),
       ),
     );
   }
@@ -29,7 +29,12 @@ class _TodosViewState extends State<TodosView> {
   @override
   Widget build(BuildContext context) {
     return const Column(
-      children: [const UserStatusBar()],
+      children: [
+        UserStatusBar(),
+        TodoProgressBar(),
+        TodosCategories(),
+        TodosFilters(),
+      ],
     );
   }
 }

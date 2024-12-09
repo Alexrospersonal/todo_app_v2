@@ -8,8 +8,10 @@ class UserStatusBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         TodayUserStatus(),
+        DeterminatedTasksStatus(),
       ],
     );
   }
@@ -29,6 +31,7 @@ class TodayUserStatus extends StatelessWidget {
           '😉',
           style: TextStyle(fontSize: 28, height: 1),
         ),
+        const SizedBox(width: 5),
         RichText(
           text: TextSpan(
             text: l10n.yourStatus,
@@ -46,6 +49,32 @@ class TodayUserStatus extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class DeterminatedTasksStatus extends StatelessWidget {
+  const DeterminatedTasksStatus({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return RichText(
+      text: TextSpan(
+        text: 'determinated\ntasks:',
+        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              height: 1,
+            ),
+        children: [
+          TextSpan(
+            text: '${7}',
+            style: Theme.of(context)
+                .textTheme
+                .titleSmall
+                ?.copyWith(height: 1, color: Colors.red),
+          ),
+        ],
+      ),
+      textAlign: TextAlign.right,
     );
   }
 }

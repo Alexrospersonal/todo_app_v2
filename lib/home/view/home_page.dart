@@ -165,7 +165,8 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                 opacityAnimValue: _opacityAnimation.value,
                 children: tabs,
               ),
-              BluringFilter(blurAnimationValue: _blurAnimation.value),
+              if (_isSettingsOpen)
+                BluringFilter(blurAnimationValue: _blurAnimation.value),
               SideBodyContainer(
                 isOpen: _isSettingsOpen,
                 child: const SidePanel(),
