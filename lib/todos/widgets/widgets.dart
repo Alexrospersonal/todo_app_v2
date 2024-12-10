@@ -7,4 +7,5 @@ export 'todo_progress_bar/todo_progress_bar.dart';
 export 'todos_categories/overdue_task_indicator.dart';
 export 'todos_categories/todos_categories.dart';
 export 'todos_filters/todos_filters.dart';
+export 'todos_list/todos_list.dart';
 export 'user_status_bar.dart';

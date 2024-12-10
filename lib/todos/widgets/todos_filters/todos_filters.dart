@@ -33,7 +33,7 @@ class _TodosFiltersState extends State<TodosFilters> {
           ),
         ),
         separatorBuilder: (context, index) => const SizedBox(
-          width: 10,
+          width: 15,
         ),
         itemCount: filters.length,
       ),

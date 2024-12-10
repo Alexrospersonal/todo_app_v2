@@ -34,6 +34,7 @@ class _TodosViewState extends State<TodosView> {
         TodoProgressBar(),
         TodosCategories(),
         TodosFilters(),
+        TodosList(),
       ],
     );
   }
