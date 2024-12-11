@@ -73,12 +73,16 @@ class _ExpandedCircleProgressBarState extends State<ExpandedCircleProgressBar>
               children: [
                 Text(
                   '$percentValue%',
-                  style: Theme.of(context).textTheme.headlineMedium,
+                  style: const TextStyle(
+                    fontSize: 34,
+                    fontWeight: FontWeight.bold,
+                    height: 1,
+                  ),
                 ),
-                Text(
+                const Text(
                   // l10n.monthProgress,
                   'MonthProgress',
-                  style: Theme.of(context).textTheme.labelSmall,
+                  style: TextStyle(fontSize: 10),
                 ),
               ],
             ),

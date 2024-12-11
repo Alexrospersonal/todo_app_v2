@@ -10,10 +10,7 @@ class TodosPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => TodosBloc(),
-      child: const ColoredBox(
-        color: Colors.amber,
-        child: TodosView(),
-      ),
+      child: const TodosView(),
     );
   }
 }

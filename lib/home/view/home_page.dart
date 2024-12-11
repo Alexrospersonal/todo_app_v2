@@ -139,7 +139,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
 
     return Scaffold(
       appBar: CustomAppBar(
-        title: DateFormat().formatDateForTitle(DateTime.now()),
+        title: DateFormat().formatDateForTitle(context, DateTime.now()),
         leading: GestureDetector(
           onTap: showAndHideSideMenu,
           child: Padding(

@@ -24,7 +24,7 @@ class AnimatedWeekProgressDiagrammData {
     begin: Alignment.bottomCenter,
     end: Alignment.topCenter,
     colors: [
-      innerGlowColor,
+      greyColorWithOpacity,
       primaryColorWithOpacity,
       primaryColor,
     ],
@@ -36,10 +36,10 @@ class AnimatedWeekProgressDiagrammData {
   List<double> percentTextWidth = List<double>.generate(
     5,
     (int pos) => pos == 0
-        ? 15
+        ? 25
         : pos != 4
-            ? 20
-            : 25,
+            ? 25
+            : 35,
   );
 
   ui.ParagraphBuilder createParagraphBuilder(

@@ -22,7 +22,7 @@ class AnimatedCircleProgressBar extends CustomPainter {
 
     final Gradient gradient = SweepGradient(
       colors: const [
-        greyColorWithOpacity,
+        circleStatusBackgroundColor,
         primaryColorWithOpacity,
         primaryColor,
       ],
@@ -31,7 +31,10 @@ class AnimatedCircleProgressBar extends CustomPainter {
     );
 
     final filledPaint = Paint();
-    addBaseStyleForCircle(filledPaint, greyColorWithOpacity);
+    addBaseStyleForCircle(
+      filledPaint,
+      circleStatusBackgroundColor,
+    );
     canvas.drawArc(offset, -pi / 2, pi * 2, false, filledPaint);
 
     final circlePaint = Paint();

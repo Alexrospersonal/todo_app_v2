@@ -89,7 +89,7 @@ class AnimatedWeekProgressDiagramm extends CustomPainter {
       );
       final startPoint = Offset(
         column - text.width,
-        (size.height - row * (i + 1)) - text.height / 2,
+        (size.height - row * (i + 1)) - text.height / 3,
       );
       canvas.drawParagraph(text, startPoint);
     }
@@ -143,9 +143,9 @@ class AnimatedWeekProgressDiagramm extends CustomPainter {
     for (var i = 0; i < shortWeekdays.length; i++) {
       final day = paintData.getParagraph(
         paintData.addText(shortWeekdays[i]),
-        20,
+        25,
       );
-      canvas.drawParagraph(day, Offset(0, weekColumn * -(i + 1)));
+      canvas.drawParagraph(day, Offset(0, weekColumn * -(i + 0.9)));
     }
   }
 
