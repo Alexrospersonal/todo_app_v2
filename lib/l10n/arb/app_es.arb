@@ -35,5 +35,9 @@
     "statusProductive": "Easy and productive",
     "@statusProductive": {
         "description": ""
+    },
+    "createTaskTitle": "Create task",
+    "@createTaskTitle": {
+        "description": ""
     }
 }

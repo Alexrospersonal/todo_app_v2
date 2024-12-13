@@ -49,7 +49,7 @@ class AppTheme {
         primaryContainer: Color.fromARGB(255, 56, 56, 56),
         primary: primaryColor,
         onPrimary: Colors.white,
-        secondaryContainer: Color.fromRGBO(70, 70, 70, 1),
+        secondaryContainer: baseColor,
         error: Color.fromARGB(255, 252, 67, 67),
       ),
       textTheme: const TextTheme(
@@ -102,6 +102,13 @@ class AppTheme {
           width: 2,
         ),
         shape: CircleBorder(),
+      ),
+      iconButtonTheme: const IconButtonThemeData(
+        style: ButtonStyle(
+          backgroundColor: WidgetStatePropertyAll(baseColor),
+          foregroundColor: WidgetStatePropertyAll(greyColor),
+          padding: WidgetStatePropertyAll(EdgeInsets.zero),
+        ),
       ),
     );
   }

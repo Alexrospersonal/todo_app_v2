@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:todo_app_v2/edit_task/view/view.dart';
 import 'package:todo_app_v2/home/cubit/home_cubit.dart';
 import 'package:todo_app_v2/home/models/title_date_format_extension.dart';
 import 'package:todo_app_v2/home/widgets/widgets.dart';
@@ -27,6 +28,7 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
   bool _isSettingsOpen = false;
+  int prevStateIdx = -1;
 
   late AnimationController _animationController;
   late AnimationController _tabAnimationController;
@@ -108,13 +110,16 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
       ),
       AnimatedNestedContainer(
         translateAnimValue: _tabAnimation.value,
-        child: Container(color: Colors.yellow),
+        child: const ColoredBox(
+          color: Color.fromARGB(255, 83, 83, 83),
+          child: ListsPage(),
+        ),
       ),
     ];
   }
 
   void updateTab(HomeTab tab) {
-    _tabAnimationController.reset();
+    // _tabAnimationController.reset();
     context.read<HomeCubit>().setTab(tab);
   }
 
@@ -135,55 +140,67 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
     final selectedTab = context.select((HomeCubit cubit) => cubit.state.tab);
 
     final tabIdx = selectedTab.index;
+
     _tabAnimationController.forward();
 
-    return Scaffold(
-      appBar: CustomAppBar(
-        title: DateFormat().formatDateForTitle(context, DateTime.now()),
-        leading: GestureDetector(
-          onTap: showAndHideSideMenu,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 14),
-            child: AnimatedIcon(
-              size: 48,
-              icon: AnimatedIcons.menu_close,
-              progress: _animation,
+    return BlocListener<HomeCubit, HomeState>(
+      listener: (context, state) {
+        if (state.tab.index != prevStateIdx) {
+          _tabAnimationController
+            ..reset()
+            ..forward();
+          prevStateIdx = state.tab.index;
+        }
+      },
+      listenWhen: (previous, current) => current != previous,
+      child: Scaffold(
+        appBar: CustomAppBar(
+          title: DateFormat().formatDateForTitle(context, DateTime.now()),
+          leading: GestureDetector(
+            onTap: showAndHideSideMenu,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 14),
+              child: AnimatedIcon(
+                size: 48,
+                icon: AnimatedIcons.menu_close,
+                progress: _animation,
+              ),
+            ),
+          ),
+          titleTextStyle: Theme.of(context).textTheme.displaySmall,
+        ),
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: SafeArea(
+            child: Stack(
+              children: [
+                MainStackContainer(
+                  selectedTabIndex: tabIdx,
+                  translateAnimValue: _animation.value,
+                  scaleAnimValue: _scalAnimation.value,
+                  opacityAnimValue: _opacityAnimation.value,
+                  children: tabs,
+                ),
+                if (_isSettingsOpen)
+                  BluringFilter(blurAnimationValue: _blurAnimation.value),
+                SideBodyContainer(
+                  isOpen: _isSettingsOpen,
+                  child: const SidePanel(),
+                ),
+              ],
             ),
           ),
         ),
-        titleTextStyle: Theme.of(context).textTheme.displaySmall,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: SafeArea(
-          child: Stack(
-            children: [
-              MainStackContainer(
-                selectedTabIndex: tabIdx,
-                translateAnimValue: _animation.value,
-                scaleAnimValue: _scalAnimation.value,
-                opacityAnimValue: _opacityAnimation.value,
-                children: tabs,
-              ),
-              if (_isSettingsOpen)
-                BluringFilter(blurAnimationValue: _blurAnimation.value),
-              SideBodyContainer(
-                isOpen: _isSettingsOpen,
-                child: const SidePanel(),
-              ),
-            ],
-          ),
+        floatingActionButton: FloatingNavButton(
+          tab: selectedTab,
+          callback: () => updateTab(HomeTab.edit),
         ),
-      ),
-      floatingActionButton: FloatingNavButton(
-        tab: selectedTab,
-        callback: () => updateTab(HomeTab.edit),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: BottomNavBar(
-        tab: selectedTab,
-        leftBtnCallback: () => updateTab(HomeTab.list),
-        rightBtnCallback: () => updateTab(HomeTab.calendar),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        bottomNavigationBar: BottomNavBar(
+          tab: selectedTab,
+          leftBtnCallback: () => updateTab(HomeTab.list),
+          rightBtnCallback: () => updateTab(HomeTab.calendar),
+        ),
       ),
     );
   }

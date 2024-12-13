@@ -35,5 +35,9 @@
     "statusProductive": "Легкість та продуктивність",
     "@statusProductive": {
         "description": ""
+    },
+    "createTaskTitle": "Створити завдання",
+    "@createTaskTitle": {
+        "description": ""
     }
 }
