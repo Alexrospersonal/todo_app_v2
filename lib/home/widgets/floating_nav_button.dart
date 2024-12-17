@@ -19,6 +19,8 @@ class FloatingNavButton extends StatelessWidget {
       height: 54,
       width: 54,
       child: FloatingActionButton(
+        key: const Key('homeView_addTodo_floatingActionButton'),
+        heroTag: 'addBtn',
         backgroundColor: Theme.of(context).colorScheme.primary,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(100),
@@ -29,11 +31,7 @@ class FloatingNavButton extends StatelessWidget {
           ),
         ),
         onPressed: callback,
-        child: Icon(
-          tab == HomeTab.list || tab == HomeTab.calendar
-              ? Icons.add
-              : Icons.done,
-        ),
+        child: const Icon(Icons.add),
       ),
     );
   }

@@ -23,6 +23,7 @@ class EditTaskBloc extends Bloc<EditTaskEvent, EditTaskState> {
     on<EditTaskTitleChanged>(_onTitleChanged);
     on<EditTaskDescriptionChanged>(_onDescriptionChanged);
     on<EditTaskSubmitted>(_onSubmitted);
+    on<EditTaskLoadCategories>(_onLoadCategories);
   }
 
   final TodosRepository _tasksRepository;
@@ -57,5 +58,14 @@ class EditTaskBloc extends Bloc<EditTaskEvent, EditTaskState> {
     } catch (e) {
       emit(state.copyWith(status: EditTaskStatus.failure));
     }
+  }
+
+  Future<void> _onLoadCategories(
+    EditTaskLoadCategories event,
+    Emitter<EditTaskState> emit,
+  ) async {
+    final categories = await _tasksRepository.getAllCategories();
+    final newState = state.copyWith(categories: categories);
+    emit(newState);
   }
 }

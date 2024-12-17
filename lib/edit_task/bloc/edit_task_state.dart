@@ -11,6 +11,7 @@ extension EditTodoStatusX on EditTaskStatus {
 
 final class EditTaskState extends Equatable {
   const EditTaskState({
+    this.categories = const [],
     this.status = EditTaskStatus.initial,
     this.initialTodo,
     this.title = '',
@@ -26,6 +27,7 @@ final class EditTaskState extends Equatable {
     this.repeatDuringDay = const [],
   });
 
+  final List<CategoryEntity> categories;
   final EditTaskStatus status;
   final TaskEntity? initialTodo;
   final String title;
@@ -43,6 +45,7 @@ final class EditTaskState extends Equatable {
   bool get isNewTodo => initialTodo == null;
 
   EditTaskState copyWith({
+    List<CategoryEntity>? categories,
     EditTaskStatus? status,
     TaskEntity? initialTodo,
     String? title,
@@ -58,6 +61,7 @@ final class EditTaskState extends Equatable {
     List<DateTime?>? repeatDuringDay,
   }) {
     return EditTaskState(
+      categories: categories ?? this.categories,
       status: status ?? this.status,
       initialTodo: initialTodo ?? this.initialTodo,
       notate: notate ?? this.notate,
@@ -83,6 +87,7 @@ final class EditTaskState extends Equatable {
         hasTime,
         hasRepeats,
         repeatDuringWeek,
+        categories,
       ];
 }
 

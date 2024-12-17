@@ -7,6 +7,10 @@ sealed class EditTaskEvent extends Equatable {
   List<Object> get props => [];
 }
 
+final class EditTaskLoadCategories extends EditTaskEvent {
+  const EditTaskLoadCategories();
+}
+
 final class EditTaskTitleChanged extends EditTaskEvent {
   const EditTaskTitleChanged({required this.title});
 

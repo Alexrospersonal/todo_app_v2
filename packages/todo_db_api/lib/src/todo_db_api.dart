@@ -28,4 +28,8 @@ class TodoDbApi {
 
     return id;
   }
+
+  Future<List<CategoryEntity>> getAllCategories() async {
+    return plugin.categoryEntitys.where().findAll();
+  }
 }

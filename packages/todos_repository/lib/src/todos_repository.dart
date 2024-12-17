@@ -19,4 +19,8 @@ class TodosRepository {
 
   ///
   Future<int> creatTask(TaskEntity task) async => todoApi.creatTask(task);
+
+  ///
+  Future<List<CategoryEntity>> getAllCategories() async =>
+      todoApi.getAllCategories();
 }

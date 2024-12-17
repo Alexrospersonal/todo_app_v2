@@ -16,14 +16,6 @@ class FormHeader extends StatelessWidget {
           title,
           style: Theme.of(context).textTheme.titleMedium,
         ),
-        GestureDetector(
-          onTap: () => context.read<HomeCubit>().setTab(HomeTab.list),
-          child: Icon(
-            Icons.close,
-            color: Theme.of(context).colorScheme.error,
-            size: 24,
-          ),
-        ),
       ],
     );
   }

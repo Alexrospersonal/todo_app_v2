@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo_app_v2/archive/archive.dart';
 import 'package:todo_app_v2/common/utils/navigation.dart';
 import 'package:todo_app_v2/faq/faq.dart';
@@ -9,26 +10,32 @@ import 'package:todo_app_v2/lists/view/lists_page.dart';
 import 'package:todo_app_v2/settings/view/settings_page.dart';
 import 'package:todo_app_v2/theme/theme.dart';
 import 'package:todo_app_v2/user_profile/view/user_profile_page.dart';
+import 'package:todos_repository/todos_repository.dart';
 
 class App extends StatelessWidget {
-  const App({super.key});
+  const App({required this.taskRepository, super.key});
+
+  final TodosRepository taskRepository;
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      routes: {
-        RouteNames.userProfile.name: (context) => const UserProfilePage(),
-        RouteNames.lists.name: (context) => const ListsPage(),
-        RouteNames.archive.name: (context) => const ArchivePage(),
-        RouteNames.settings.name: (context) => const SettingsPage(),
-        RouteNames.feedback.name: (context) => const FeedbackPage(),
-        RouteNames.faq.name: (context) => const FAQPage(),
-      },
-      theme: AppTheme.darkTheme,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      // debugShowMaterialGrid: true,
-      home: const HomePage(),
+    return RepositoryProvider.value(
+      value: taskRepository,
+      child: MaterialApp(
+        routes: {
+          RouteNames.userProfile.name: (context) => const UserProfilePage(),
+          RouteNames.lists.name: (context) => const ListsPage(),
+          RouteNames.archive.name: (context) => const ArchivePage(),
+          RouteNames.settings.name: (context) => const SettingsPage(),
+          RouteNames.feedback.name: (context) => const FeedbackPage(),
+          RouteNames.faq.name: (context) => const FAQPage(),
+        },
+        theme: AppTheme.darkTheme,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        // debugShowMaterialGrid: true,
+        home: const HomePage(),
+      ),
     );
   }
 }
