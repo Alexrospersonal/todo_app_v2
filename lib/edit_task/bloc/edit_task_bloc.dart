@@ -24,6 +24,8 @@ class EditTaskBloc extends Bloc<EditTaskEvent, EditTaskState> {
     on<EditTaskDescriptionChanged>(_onDescriptionChanged);
     on<EditTaskSubmitted>(_onSubmitted);
     on<EditTaskLoadCategories>(_onLoadCategories);
+    on<EditTaskCategoryChanged>(_onCategoryChanged);
+    on<EditTaskImportantStatusChanged>(_onIsImportantChanged);
   }
 
   final TodosRepository _tasksRepository;
@@ -42,15 +44,33 @@ class EditTaskBloc extends Bloc<EditTaskEvent, EditTaskState> {
     emit(state.copyWith(notate: event.notate));
   }
 
+  void _onCategoryChanged(
+    EditTaskCategoryChanged event,
+    Emitter<EditTaskState> emit,
+  ) {
+    final newState = state.copyWith(category: event.category);
+    emit(newState);
+  }
+
+  void _onIsImportantChanged(
+    EditTaskImportantStatusChanged event,
+    Emitter<EditTaskState> emit,
+  ) {
+    emit(state.copyWith(important: event.isImportant));
+  }
+
   Future<void> _onSubmitted(
     EditTaskSubmitted event,
     Emitter<EditTaskState> emit,
   ) async {
-    emit(state.copyWith(status: EditTaskStatus.loading));
+    final loadingState = state.copyWith(status: EditTaskStatus.loading);
+    emit(loadingState);
     final task = (state.initialTodo ?? TaskEntity(title: '')).copyWith(
       title: state.title,
       notate: state.notate,
     );
+
+    task.category.value = state.category;
 
     try {
       await _tasksRepository.creatTask(task);

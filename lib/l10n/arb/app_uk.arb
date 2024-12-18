@@ -39,5 +39,9 @@
     "createTaskTitle": "Створити завдання",
     "@createTaskTitle": {
         "description": ""
+    },
+    "taskTitleHelperText": "Введіть назву",
+    "@taskTitleHelperText": {
+        "description": ""
     }
 }

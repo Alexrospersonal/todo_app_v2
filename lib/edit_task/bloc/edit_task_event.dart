@@ -29,6 +29,24 @@ final class EditTaskDescriptionChanged extends EditTaskEvent {
   List<Object> get props => [notate];
 }
 
+final class EditTaskCategoryChanged extends EditTaskEvent {
+  const EditTaskCategoryChanged({required this.category});
+
+  final CategoryEntity category;
+
+  @override
+  List<Object> get props => [category];
+}
+
+final class EditTaskImportantStatusChanged extends EditTaskEvent {
+  const EditTaskImportantStatusChanged({required this.isImportant});
+
+  final bool isImportant;
+
+  @override
+  List<Object> get props => [isImportant];
+}
+
 final class EditTaskSubmitted extends EditTaskEvent {
   const EditTaskSubmitted();
 }

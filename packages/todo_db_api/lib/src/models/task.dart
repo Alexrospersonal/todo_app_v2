@@ -70,6 +70,7 @@ class TaskEntity {
   TaskEntity copyWith({
     String? title,
     String? notate,
+    CategoryEntity? category,
     DateTime? taskDate,
     bool? hasTime,
     bool? isFinished,

@@ -60,8 +60,6 @@ class _ListViewState extends State<ListView> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
 
-    final categories = context.watch<EditTaskBloc>().state.categories;
-
     // final editBloc = context.read<EditTaskBloc>();
     // print(editBloc.state);
 
@@ -77,59 +75,13 @@ class _ListViewState extends State<ListView> {
             const SizedBox(
               height: 10,
             ),
-            TextFormField(
-              decoration: InputDecoration(
-                contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                filled: true,
-                fillColor: Theme.of(context).colorScheme.secondaryContainer,
-                hintText: 'Enter a name',
-                hintStyle: Theme.of(context).textTheme.bodyMedium,
-                border: OutlineInputBorder(
-                  borderSide: BorderSide.none,
-                  borderRadius: BorderRadius.circular(
-                    26,
-                  ),
-                ),
-              ),
-            ),
+            const TitleForm(),
             const SizedBox(
               height: 10,
             ),
             Row(
               children: [
-                Expanded(
-                  child: DropdownButtonFormField<String>(
-                    style: Theme.of(context).textTheme.bodyMedium,
-                    onChanged: (value) {},
-                    hint: const Text('Select category'),
-                    decoration: InputDecoration(
-                      filled: true,
-                      hintStyle: Theme.of(context).textTheme.bodyMedium,
-                      fillColor:
-                          Theme.of(context).colorScheme.secondaryContainer,
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 5,
-                      ),
-                      isCollapsed: true,
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide.none,
-                        borderRadius: BorderRadius.circular(
-                          26,
-                        ),
-                      ),
-                    ),
-                    items: categories
-                        .map(
-                          (category) => DropdownMenuItem(
-                            value: category.name,
-                            child: Text(category.toString()),
-                          ),
-                        )
-                        .toList(),
-                  ),
-                ),
+                const DropdownCategorySelector(),
                 SizedBox(
                   // width: 20,
                   height: 34,
@@ -148,15 +100,7 @@ class _ListViewState extends State<ListView> {
                     icon: const Icon(Icons.calendar_month_sharp),
                   ),
                 ),
-                SizedBox(
-                  // width: 20,
-                  height: 34,
-                  child: IconButton.filled(
-                    onPressed: () {},
-                    padding: EdgeInsets.zero,
-                    icon: const Icon(Icons.star_rounded),
-                  ),
-                ),
+                const ImportantIconButton(),
               ],
             ),
             const SizedBox(
@@ -303,6 +247,126 @@ class _ListViewState extends State<ListView> {
         onPressed: () {
           context.read<EditTaskBloc>().add(const EditTaskSubmitted());
         },
+      ),
+    );
+  }
+}
+
+class ImportantIconButton extends StatelessWidget {
+  const ImportantIconButton({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocSelector<EditTaskBloc, EditTaskState, bool>(
+      selector: (state) => state.important,
+      builder: (context, important) => SizedBox(
+        // width: 20,
+        height: 34,
+        child: IconButton.filled(
+          onPressed: () {
+            context
+                .read<EditTaskBloc>()
+                .add(EditTaskImportantStatusChanged(isImportant: !important));
+          },
+          padding: EdgeInsets.zero,
+          style: ButtonStyle(
+            backgroundColor: WidgetStatePropertyAll(
+              important
+                  ? Theme.of(context).colorScheme.primary
+                  : Theme.of(context).colorScheme.secondaryContainer,
+            ),
+          ),
+          icon: Icon(
+            Icons.star_rounded,
+            color: important ? yellowColor : greyColor,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class DropdownCategorySelector extends StatelessWidget {
+  const DropdownCategorySelector({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final state = context.read<EditTaskBloc>().state;
+    final initCategory = state.category;
+
+    return BlocSelector<EditTaskBloc, EditTaskState, List<CategoryEntity>>(
+      selector: (state) => state.categories,
+      builder: (context, categories) => Expanded(
+        child: DropdownButtonFormField<CategoryEntity>(
+          value: initCategory,
+          style: Theme.of(context).textTheme.bodyMedium,
+          onChanged: (category) {
+            if (category != null) {
+              context.read<EditTaskBloc>().add(
+                    EditTaskCategoryChanged(category: category),
+                  );
+            }
+          },
+          hint: const Text('Select category'),
+          decoration: InputDecoration(
+            filled: true,
+            hintStyle: Theme.of(context).textTheme.bodyMedium,
+            fillColor: Theme.of(context).colorScheme.secondaryContainer,
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 10,
+              vertical: 5,
+            ),
+            isCollapsed: true,
+            border: OutlineInputBorder(
+              borderSide: BorderSide.none,
+              borderRadius: BorderRadius.circular(
+                26,
+              ),
+            ),
+          ),
+          items: categories
+              .map(
+                (category) => DropdownMenuItem(
+                  value: category,
+                  child: Text(category.toString()),
+                ),
+              )
+              .toList(),
+        ),
+      ),
+    );
+  }
+}
+
+class TitleForm extends StatelessWidget {
+  const TitleForm({super.key});
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+
+    return BlocSelector<EditTaskBloc, EditTaskState, String>(
+      selector: (state) => state.title,
+      builder: (context, title) => TextFormField(
+        decoration: InputDecoration(
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          filled: true,
+          fillColor: Theme.of(context).colorScheme.secondaryContainer,
+          hintText: l10n.taskTitleHelperText,
+          hintStyle: Theme.of(context).textTheme.bodyMedium,
+          border: OutlineInputBorder(
+            borderSide: BorderSide.none,
+            borderRadius: BorderRadius.circular(
+              26,
+            ),
+          ),
+        ),
+        initialValue: title,
+        onChanged: (value) => context.read<EditTaskBloc>().add(
+              EditTaskTitleChanged(title: value),
+            ),
       ),
     );
   }

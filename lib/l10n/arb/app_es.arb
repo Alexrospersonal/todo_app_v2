@@ -39,5 +39,9 @@
     "createTaskTitle": "Create task",
     "@createTaskTitle": {
         "description": ""
+    },
+    "taskTitleHelperText": "Enter a name",
+    "@taskTitleHelperText": {
+        "description": ""
     }
 }

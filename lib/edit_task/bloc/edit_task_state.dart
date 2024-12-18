@@ -62,6 +62,7 @@ final class EditTaskState extends Equatable {
   }) {
     return EditTaskState(
       categories: categories ?? this.categories,
+      title: title ?? this.title,
       status: status ?? this.status,
       initialTodo: initialTodo ?? this.initialTodo,
       notate: notate ?? this.notate,
@@ -78,11 +79,12 @@ final class EditTaskState extends Equatable {
   }
 
   @override
-  List<Object> get props => [
+  List<Object?> get props => [
         status,
         title,
         notate,
         important,
+        category,
         color,
         hasTime,
         hasRepeats,

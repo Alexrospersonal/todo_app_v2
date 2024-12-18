@@ -6,7 +6,6 @@ import 'package:todo_app_v2/home/cubit/home_cubit.dart';
 import 'package:todo_app_v2/home/models/title_date_format_extension.dart';
 import 'package:todo_app_v2/home/widgets/widgets.dart';
 import 'package:todo_app_v2/todos/todos.dart';
-import 'package:todos_repository/todos_repository.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
