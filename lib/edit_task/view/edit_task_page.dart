@@ -60,185 +60,58 @@ class _ListViewState extends State<ListView> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
 
-    // final editBloc = context.read<EditTaskBloc>();
-    // print(editBloc.state);
+    final color = context.watch<EditTaskBloc>().state.color;
 
     return Scaffold(
       appBar: AppBar(),
-      body: Form(
-        key: _formKey,
-        child: Column(
-          children: [
-            FormHeader(
-              title: l10n.createTaskTitle,
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            const TitleForm(),
-            const SizedBox(
-              height: 10,
-            ),
-            Row(
-              children: [
-                const DropdownCategorySelector(),
-                SizedBox(
-                  // width: 20,
-                  height: 34,
-                  child: IconButton.filled(
-                    onPressed: () {},
-                    padding: EdgeInsets.zero,
-                    icon: const Icon(Icons.account_tree_rounded),
-                  ),
-                ),
-                SizedBox(
-                  // width: 20,
-                  height: 34,
-                  child: IconButton.filled(
-                    onPressed: () {},
-                    padding: EdgeInsets.zero,
-                    icon: const Icon(Icons.calendar_month_sharp),
-                  ),
-                ),
-                const ImportantIconButton(),
-              ],
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  width: 67,
-                  height: 30,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(26),
-                    gradient: RadialGradient(
-                      colors: [
-                        AccentColor.blue.color,
-                        Theme.of(context).colorScheme.secondaryContainer,
-                      ],
-                      radius: 1.3,
-                      center: Alignment.centerRight,
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: RadialGradient(
+            radius: 1,
+            center: Alignment.bottomCenter,
+            colors: [
+              color.color,
+              Theme.of(context).colorScheme.surface,
+            ],
+          ),
+        ),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              FormHeader(
+                title: l10n.createTaskTitle,
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              const TitleForm(),
+              const SizedBox(
+                height: 10,
+              ),
+              const SubtasksContainer(),
+              Row(
+                children: [
+                  const DropdownCategorySelector(),
+                  const SubtaskIconButton(),
+                  SizedBox(
+                    // width: 20,
+                    height: 34,
+                    child: IconButton.filled(
+                      onPressed: () {},
+                      padding: EdgeInsets.zero,
+                      icon: const Icon(Icons.calendar_month_sharp),
                     ),
                   ),
-                ),
-                GestureDetector(
-                  child: Container(
-                    width: 30,
-                    height: 30,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: Colors.transparent,
-                        width: 2,
-                      ),
-                      color: AccentColor.main.color,
-                    ),
-                  ),
-                ),
-                GestureDetector(
-                  child: Container(
-                    width: 30,
-                    height: 30,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: Theme.of(context).colorScheme.onPrimary,
-                        width: 2,
-                      ),
-                      color: AccentColor.blue.color,
-                    ),
-                  ),
-                ),
-                GestureDetector(
-                  child: Container(
-                    width: 30,
-                    height: 30,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: Theme.of(context).colorScheme.onPrimary,
-                        width: 0,
-                      ),
-                      color: AccentColor.green.color,
-                    ),
-                  ),
-                ),
-                GestureDetector(
-                  child: Container(
-                    width: 30,
-                    height: 30,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: Theme.of(context).colorScheme.onPrimary,
-                        width: 0,
-                      ),
-                      color: AccentColor.orange.color,
-                    ),
-                  ),
-                ),
-                GestureDetector(
-                  child: Container(
-                    width: 30,
-                    height: 30,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: Theme.of(context).colorScheme.onPrimary,
-                        width: 0,
-                      ),
-                      color: AccentColor.red.color,
-                    ),
-                  ),
-                ),
-                GestureDetector(
-                  child: Container(
-                    width: 30,
-                    height: 30,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: Theme.of(context).colorScheme.onPrimary,
-                        width: 0,
-                      ),
-                      color: AccentColor.pink.color,
-                    ),
-                  ),
-                ),
-                GestureDetector(
-                  child: Container(
-                    width: 30,
-                    height: 30,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: Theme.of(context).colorScheme.onPrimary,
-                        width: 0,
-                      ),
-                      color: AccentColor.purple.color,
-                    ),
-                  ),
-                ),
-                GestureDetector(
-                  child: Container(
-                    width: 30,
-                    height: 30,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: Theme.of(context).colorScheme.onPrimary,
-                        width: 0,
-                      ),
-                      color: AccentColor.seaGreen.color,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
+                  const ImportantIconButton(),
+                ],
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              const ColorPicker(),
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -247,6 +120,215 @@ class _ListViewState extends State<ListView> {
         onPressed: () {
           context.read<EditTaskBloc>().add(const EditTaskSubmitted());
         },
+      ),
+    );
+  }
+}
+
+class SubtasksContainer extends StatelessWidget {
+  const SubtasksContainer({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocSelector<EditTaskBloc, EditTaskState, List<SubTask>>(
+      selector: (state) => state.subtasks,
+      builder: (context, subtasks) {
+        final subtaskItems = subtasks
+            .map(
+              (subtask) => SubtaskItem(
+                subtask: subtask,
+              ),
+            )
+            .toList();
+        return Column(
+          children: subtaskItems,
+        );
+      },
+    );
+  }
+}
+
+class SubtaskItem extends StatelessWidget {
+  const SubtaskItem({
+    required this.subtask,
+    super.key,
+  });
+
+  final SubTask subtask;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Checkbox(
+          value: subtask.completed,
+          onChanged: (value) {
+            context.read<EditTaskBloc>().add(
+                  EditTaskSubtaskCompleted(
+                    id: subtask.id,
+                    completed: !subtask.completed,
+                  ),
+                );
+          },
+        ),
+        Expanded(
+          child: TextFormField(
+            style: TextStyle(
+              decoration: subtask.completed
+                  ? TextDecoration.lineThrough
+                  : TextDecoration.none,
+            ),
+            onChanged: (value) {
+              context.read<EditTaskBloc>().add(
+                    EditTaskSubtaskChanged(id: subtask.id, title: value),
+                  );
+            },
+          ),
+        ),
+        GestureDetector(
+          onTap: () {
+            context
+                .read<EditTaskBloc>()
+                .add(EditTaskSubtaskDeleted(id: subtask.id));
+          },
+          child: const Icon(
+            Icons.delete_forever,
+            size: 24,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class SubtaskIconButton extends StatelessWidget {
+  const SubtaskIconButton({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocSelector<EditTaskBloc, EditTaskState, List<SubTask>>(
+      selector: (state) => state.subtasks,
+      builder: (context, subtasks) => SizedBox(
+        height: 34,
+        child: IconButton.filled(
+          onPressed: () {
+            context.read<EditTaskBloc>().add(const EditTaskSubtaskCreated());
+          },
+          style: ButtonStyle(
+            backgroundColor: WidgetStatePropertyAll(
+              subtasks.isNotEmpty
+                  ? Theme.of(context).colorScheme.primary
+                  : Theme.of(context).colorScheme.secondaryContainer,
+            ),
+          ),
+          padding: EdgeInsets.zero,
+          icon: Icon(
+            Icons.account_tree_rounded,
+            color: subtasks.isNotEmpty ? yellowColor : greyColor,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class ColorPicker extends StatelessWidget {
+  const ColorPicker({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocSelector<EditTaskBloc, EditTaskState, AccentColor>(
+      selector: (state) => state.color,
+      builder: (context, selectedColor) => Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Container(
+            width: 67,
+            height: 30,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(26),
+              gradient: RadialGradient(
+                colors: [
+                  selectedColor.color,
+                  Theme.of(context).colorScheme.secondaryContainer,
+                ],
+                radius: 1.3,
+                center: Alignment.centerRight,
+              ),
+            ),
+          ),
+          ColorPickerItem(
+            color: AccentColor.main,
+            selectedColor: selectedColor,
+          ),
+          ColorPickerItem(
+            color: AccentColor.blue,
+            selectedColor: selectedColor,
+          ),
+          ColorPickerItem(
+            color: AccentColor.green,
+            selectedColor: selectedColor,
+          ),
+          ColorPickerItem(
+            color: AccentColor.orange,
+            selectedColor: selectedColor,
+          ),
+          ColorPickerItem(
+            color: AccentColor.red,
+            selectedColor: selectedColor,
+          ),
+          ColorPickerItem(
+            color: AccentColor.pink,
+            selectedColor: selectedColor,
+          ),
+          ColorPickerItem(
+            color: AccentColor.purple,
+            selectedColor: selectedColor,
+          ),
+          ColorPickerItem(
+            color: AccentColor.seaGreen,
+            selectedColor: selectedColor,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class ColorPickerItem extends StatelessWidget {
+  const ColorPickerItem({
+    required this.color,
+    required this.selectedColor,
+    super.key,
+  });
+
+  final AccentColor color;
+  final AccentColor selectedColor;
+
+  @override
+  Widget build(BuildContext context) {
+    final isSelected = color == selectedColor;
+
+    return GestureDetector(
+      onTap: () =>
+          context.read<EditTaskBloc>().add(EditTaskColorChanged(color: color)),
+      child: Container(
+        width: 30,
+        height: 30,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(
+            color: isSelected
+                ? Theme.of(context).colorScheme.onPrimary
+                : Colors.transparent,
+            width: isSelected ? 2 : 0,
+          ),
+          color: color.color,
+        ),
       ),
     );
   }
@@ -293,6 +375,7 @@ class DropdownCategorySelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final state = context.read<EditTaskBloc>().state;
     final initCategory = state.category;
 
@@ -309,15 +392,12 @@ class DropdownCategorySelector extends StatelessWidget {
                   );
             }
           },
-          hint: const Text('Select category'),
+          hint: Text(l10n.taskSelectCategoryHelperText),
           decoration: InputDecoration(
             filled: true,
             hintStyle: Theme.of(context).textTheme.bodyMedium,
             fillColor: Theme.of(context).colorScheme.secondaryContainer,
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 10,
-              vertical: 5,
-            ),
+            contentPadding: const EdgeInsets.fromLTRB(20, 5, 5, 5),
             isCollapsed: true,
             border: OutlineInputBorder(
               borderSide: BorderSide.none,
@@ -326,20 +406,24 @@ class DropdownCategorySelector extends StatelessWidget {
               ),
             ),
           ),
-          items: categories
-              .map(
-                (category) => DropdownMenuItem(
-                  value: category,
-                  child: Text(category.toString()),
-                ),
-              )
-              .toList(),
+          items: [
+            DropdownMenuItem(
+              child: Text(l10n.taskSelectCategoryUncategorizedName),
+            ),
+            ...categories.map(
+              (category) => DropdownMenuItem(
+                value: category,
+                child: Text(category.toString()),
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 }
 
+// TODO: add validation
 class TitleForm extends StatelessWidget {
   const TitleForm({super.key});
   @override

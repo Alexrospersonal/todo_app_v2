@@ -1,4 +1,4 @@
-import 'dart:ui';
+import 'dart:math';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -26,6 +26,11 @@ class EditTaskBloc extends Bloc<EditTaskEvent, EditTaskState> {
     on<EditTaskLoadCategories>(_onLoadCategories);
     on<EditTaskCategoryChanged>(_onCategoryChanged);
     on<EditTaskImportantStatusChanged>(_onIsImportantChanged);
+    on<EditTaskColorChanged>(_onColorChanged);
+    on<EditTaskSubtaskCreated>(_onSubtaskCreated);
+    on<EditTaskSubtaskDeleted>(_onSubtaskDeleted);
+    on<EditTaskSubtaskChanged>(_onSubtaskChanged);
+    on<EditTaskSubtaskCompleted>(_onSubtaskCompleted);
   }
 
   final TodosRepository _tasksRepository;
@@ -59,6 +64,62 @@ class EditTaskBloc extends Bloc<EditTaskEvent, EditTaskState> {
     emit(state.copyWith(important: event.isImportant));
   }
 
+  void _onColorChanged(
+    EditTaskColorChanged event,
+    Emitter<EditTaskState> emit,
+  ) {
+    emit(state.copyWith(color: event.color));
+  }
+
+  void _onSubtaskCreated(
+    EditTaskSubtaskCreated event,
+    Emitter<EditTaskState> emit,
+  ) {
+    final subtaskList = [...state.subtasks];
+    final randomId = Random().nextInt(10000);
+    final newSubtask = SubTask(id: randomId, title: '');
+    subtaskList.add(newSubtask);
+
+    emit(state.copyWith(subtasks: subtaskList));
+  }
+
+  void _onSubtaskDeleted(
+    EditTaskSubtaskDeleted event,
+    Emitter<EditTaskState> emit,
+  ) {
+    final subtaskList =
+        state.subtasks.where((subtast) => subtast.id != event.id).toList();
+
+    emit(state.copyWith(subtasks: subtaskList));
+  }
+
+  void _onSubtaskChanged(
+    EditTaskSubtaskChanged event,
+    Emitter<EditTaskState> emit,
+  ) {
+    state.subtasks
+        .firstWhere(
+          (subtask) => subtask.id == event.id,
+        )
+        .title = event.title;
+
+    emit(state.copyWith(subtasks: [...state.subtasks]));
+  }
+
+  void _onSubtaskCompleted(
+    EditTaskSubtaskCompleted event,
+    Emitter<EditTaskState> emit,
+  ) {
+    final updatedSubtasks = state.subtasks.map((subtask) {
+      if (subtask.id == event.id) {
+        return subtask.copyWith(completed: event.completed);
+      }
+      return subtask;
+    }).toList();
+
+    emit(state.copyWith(subtasks: updatedSubtasks));
+  }
+
   Future<void> _onSubmitted(
     EditTaskSubmitted event,
     Emitter<EditTaskState> emit,
@@ -68,9 +129,14 @@ class EditTaskBloc extends Bloc<EditTaskEvent, EditTaskState> {
     final task = (state.initialTodo ?? TaskEntity(title: '')).copyWith(
       title: state.title,
       notate: state.notate,
+      color: state.color.color.value,
     );
 
     task.category.value = state.category;
+
+    if (state.subtasks.isNotEmpty) {
+      task.subtasks = state.subtasks;
+    }
 
     try {
       await _tasksRepository.creatTask(task);

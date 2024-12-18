@@ -43,5 +43,13 @@
     "taskTitleHelperText": "Enter a name",
     "@taskTitleHelperText": {
         "description": ""
+    },
+    "taskSelectCategoryHelperText": "Select category",
+    "@taskSelectCategoryHelperText": {
+        "description": ""
+    },
+    "taskSelectCategoryUncategorizedName": "Uncategorized",
+    "@taskSelectCategoryUncategorizedName": {
+        "description": ""
     }
 }

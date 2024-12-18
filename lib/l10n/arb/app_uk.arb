@@ -43,5 +43,13 @@
     "taskTitleHelperText": "Введіть назву",
     "@taskTitleHelperText": {
         "description": ""
+    },
+    "taskSelectCategoryHelperText": "Виберіть категорію",
+    "@taskSelectCategoryHelperText": {
+        "description": ""
+    },
+    "taskSelectCategoryUncategorizedName": "Без категорії",
+    "@taskSelectCategoryUncategorizedName": {
+        "description": ""
     }
 }

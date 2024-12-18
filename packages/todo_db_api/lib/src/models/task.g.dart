@@ -1,7 +1,5 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-// ignore_for_file: public_member_api_docs, cascade_invocations
-
 part of 'task.dart';
 
 // **************************************************************************
@@ -74,13 +72,18 @@ const TaskEntitySchema = CollectionSchema(
       name: r'repeatDuringWeek',
       type: IsarType.longList,
     ),
-    r'taskDate': PropertySchema(
+    r'subtasksJson': PropertySchema(
       id: 11,
+      name: r'subtasksJson',
+      type: IsarType.string,
+    ),
+    r'taskDate': PropertySchema(
+      id: 12,
       name: r'taskDate',
       type: IsarType.dateTime,
     ),
     r'title': PropertySchema(
-      id: 12,
+      id: 13,
       name: r'title',
       type: IsarType.string,
     )
@@ -163,6 +166,7 @@ int _taskEntityEstimateSize(
       bytesCount += 3 + value.length * 8;
     }
   }
+  bytesCount += 3 + object.subtasksJson.length * 3;
   bytesCount += 3 + object.title.length * 3;
   return bytesCount;
 }
@@ -184,8 +188,9 @@ void _taskEntitySerialize(
   writer.writeLong(offsets[8], object.notificationId);
   writer.writeDateTimeList(offsets[9], object.repeatDuringDay);
   writer.writeLongList(offsets[10], object.repeatDuringWeek);
-  writer.writeDateTime(offsets[11], object.taskDate);
-  writer.writeString(offsets[12], object.title);
+  writer.writeString(offsets[11], object.subtasksJson);
+  writer.writeDateTime(offsets[12], object.taskDate);
+  writer.writeString(offsets[13], object.title);
 }
 
 TaskEntity _taskEntityDeserialize(
@@ -195,7 +200,7 @@ TaskEntity _taskEntityDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = TaskEntity(
-    title: reader.readString(offsets[12]),
+    title: reader.readString(offsets[13]),
   );
   object.color = reader.readLongOrNull(offsets[0]);
   object.endDateOfRepeatedly = reader.readDateTimeOrNull(offsets[1]);
@@ -209,7 +214,8 @@ TaskEntity _taskEntityDeserialize(
   object.notificationId = reader.readLongOrNull(offsets[8]);
   object.repeatDuringDay = reader.readDateTimeOrNullList(offsets[9]);
   object.repeatDuringWeek = reader.readLongList(offsets[10]);
-  object.taskDate = reader.readDateTimeOrNull(offsets[11]);
+  object.subtasksJson = reader.readString(offsets[11]);
+  object.taskDate = reader.readDateTimeOrNull(offsets[12]);
   return object;
 }
 
@@ -243,8 +249,10 @@ P _taskEntityDeserializeProp<P>(
     case 10:
       return (reader.readLongList(offset)) as P;
     case 11:
-      return (reader.readDateTimeOrNull(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 12:
+      return (reader.readDateTimeOrNull(offset)) as P;
+    case 13:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -1399,6 +1407,142 @@ extension TaskEntityQueryFilter
     });
   }
 
+  QueryBuilder<TaskEntity, TaskEntity, QAfterFilterCondition>
+      subtasksJsonEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'subtasksJson',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TaskEntity, TaskEntity, QAfterFilterCondition>
+      subtasksJsonGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'subtasksJson',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TaskEntity, TaskEntity, QAfterFilterCondition>
+      subtasksJsonLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'subtasksJson',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TaskEntity, TaskEntity, QAfterFilterCondition>
+      subtasksJsonBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'subtasksJson',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TaskEntity, TaskEntity, QAfterFilterCondition>
+      subtasksJsonStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'subtasksJson',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TaskEntity, TaskEntity, QAfterFilterCondition>
+      subtasksJsonEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'subtasksJson',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TaskEntity, TaskEntity, QAfterFilterCondition>
+      subtasksJsonContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'subtasksJson',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TaskEntity, TaskEntity, QAfterFilterCondition>
+      subtasksJsonMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'subtasksJson',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TaskEntity, TaskEntity, QAfterFilterCondition>
+      subtasksJsonIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'subtasksJson',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<TaskEntity, TaskEntity, QAfterFilterCondition>
+      subtasksJsonIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'subtasksJson',
+        value: '',
+      ));
+    });
+  }
+
   QueryBuilder<TaskEntity, TaskEntity, QAfterFilterCondition> taskDateIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -1748,6 +1892,18 @@ extension TaskEntityQuerySortBy
     });
   }
 
+  QueryBuilder<TaskEntity, TaskEntity, QAfterSortBy> sortBySubtasksJson() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'subtasksJson', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TaskEntity, TaskEntity, QAfterSortBy> sortBySubtasksJsonDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'subtasksJson', Sort.desc);
+    });
+  }
+
   QueryBuilder<TaskEntity, TaskEntity, QAfterSortBy> sortByTaskDate() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'taskDate', Sort.asc);
@@ -1898,6 +2054,18 @@ extension TaskEntityQuerySortThenBy
     });
   }
 
+  QueryBuilder<TaskEntity, TaskEntity, QAfterSortBy> thenBySubtasksJson() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'subtasksJson', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TaskEntity, TaskEntity, QAfterSortBy> thenBySubtasksJsonDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'subtasksJson', Sort.desc);
+    });
+  }
+
   QueryBuilder<TaskEntity, TaskEntity, QAfterSortBy> thenByTaskDate() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'taskDate', Sort.asc);
@@ -1993,6 +2161,13 @@ extension TaskEntityQueryWhereDistinct
     });
   }
 
+  QueryBuilder<TaskEntity, TaskEntity, QDistinct> distinctBySubtasksJson(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'subtasksJson', caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<TaskEntity, TaskEntity, QDistinct> distinctByTaskDate() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'taskDate');
@@ -2081,6 +2256,12 @@ extension TaskEntityQueryProperty
       repeatDuringWeekProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'repeatDuringWeek');
+    });
+  }
+
+  QueryBuilder<TaskEntity, String, QQueryOperations> subtasksJsonProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'subtasksJson');
     });
   }
 

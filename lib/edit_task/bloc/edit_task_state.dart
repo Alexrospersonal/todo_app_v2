@@ -16,8 +16,9 @@ final class EditTaskState extends Equatable {
     this.initialTodo,
     this.title = '',
     this.notate = '',
+    this.subtasks = const [],
     this.important = false,
-    this.color = baseColor,
+    this.color = AccentColor.main,
     this.category,
     this.taskDate,
     this.hasTime = false,
@@ -27,13 +28,14 @@ final class EditTaskState extends Equatable {
     this.repeatDuringDay = const [],
   });
 
+  final String title;
+  final String notate;
+  final List<SubTask> subtasks;
   final List<CategoryEntity> categories;
   final EditTaskStatus status;
   final TaskEntity? initialTodo;
-  final String title;
-  final String notate;
+  final AccentColor color;
   final bool important;
-  final Color color;
   final CategoryEntity? category;
   final DateTime? taskDate;
   final bool hasTime;
@@ -49,9 +51,10 @@ final class EditTaskState extends Equatable {
     EditTaskStatus? status,
     TaskEntity? initialTodo,
     String? title,
+    List<SubTask>? subtasks,
     String? notate,
     bool? important,
-    Color? color,
+    AccentColor? color,
     CategoryEntity? category,
     DateTime? taskDate,
     bool? hasTime,
@@ -64,6 +67,7 @@ final class EditTaskState extends Equatable {
       categories: categories ?? this.categories,
       title: title ?? this.title,
       status: status ?? this.status,
+      subtasks: subtasks ?? this.subtasks,
       initialTodo: initialTodo ?? this.initialTodo,
       notate: notate ?? this.notate,
       important: important ?? this.important,
@@ -90,6 +94,7 @@ final class EditTaskState extends Equatable {
         hasRepeats,
         repeatDuringWeek,
         categories,
+        subtasks,
       ];
 }
 

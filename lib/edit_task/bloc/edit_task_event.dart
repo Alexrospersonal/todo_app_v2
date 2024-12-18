@@ -47,6 +47,54 @@ final class EditTaskImportantStatusChanged extends EditTaskEvent {
   List<Object> get props => [isImportant];
 }
 
+final class EditTaskColorChanged extends EditTaskEvent {
+  const EditTaskColorChanged({required this.color});
+
+  final AccentColor color;
+
+  @override
+  List<Object> get props => [color];
+}
+
+final class EditTaskSubtaskCreated extends EditTaskEvent {
+  const EditTaskSubtaskCreated();
+}
+
+final class EditTaskSubtaskDeleted extends EditTaskEvent {
+  const EditTaskSubtaskDeleted({required this.id});
+
+  final int id;
+
+  @override
+  List<Object> get props => [id];
+}
+
+final class EditTaskSubtaskChanged extends EditTaskEvent {
+  const EditTaskSubtaskChanged({
+    required this.id,
+    required this.title,
+  });
+
+  final int id;
+  final String title;
+
+  @override
+  List<Object> get props => [id, title];
+}
+
+final class EditTaskSubtaskCompleted extends EditTaskEvent {
+  const EditTaskSubtaskCompleted({
+    required this.id,
+    required this.completed,
+  });
+
+  final int id;
+  final bool completed;
+
+  @override
+  List<Object> get props => [id, completed];
+}
+
 final class EditTaskSubmitted extends EditTaskEvent {
   const EditTaskSubmitted();
 }

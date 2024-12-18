@@ -1,5 +1,8 @@
 // ignore_for_file: cascade_invocations
 
+import 'dart:convert';
+
+import 'package:equatable/equatable.dart';
 import 'package:isar/isar.dart';
 import 'package:todo_db_api/src/models/category.dart';
 
@@ -33,6 +36,17 @@ class TaskEntity {
 
   /// Note for the task.
   String? notate;
+
+  String subtasksJson = '';
+
+  @ignore
+  List<SubTask> get subtasks => (jsonDecode(subtasksJson) as List)
+      .map((e) => SubTask.fromJson(e as Map<String, dynamic>))
+      .toList();
+
+  set subtasks(List<SubTask> value) {
+    subtasksJson = jsonEncode(value.map((e) => e.toJson()).toList());
+  }
 
   /// The date when the task is scheduled.
   @Index()
@@ -114,4 +128,45 @@ class TaskEntity {
       'color': color,
     };
   }
+}
+
+class SubTask extends Equatable {
+  SubTask({
+    required this.id,
+    required this.title,
+    this.completed = false,
+  });
+
+  factory SubTask.fromJson(Map<String, dynamic> json) {
+    return SubTask(
+      id: json['id'] as int,
+      title: json['title'] as String,
+      completed: json['completed'] as bool? ?? false,
+    );
+  }
+  final int id;
+  String title;
+  bool completed;
+
+  Map<String, dynamic> toJson() {
+    return {
+      'title': title,
+      'completed': completed,
+    };
+  }
+
+  SubTask copyWith({
+    int? id,
+    String? title,
+    bool? completed,
+  }) {
+    return SubTask(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      completed: completed ?? this.completed,
+    );
+  }
+
+  @override
+  List<Object> get props => [title, completed, id];
 }
