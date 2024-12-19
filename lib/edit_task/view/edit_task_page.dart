@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo_app_v2/edit_task/bloc/edit_task_bloc.dart';
-import 'package:todo_app_v2/edit_task/widgets/form_header.dart';
+import 'package:todo_app_v2/home/widgets/custom_app_bar.dart';
 import 'package:todo_app_v2/l10n/l10n.dart';
 import 'package:todo_app_v2/theme/theme.dart';
 import 'package:todos_repository/todos_repository.dart';
@@ -63,7 +63,20 @@ class _ListViewState extends State<ListView> {
     final color = context.watch<EditTaskBloc>().state.color;
 
     return Scaffold(
-      appBar: AppBar(),
+      appBar: CustomAppBar(
+        title: l10n.taskEditTitleName,
+        titleTextStyle: Theme.of(context).textTheme.displaySmall,
+        leading: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14),
+          child: GestureDetector(
+            onTap: () => Navigator.of(context).pop(),
+            child: const Icon(
+              Icons.arrow_back_ios,
+              size: 38,
+            ),
+          ),
+        ),
+      ),
       body: Container(
         decoration: BoxDecoration(
           gradient: RadialGradient(
@@ -77,40 +90,40 @@ class _ListViewState extends State<ListView> {
         ),
         child: Form(
           key: _formKey,
-          child: Column(
-            children: [
-              FormHeader(
-                title: l10n.createTaskTitle,
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              const TitleForm(),
-              const SizedBox(
-                height: 10,
-              ),
-              const SubtasksContainer(),
-              Row(
-                children: [
-                  const DropdownCategorySelector(),
-                  const SubtaskIconButton(),
-                  SizedBox(
-                    // width: 20,
-                    height: 34,
-                    child: IconButton.filled(
-                      onPressed: () {},
-                      padding: EdgeInsets.zero,
-                      icon: const Icon(Icons.calendar_month_sharp),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
+            child: Column(
+              children: [
+                const SizedBox(
+                  height: 10,
+                ),
+                const TitleForm(),
+                const SizedBox(
+                  height: 15,
+                ),
+                const SubtasksContainer(),
+                Row(
+                  children: [
+                    const DropdownCategorySelector(),
+                    const SubtaskIconButton(),
+                    SizedBox(
+                      // width: 20,
+                      height: 34,
+                      child: IconButton.filled(
+                        onPressed: () {},
+                        padding: EdgeInsets.zero,
+                        icon: const Icon(Icons.calendar_month_sharp),
+                      ),
                     ),
-                  ),
-                  const ImportantIconButton(),
-                ],
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              const ColorPicker(),
-            ],
+                    const ImportantIconButton(),
+                  ],
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+                const ColorPicker(),
+              ],
+            ),
           ),
         ),
       ),
@@ -136,6 +149,7 @@ class SubtasksContainer extends StatelessWidget {
         final subtaskItems = subtasks
             .map(
               (subtask) => SubtaskItem(
+                key: ValueKey(subtask.id),
                 subtask: subtask,
               ),
             )
@@ -158,6 +172,8 @@ class SubtaskItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+
     return Row(
       children: [
         Checkbox(
@@ -173,10 +189,16 @@ class SubtaskItem extends StatelessWidget {
         ),
         Expanded(
           child: TextFormField(
-            style: TextStyle(
-              decoration: subtask.completed
-                  ? TextDecoration.lineThrough
-                  : TextDecoration.none,
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                  decoration: subtask.completed
+                      ? TextDecoration.lineThrough
+                      : TextDecoration.none,
+                ),
+            decoration: InputDecoration(
+              isCollapsed: true,
+              border: InputBorder.none,
+              hintText: l10n.taskTitleHelperText,
+              hintStyle: Theme.of(context).textTheme.bodyMedium,
             ),
             onChanged: (value) {
               context.read<EditTaskBloc>().add(
@@ -185,15 +207,19 @@ class SubtaskItem extends StatelessWidget {
             },
           ),
         ),
-        GestureDetector(
-          onTap: () {
-            context
-                .read<EditTaskBloc>()
-                .add(EditTaskSubtaskDeleted(id: subtask.id));
-          },
-          child: const Icon(
-            Icons.delete_forever,
-            size: 24,
+        Padding(
+          padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
+          child: GestureDetector(
+            onTap: () {
+              context
+                  .read<EditTaskBloc>()
+                  .add(EditTaskSubtaskDeleted(id: subtask.id));
+            },
+            child: Icon(
+              Icons.cancel_outlined,
+              size: 24,
+              color: Theme.of(context).colorScheme.error,
+            ),
           ),
         ),
       ],
@@ -243,58 +269,36 @@ class ColorPicker extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocSelector<EditTaskBloc, EditTaskState, AccentColor>(
       selector: (state) => state.color,
-      builder: (context, selectedColor) => Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Container(
-            width: 67,
-            height: 30,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(26),
-              gradient: RadialGradient(
-                colors: [
-                  selectedColor.color,
-                  Theme.of(context).colorScheme.secondaryContainer,
-                ],
-                radius: 1.3,
-                center: Alignment.centerRight,
+      builder: (context, selectedColor) {
+        final colors = AccentColor.values.map(
+          (e) => ColorPickerItem(
+            selectedColor: selectedColor,
+            color: e,
+          ),
+        );
+
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Container(
+              width: 67,
+              height: 30,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(26),
+                gradient: RadialGradient(
+                  colors: [
+                    selectedColor.color,
+                    Theme.of(context).colorScheme.secondaryContainer,
+                  ],
+                  radius: 1.3,
+                  center: Alignment.centerRight,
+                ),
               ),
             ),
-          ),
-          ColorPickerItem(
-            color: AccentColor.main,
-            selectedColor: selectedColor,
-          ),
-          ColorPickerItem(
-            color: AccentColor.blue,
-            selectedColor: selectedColor,
-          ),
-          ColorPickerItem(
-            color: AccentColor.green,
-            selectedColor: selectedColor,
-          ),
-          ColorPickerItem(
-            color: AccentColor.orange,
-            selectedColor: selectedColor,
-          ),
-          ColorPickerItem(
-            color: AccentColor.red,
-            selectedColor: selectedColor,
-          ),
-          ColorPickerItem(
-            color: AccentColor.pink,
-            selectedColor: selectedColor,
-          ),
-          ColorPickerItem(
-            color: AccentColor.purple,
-            selectedColor: selectedColor,
-          ),
-          ColorPickerItem(
-            color: AccentColor.seaGreen,
-            selectedColor: selectedColor,
-          ),
-        ],
-      ),
+            ...colors,
+          ],
+        );
+      },
     );
   }
 }

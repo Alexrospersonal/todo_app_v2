@@ -48,7 +48,6 @@ class TodosList extends StatelessWidget {
   }
 }
 
-// TODO: add custom gradieants and create colors for gradiesnts.
 class TodoCard extends StatefulWidget {
   const TodoCard({
     required this.category,

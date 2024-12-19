@@ -97,13 +97,14 @@ class EditTaskBloc extends Bloc<EditTaskEvent, EditTaskState> {
     EditTaskSubtaskChanged event,
     Emitter<EditTaskState> emit,
   ) {
-    state.subtasks
-        .firstWhere(
-          (subtask) => subtask.id == event.id,
-        )
-        .title = event.title;
+    final updatesSubtasks = state.subtasks.map((subtask) {
+      if (subtask.id == event.id) {
+        return subtask.copyWith(title: event.title);
+      }
+      return subtask;
+    }).toList();
 
-    emit(state.copyWith(subtasks: [...state.subtasks]));
+    emit(state.copyWith(subtasks: updatesSubtasks));
   }
 
   void _onSubtaskCompleted(

@@ -131,7 +131,7 @@ class TaskEntity {
 }
 
 class SubTask extends Equatable {
-  SubTask({
+  const SubTask({
     required this.id,
     required this.title,
     this.completed = false,
@@ -145,8 +145,8 @@ class SubTask extends Equatable {
     );
   }
   final int id;
-  String title;
-  bool completed;
+  final String title;
+  final bool completed;
 
   Map<String, dynamic> toJson() {
     return {

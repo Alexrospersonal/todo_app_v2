@@ -51,5 +51,9 @@
     "taskSelectCategoryUncategorizedName": "Без категорії",
     "@taskSelectCategoryUncategorizedName": {
         "description": ""
+    },
+    "taskEditTitleName": "Нове завдання",
+    "@taskEditTitleName": {
+        "description": ""
     }
 }
