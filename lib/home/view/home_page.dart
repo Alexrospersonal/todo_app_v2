@@ -112,7 +112,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
         translateAnimValue: _tabAnimation.value,
         child: const ColoredBox(
           color: Color.fromARGB(255, 83, 83, 83),
-          child: ListsPage(),
+          child: EditTaskPage(),
         ),
       ),
     ];
@@ -193,7 +193,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
         ),
         floatingActionButton: FloatingNavButton(
           tab: selectedTab,
-          callback: () => Navigator.of(context).push(ListsPage.route()),
+          callback: () => Navigator.of(context).push(EditTaskPage.route()),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         bottomNavigationBar: BottomNavBar(

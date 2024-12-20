@@ -1,28 +1,46 @@
 PODS:
   - Flutter (1.0.0)
+  - flutter_keyboard_visibility_temp_fork (0.0.1):
+    - Flutter
   - isar_flutter_libs (1.0.0):
     - Flutter
   - path_provider_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
+  - quill_native_bridge_ios (0.0.1):
+    - Flutter
+  - url_launcher_ios (0.0.1):
+    - Flutter
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
+  - flutter_keyboard_visibility_temp_fork (from `.symlinks/plugins/flutter_keyboard_visibility_temp_fork/ios`)
   - isar_flutter_libs (from `.symlinks/plugins/isar_flutter_libs/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
+  - quill_native_bridge_ios (from `.symlinks/plugins/quill_native_bridge_ios/ios`)
+  - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
 
 EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
+  flutter_keyboard_visibility_temp_fork:
+    :path: ".symlinks/plugins/flutter_keyboard_visibility_temp_fork/ios"
   isar_flutter_libs:
     :path: ".symlinks/plugins/isar_flutter_libs/ios"
   path_provider_foundation:
     :path: ".symlinks/plugins/path_provider_foundation/darwin"
+  quill_native_bridge_ios:
+    :path: ".symlinks/plugins/quill_native_bridge_ios/ios"
+  url_launcher_ios:
+    :path: ".symlinks/plugins/url_launcher_ios/ios"
 
 SPEC CHECKSUMS:
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
+  flutter_keyboard_visibility_temp_fork: 8a8809c4129e31d25fca77446e0f3fd548122ced
   isar_flutter_libs: b69f437aeab9c521821c3f376198c4371fa21073
   path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
+  quill_native_bridge_ios: 2b01d585fcc73d0f5eed78c0bd244ee564b06f5a
+  url_launcher_ios: 5334b05cef931de560670eeae103fd3e431ac3fe
 
 PODFILE CHECKSUM: 819463e6a0290f5a72f145ba7cde16e8b6ef0796
 

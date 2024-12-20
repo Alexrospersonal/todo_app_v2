@@ -96,5 +96,10 @@ final class EditTaskSubtaskCompleted extends EditTaskEvent {
 }
 
 final class EditTaskSubmitted extends EditTaskEvent {
-  const EditTaskSubmitted();
+  const EditTaskSubmitted({required this.description});
+
+  final String description;
+
+  @override
+  List<Object> get props => [description];
 }

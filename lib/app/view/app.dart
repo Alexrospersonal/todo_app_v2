@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_quill/translations.dart';
 import 'package:todo_app_v2/archive/archive.dart';
 import 'package:todo_app_v2/common/utils/navigation.dart';
 import 'package:todo_app_v2/faq/faq.dart';
@@ -31,7 +32,10 @@ class App extends StatelessWidget {
           RouteNames.faq.name: (context) => const FAQPage(),
         },
         theme: AppTheme.darkTheme,
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: const [
+          ...AppLocalizations.localizationsDelegates,
+          FlutterQuillLocalizations.delegate,
+        ],
         supportedLocales: AppLocalizations.supportedLocales,
         // debugShowMaterialGrid: true,
         home: const HomePage(),

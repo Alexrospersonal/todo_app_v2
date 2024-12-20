@@ -1,13 +1,18 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 import 'package:todo_app_v2/edit_task/bloc/edit_task_bloc.dart';
 import 'package:todo_app_v2/home/widgets/custom_app_bar.dart';
 import 'package:todo_app_v2/l10n/l10n.dart';
 import 'package:todo_app_v2/theme/theme.dart';
 import 'package:todos_repository/todos_repository.dart';
 
-class ListsPage extends StatelessWidget {
-  const ListsPage({this.initialTask, super.key});
+// TODO: вирішити баз з фокусом. Перенести конторолер Description сюди
+//і коли заврешується завданяя то викликати подію збереження даних та передати їй Json в блок а з блоку в базу
+class EditTaskPage extends StatelessWidget {
+  const EditTaskPage({this.initialTask, super.key});
 
   final TaskEntity? initialTask;
 
@@ -15,7 +20,7 @@ class ListsPage extends StatelessWidget {
     return MaterialPageRoute(
       fullscreenDialog: true,
       builder: (context) {
-        return ListsPage(
+        return EditTaskPage(
           initialTask: initialTask,
         );
       },
@@ -34,26 +39,60 @@ class ListsPage extends StatelessWidget {
             previous.status != current.status &&
             current.status == EditTaskStatus.success,
         listener: (context, state) => Navigator.of(context).pop(),
-        child: const ListView(),
+        child: const EditTaskView(),
       ),
     );
   }
 }
 
-class ListView extends StatefulWidget {
-  const ListView({super.key});
+class EditTaskView extends StatefulWidget {
+  const EditTaskView({super.key});
 
   @override
-  State<ListView> createState() => _ListViewState();
+  State<EditTaskView> createState() => _EditTaskViewState();
 }
 
-class _ListViewState extends State<ListView> {
+class _EditTaskViewState extends State<EditTaskView> {
   final _formKey = GlobalKey<FormState>();
+  late QuillController _descriptionController;
 
   @override
   void initState() {
     super.initState();
     context.read<EditTaskBloc>().add(const EditTaskLoadCategories());
+    final state = context.read<EditTaskBloc>().state;
+
+    var document = Document.fromJson([
+      {'insert': '\n'},
+    ]);
+
+    // Оновлення документа, якщо є нові дані
+    if (state.notate.isNotEmpty) {
+      document = Document.fromJson(jsonDecode(state.notate) as List<dynamic>);
+    }
+
+    // Ініціалізація QuillController
+    _descriptionController = QuillController(
+      document: document,
+      selection: const TextSelection.collapsed(offset: 0),
+    );
+    // _descriptionController.addListener(_onDocumentChanged);
+  }
+
+  // void _onDocumentChanged() {
+  //   final json = jsonEncode(_descriptionController
+  // .document.toDelta().toJson());
+  //   context.read<EditTaskBloc>()
+  //.add(EditTaskDescriptionChanged(notate: json));
+  // }
+
+  void submitTask() {
+    final jsonString =
+        jsonEncode(_descriptionController.document.toDelta().toJson());
+
+    context.read<EditTaskBloc>().add(
+          EditTaskSubmitted(description: jsonString),
+        );
   }
 
   @override
@@ -122,24 +161,289 @@ class _ListViewState extends State<ListView> {
                   height: 15,
                 ),
                 const ColorPicker(),
+                const SizedBox(
+                  height: 15,
+                ),
+                DescriptionTextEditor(
+                  controller: _descriptionController,
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+                SafeArea(
+                  child: GestureDetector(
+                    onTap: submitTask,
+                    child: Container(
+                      height: 34,
+                      width: 164,
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.primary,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: const Icon(
+                        Icons.add,
+                        size: 20,
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        heroTag: 'doneBtn',
-        child: const Icon(Icons.add),
-        onPressed: () {
-          context.read<EditTaskBloc>().add(const EditTaskSubmitted());
-        },
-      ),
+      // floatingActionButton: Container(
+      //   margin: const EdgeInsets.only(top: 36),
+      //   height: 54,
+      //   width: 54,
+      //   child: FloatingActionButton(
+      //     backgroundColor: Theme.of(context).colorScheme.primary,
+      //     shape: const CircleBorder(),
+      //     heroTag: 'doneBtn',
+      //     child: const Icon(Icons.add),
+      //     onPressed: () {
+      //       context.read<EditTaskBloc>().add(const EditTaskSubmitted());
+      //     },
+      //   ),
+      // ),
+      // floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
+      // floatingActionButtonLocation:
+      //     FloatingActionButtonLocation.miniCenterDocked,
     );
   }
 }
 
-class SubtasksContainer extends StatelessWidget {
+class DescriptionTextEditor extends StatefulWidget {
+  const DescriptionTextEditor({required QuillController controller, super.key})
+      : _controller = controller;
+
+  final QuillController _controller;
+
+  @override
+  State<DescriptionTextEditor> createState() => _DescriptionTextEditorState();
+}
+
+class _DescriptionTextEditorState extends State<DescriptionTextEditor> {
+  // late QuillController _controller;
+
+  // @override
+  // void initState() {
+  //   super.initState();
+
+  //   // Ініціалізація QuillController
+  //   _controller = QuillController(
+  //     document: Document.fromJson(
+  //       [
+  //         {'insert': '\n'},
+  //       ],
+  //     ),
+  //     selection: const TextSelection.collapsed(offset: 0),
+  //   );
+  //   _controller.addListener(_onDocumentChanged);
+  // }
+
+  // @override
+  // void dispose() {
+  //   _controller
+  //     ..removeListener(_onDocumentChanged)
+  //     ..dispose();
+  //   super.dispose();
+  // }
+
+  // void _onDocumentChanged() {
+  //   final json = jsonEncode(_controller.document.toDelta().toJson());
+  //   context.read<EditTaskBloc>().add(EditTaskDescriptionChanged(notate: json));
+  // }
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = widget._controller;
+
+    return Flexible(
+      child: SizedBox(
+        height: 500,
+        child: Column(
+          children: [
+            SizedBox(
+              height: 34,
+              child: ListView(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                scrollDirection: Axis.horizontal,
+                children: [
+                  QuillToolbarHistoryButton(
+                    isUndo: true,
+                    // options: conf.buttonOptions.undoHistory,
+                    controller: controller,
+                    options: const QuillToolbarHistoryButtonOptions(
+                      iconSize: 10,
+                    ),
+                  ),
+                  QuillToolbarHistoryButton(
+                    isUndo: false,
+                    // options: conf.buttonOptions.undoHistory,
+                    controller: controller,
+                    options: const QuillToolbarHistoryButtonOptions(
+                      iconSize: 10,
+                    ),
+                  ),
+                  QuillToolbarFontSizeButton(
+                    controller: controller,
+                    options: const QuillToolbarFontSizeButtonOptions(
+                      iconSize: 10,
+                    ),
+                  ),
+                  QuillToolbarToggleStyleButton(
+                    attribute: Attribute.bold,
+                    controller: controller,
+                    options: const QuillToolbarToggleStyleButtonOptions(
+                      iconSize: 10,
+                    ),
+                  ),
+                  QuillToolbarToggleStyleButton(
+                    attribute: Attribute.italic,
+                    controller: controller,
+                    options: const QuillToolbarToggleStyleButtonOptions(
+                      iconSize: 10,
+                    ),
+                  ),
+                  QuillToolbarClearFormatButton(
+                    controller: controller,
+                    options: const QuillToolbarBaseButtonOptions(
+                      iconSize: 10,
+                    ),
+                  ),
+                  QuillToolbarToggleCheckListButton(
+                    controller: controller,
+                    options: const QuillToolbarToggleCheckListButtonOptions(
+                      iconSize: 10,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            SizedBox(
+              height: 34,
+              child: ListView(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                scrollDirection: Axis.horizontal,
+                children: [
+                  QuillToolbarColorButton(
+                    controller: controller,
+                    isBackground: false,
+                    options: const QuillToolbarColorButtonOptions(
+                      iconSize: 10,
+                    ),
+                  ),
+                  QuillToolbarColorButton(
+                    controller: controller,
+                    isBackground: true,
+                    options: const QuillToolbarColorButtonOptions(
+                      iconSize: 10,
+                    ),
+                  ),
+                  QuillToolbarSelectHeaderStyleDropdownButton(
+                    controller: controller,
+                    options:
+                        // ignore: lines_longer_than_80_chars
+                        const QuillToolbarSelectHeaderStyleDropdownButtonOptions(
+                      iconSize: 10,
+                    ),
+                  ),
+                  QuillToolbarToggleStyleButton(
+                    attribute: Attribute.ol,
+                    controller: controller,
+                    options: const QuillToolbarToggleStyleButtonOptions(
+                      iconSize: 10,
+                    ),
+                  ),
+                  QuillToolbarToggleStyleButton(
+                    attribute: Attribute.ul,
+                    controller: controller,
+                    options: const QuillToolbarToggleStyleButtonOptions(
+                      iconSize: 10,
+                    ),
+                  ),
+                  QuillToolbarIndentButton(
+                    controller: controller,
+                    isIncrease: true,
+                    options: const QuillToolbarIndentButtonOptions(
+                      iconSize: 10,
+                    ),
+                  ),
+                  QuillToolbarIndentButton(
+                    controller: controller,
+                    isIncrease: false,
+                    options: const QuillToolbarIndentButtonOptions(
+                      iconSize: 10,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                  color: Theme.of(context)
+                      .colorScheme
+                      .secondaryContainer
+                      .withAlpha(180),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: QuillEditor.basic(
+                  controller: controller,
+                  configurations: const QuillEditorConfigurations(),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    // return BlocBuilder<EditTaskBloc, EditTaskState>(
+    //   builder: (context, state) {
+    //     if (state.notate.isNotEmpty) {
+    //   // Оновлення документа, якщо є нові дані
+    //   final updatedDocument =
+    //       Document.fromJson(jsonDecode(state.notate) as List<dynamic>);
+    //   if (controller.document.toPlainText() !=
+    //       updatedDocument.toPlainText()) {
+    //     controller.document = updatedDocument;
+    //   }
+    // }
+    //   },
+    // );
+  }
+}
+
+class SubtasksContainer extends StatefulWidget {
   const SubtasksContainer({super.key});
+
+  @override
+  State<SubtasksContainer> createState() => _SubtasksContainerState();
+}
+
+class _SubtasksContainerState extends State<SubtasksContainer> {
+  late ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -154,8 +458,34 @@ class SubtasksContainer extends StatelessWidget {
               ),
             )
             .toList();
-        return Column(
-          children: subtaskItems,
+
+        var containerHeight =
+            subtasks.length * 48.0; // Припустимо, висота одного елемента 30
+
+        // Обмеження максимального розміру контейнера
+        containerHeight = containerHeight > 288 ? 288 : containerHeight;
+
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (_scrollController.hasClients && containerHeight > 256) {
+            _scrollController.animateTo(
+              _scrollController.position.maxScrollExtent - 30,
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.linear,
+            );
+            // .jumpTo(_scrollController.position.maxScrollExtent);
+          }
+        });
+
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 300), // Анімація зміни висоти
+          height: containerHeight,
+          child: Scrollbar(
+            controller: _scrollController,
+            child: ListView(
+              controller: _scrollController,
+              children: subtaskItems,
+            ),
+          ),
         );
       },
     );

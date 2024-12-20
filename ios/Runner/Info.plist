@@ -2,6 +2,14 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<!-- Add-only permission: Required on iOS 14 and later if the album name is not specified, explaining why the app needs add-only access to the photo library -->
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Your description here</string>
+
+	<!-- Read-write permission: Always required on iOS 13 and earlier, and also required on iOS 14 and later if the album name is specified, explaining why the app needs read-write access to the photo library -->
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Your description here</string>
+
 	<key>CFBundleLocalizations</key>
 	<array>
 		<string>en</string>
