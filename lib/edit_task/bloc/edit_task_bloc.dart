@@ -129,7 +129,7 @@ class EditTaskBloc extends Bloc<EditTaskEvent, EditTaskState> {
     emit(loadingState);
     final task = (state.initialTodo ?? TaskEntity(title: '')).copyWith(
       title: state.title,
-      notate: state.notate,
+      notate: event.description,
       color: state.color.color.value,
     );
 

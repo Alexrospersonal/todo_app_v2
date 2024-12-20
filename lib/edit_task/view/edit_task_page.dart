@@ -390,10 +390,7 @@ class _DescriptionTextEditorState extends State<DescriptionTextEditor> {
               child: Container(
                 padding: const EdgeInsets.all(15),
                 decoration: BoxDecoration(
-                  color: Theme.of(context)
-                      .colorScheme
-                      .secondaryContainer
-                      .withAlpha(180),
+                  color: Theme.of(context).colorScheme.secondaryContainer,
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: QuillEditor.basic(
