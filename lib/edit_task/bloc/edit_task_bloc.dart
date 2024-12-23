@@ -127,6 +127,7 @@ class EditTaskBloc extends Bloc<EditTaskEvent, EditTaskState> {
   ) async {
     final loadingState = state.copyWith(status: EditTaskStatus.loading);
     emit(loadingState);
+
     final task = (state.initialTodo ?? TaskEntity(title: '')).copyWith(
       title: state.title,
       notate: event.description,
