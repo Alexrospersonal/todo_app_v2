@@ -1,50 +1,82 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo_app_v2/common/utils/date_formatter.dart';
 import 'package:todo_app_v2/theme/theme.dart';
+import 'package:todo_app_v2/todos/bloc/todos_bloc.dart';
 
 class TodosList extends StatelessWidget {
   const TodosList({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 1, vertical: 10),
-        child: Column(
-          children: [
-            TodoCard(
-              category: 'HOME',
-              title: 'Прийняти ліки',
-              dateTime: DateTime.now(),
-              isNotification: true,
-              repeatDuringWeek: const [1, 2, 5, 7],
-              repeatDuringDay: [DateTime.now(), DateTime.now()],
-              color: AccentColor.blue,
+    return BlocBuilder<TodosBloc, TodosState>(
+      builder: (context, state) {
+        return Expanded(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 1, vertical: 10),
+            child: ListView.separated(
+              itemBuilder: (context, index) {
+                final todo = state.filteredTodos.elementAt(index);
+                final times = todo.repeatDuringDay
+                    ?.where(
+                      (element) => element != null,
+                    )
+                    .toList();
+                return TodoCard(
+                  category: todo.category.value.toString(),
+                  title: todo.title,
+                  dateTime: todo.taskDate,
+                  isNotification: todo.notificationId != null || false,
+                  repeatDuringWeek: todo.repeatDuringWeek ?? [],
+                  color: todo.color ?? baseColor.value,
+                );
+              },
+              separatorBuilder: (context, index) => const SizedBox(height: 10),
+              itemCount: state.todos.length,
             ),
-            const SizedBox(
-              height: 6,
-            ),
-            TodoCard(
-              category: 'HOME',
-              title: 'Прийняти ліки',
-              dateTime: DateTime.now(),
-              isFinish: true,
-              color: AccentColor.pink,
-            ),
-            const SizedBox(
-              height: 6,
-            ),
-            const TodoCard(
-              category: 'HOME',
-              title: 'Прийняти ліки',
-              dateTime: null,
-              isImportant: true,
-              color: AccentColor.purple,
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
+
+    // return Expanded(
+    //   child: Padding(
+    //     padding: const EdgeInsets.symmetric(horizontal: 1, vertical: 10),
+    //     child: Column(
+    //       children: [
+    //         TodoCard(
+    //           category: 'HOME',
+    //           title: 'Прийняти ліки',
+    //           dateTime: DateTime.now(),
+    //           isNotification: true,
+    //           repeatDuringWeek: const [1, 2, 5, 7],
+    //           repeatDuringDay: [DateTime.now(), DateTime.now()],
+    //           color: AccentColor.blue,
+    //         ),
+    //         const SizedBox(
+    //           height: 6,
+    //         ),
+    //         TodoCard(
+    //           category: 'HOME',
+    //           title: 'Прийняти ліки',
+    //           dateTime: DateTime.now(),
+    //           isFinish: true,
+    //           color: AccentColor.pink,
+    //         ),
+    //         const SizedBox(
+    //           height: 6,
+    //         ),
+    //         const TodoCard(
+    //           category: 'HOME',
+    //           title: 'Прийняти ліки',
+    //           dateTime: null,
+    //           isImportant: true,
+    //           color: AccentColor.purple,
+    //         ),
+    //       ],
+    //     ),
+    //   ),
+    // );
   }
 }
 
@@ -53,13 +85,13 @@ class TodoCard extends StatefulWidget {
     required this.category,
     required this.title,
     required this.dateTime,
+    required this.color,
     this.isNotification = false,
     this.repeatDuringWeek = const [],
     this.repeatDuringDay = const [],
     this.isImportant = false,
     this.isFinish = false,
     this.isOVerdute = false,
-    this.color = AccentColor.main,
     super.key,
   });
 
@@ -75,7 +107,7 @@ class TodoCard extends StatefulWidget {
 
   final bool isFinish;
   final bool isOVerdute;
-  final AccentColor color;
+  final int color;
 
   @override
   State<TodoCard> createState() => _TodoCardState();
@@ -111,7 +143,7 @@ class _TodoCardState extends State<TodoCard> {
         color: Theme.of(context).colorScheme.secondaryContainer,
         gradient: RadialGradient(
           colors: [
-            widget.color.color,
+            Color(widget.color),
             Theme.of(context).colorScheme.secondaryContainer,
           ],
           radius: 3,

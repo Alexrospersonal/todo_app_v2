@@ -15,6 +15,12 @@ class TodosRepository {
       todoApi.getTasksByCategory(category);
 
   ///
+  Stream<List<TaskEntity>> getAllTasks() {
+    final stream = todoApi.getAllTasks();
+    return stream;
+  }
+
+  ///
   Future<bool> deleteTask(int id) async => todoApi.deleteTask(id);
 
   ///

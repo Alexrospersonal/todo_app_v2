@@ -10,8 +10,17 @@ class TodoDbApi {
   Stream<List<TaskEntity>> getTasksByCategory(CategoryEntity category) {
     return plugin.taskEntitys
         .filter()
-        .colorEqualTo(category.id)
+        .category((cat) => cat.idEqualTo(category.id))
         .watch(fireImmediately: true);
+  }
+
+  Stream<List<TaskEntity>> getAllTasks() {
+    final stream = plugin.taskEntitys
+        .filter()
+        .isFinishedEqualTo(false)
+        .watch(fireImmediately: true);
+
+    return stream;
   }
 
   Future<bool> deleteTask(int id) async {
