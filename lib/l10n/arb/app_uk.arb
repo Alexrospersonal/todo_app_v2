@@ -55,5 +55,13 @@
     "taskEditTitleName": "Нове завдання",
     "@taskEditTitleName": {
         "description": ""
+    },
+    "addAnewTask": "Створіть нове завдання",
+    "@addAnewTask": {
+        "description": ""
+    },
+    "uncategorized": "Без категорії",
+    "@uncategorized": {
+        "description": ""
     }
 }

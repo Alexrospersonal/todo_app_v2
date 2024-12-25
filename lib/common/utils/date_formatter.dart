@@ -16,9 +16,15 @@ class DateFormatter {
     }).join(' ');
   }
 
-  static String formatDateTimesToTimeString(List<DateTime> repeatDuringDay) {
+  static String formatDateTimesToTimeString(List<DateTime?>? repeatDuringDay) {
+    if (repeatDuringDay == null) {
+      return '';
+    }
+
     return repeatDuringDay.map((day) {
-      return '${day.hour}:${day.minute}';
+      if (day != null) {
+        return '${day.hour}:${day.minute}';
+      }
     }).join(' ');
   }
 

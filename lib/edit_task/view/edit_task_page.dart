@@ -57,7 +57,7 @@ class _EditTaskViewState extends State<EditTaskView> {
   @override
   void initState() {
     super.initState();
-    context.read<EditTaskBloc>().add(const EditTaskLoadCategories());
+    // context.read<EditTaskBloc>().add(const EditTaskLoadCategories());
     final state = context.read<EditTaskBloc>().state;
 
     var document = Document.fromJson([
@@ -112,7 +112,7 @@ class _EditTaskViewState extends State<EditTaskView> {
             radius: 1,
             center: Alignment.bottomCenter,
             colors: [
-              color.color,
+              Color(color),
               Theme.of(context).colorScheme.surface,
             ],
           ),

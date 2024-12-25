@@ -50,7 +50,7 @@ final class EditTaskImportantStatusChanged extends EditTaskEvent {
 final class EditTaskColorChanged extends EditTaskEvent {
   const EditTaskColorChanged({required this.color});
 
-  final AccentColor color;
+  final int color;
 
   @override
   List<Object> get props => [color];

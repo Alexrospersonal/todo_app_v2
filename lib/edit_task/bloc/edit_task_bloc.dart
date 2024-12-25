@@ -8,6 +8,7 @@ import 'package:todos_repository/todos_repository.dart';
 part 'edit_task_event.dart';
 part 'edit_task_state.dart';
 
+// TODO: додати в стан відображення кольорів з БД та підззадвань
 class EditTaskBloc extends Bloc<EditTaskEvent, EditTaskState> {
   EditTaskBloc({
     required TodosRepository tasksRepository,
@@ -18,6 +19,9 @@ class EditTaskBloc extends Bloc<EditTaskEvent, EditTaskState> {
             initialTodo: initalTask,
             title: initalTask?.title ?? '',
             notate: initalTask?.notate ?? '',
+            important: initalTask?.important ?? false,
+            category: initalTask?.category.value,
+            color: initalTask?.color ?? baseColor.value,
           ),
         ) {
     on<EditTaskTitleChanged>(_onTitleChanged);
@@ -31,6 +35,7 @@ class EditTaskBloc extends Bloc<EditTaskEvent, EditTaskState> {
     on<EditTaskSubtaskDeleted>(_onSubtaskDeleted);
     on<EditTaskSubtaskChanged>(_onSubtaskChanged);
     on<EditTaskSubtaskCompleted>(_onSubtaskCompleted);
+    add(const EditTaskLoadCategories());
   }
 
   final TodosRepository _tasksRepository;
@@ -131,7 +136,8 @@ class EditTaskBloc extends Bloc<EditTaskEvent, EditTaskState> {
     final task = (state.initialTodo ?? TaskEntity(title: '')).copyWith(
       title: state.title,
       notate: event.description,
-      color: state.color.color.value,
+      color: state.color,
+      important: state.important,
     );
 
     task.category.value = state.category;

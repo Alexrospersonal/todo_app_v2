@@ -18,7 +18,7 @@ final class EditTaskState extends Equatable {
     this.notate = '',
     this.subtasks = const [],
     this.important = false,
-    this.color = AccentColor.main,
+    this.color = -1,
     this.category,
     this.taskDate,
     this.hasTime = false,
@@ -34,7 +34,7 @@ final class EditTaskState extends Equatable {
   final List<CategoryEntity> categories;
   final EditTaskStatus status;
   final TaskEntity? initialTodo;
-  final AccentColor color;
+  final int color;
   final bool important;
   final CategoryEntity? category;
   final DateTime? taskDate;
@@ -54,7 +54,7 @@ final class EditTaskState extends Equatable {
     List<SubTask>? subtasks,
     String? notate,
     bool? important,
-    AccentColor? color,
+    int? color,
     CategoryEntity? category,
     DateTime? taskDate,
     bool? hasTime,

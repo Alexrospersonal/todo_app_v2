@@ -35,4 +35,11 @@ class CategoryEntity {
   Map<String, dynamic> toJson() {
     return {'id': id, 'name': name, 'emoji': emoji};
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) || (other is CategoryEntity && other.id == id);
+
+  @override
+  int get hashCode => id.hashCode;
 }

@@ -1,8 +1,12 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo_app_v2/common/utils/date_formatter.dart';
+import 'package:todo_app_v2/edit_task/view/view.dart';
+import 'package:todo_app_v2/l10n/l10n.dart';
 import 'package:todo_app_v2/theme/theme.dart';
 import 'package:todo_app_v2/todos/bloc/todos_bloc.dart';
+import 'package:todos_repository/todos_repository.dart';
 
 class TodosList extends StatelessWidget {
   const TodosList({super.key});
@@ -11,24 +15,39 @@ class TodosList extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<TodosBloc, TodosState>(
       builder: (context, state) {
+        final l10n = context.l10n;
+
+        if (state.todos.isEmpty) {
+          if (state.status == TodosOverviewStatus.loading) {
+            return const Center(child: CupertinoActivityIndicator());
+          } else if (state.status != TodosOverviewStatus.success) {
+            return const SizedBox.shrink();
+          } else {
+            return Center(
+              child: Text(l10n.addAnewTask),
+            );
+          }
+        }
+
         return Expanded(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 1, vertical: 10),
             child: ListView.separated(
               itemBuilder: (context, index) {
-                final todo = state.filteredTodos.elementAt(index);
-                final times = todo.repeatDuringDay
-                    ?.where(
-                      (element) => element != null,
-                    )
-                    .toList();
+                final task = state.filteredTodos.elementAt(index);
                 return TodoCard(
-                  category: todo.category.value.toString(),
-                  title: todo.title,
-                  dateTime: todo.taskDate,
-                  isNotification: todo.notificationId != null || false,
-                  repeatDuringWeek: todo.repeatDuringWeek ?? [],
-                  color: todo.color ?? baseColor.value,
+                  task: task,
+                  onTap: () => Navigator.of(context).push(
+                    EditTaskPage.route(initialTask: task),
+                  ),
+                  category: task.category.value,
+                  title: task.title,
+                  dateTime: task.taskDate,
+                  isNotification: task.notificationId != null || false,
+                  repeatDuringWeek: task.repeatDuringWeek ?? [],
+                  repeatDuringDay: task.repeatDuringDay,
+                  isImportant: task.important,
+                  color: task.color ?? baseColor.value,
                 );
               },
               separatorBuilder: (context, index) => const SizedBox(height: 10),
@@ -38,54 +57,17 @@ class TodosList extends StatelessWidget {
         );
       },
     );
-
-    // return Expanded(
-    //   child: Padding(
-    //     padding: const EdgeInsets.symmetric(horizontal: 1, vertical: 10),
-    //     child: Column(
-    //       children: [
-    //         TodoCard(
-    //           category: 'HOME',
-    //           title: 'Прийняти ліки',
-    //           dateTime: DateTime.now(),
-    //           isNotification: true,
-    //           repeatDuringWeek: const [1, 2, 5, 7],
-    //           repeatDuringDay: [DateTime.now(), DateTime.now()],
-    //           color: AccentColor.blue,
-    //         ),
-    //         const SizedBox(
-    //           height: 6,
-    //         ),
-    //         TodoCard(
-    //           category: 'HOME',
-    //           title: 'Прийняти ліки',
-    //           dateTime: DateTime.now(),
-    //           isFinish: true,
-    //           color: AccentColor.pink,
-    //         ),
-    //         const SizedBox(
-    //           height: 6,
-    //         ),
-    //         const TodoCard(
-    //           category: 'HOME',
-    //           title: 'Прийняти ліки',
-    //           dateTime: null,
-    //           isImportant: true,
-    //           color: AccentColor.purple,
-    //         ),
-    //       ],
-    //     ),
-    //   ),
-    // );
   }
 }
 
 class TodoCard extends StatefulWidget {
   const TodoCard({
-    required this.category,
+    required this.task,
+    required this.onTap,
     required this.title,
     required this.dateTime,
     required this.color,
+    this.category,
     this.isNotification = false,
     this.repeatDuringWeek = const [],
     this.repeatDuringDay = const [],
@@ -95,13 +77,15 @@ class TodoCard extends StatefulWidget {
     super.key,
   });
 
-  final String category;
+  final TaskEntity task;
+  final VoidCallback onTap;
+  final CategoryEntity? category;
   final String title;
   final DateTime? dateTime;
   final bool isNotification;
 
   final List<int> repeatDuringWeek;
-  final List<DateTime> repeatDuringDay;
+  final List<DateTime?>? repeatDuringDay;
 
   final bool isImportant;
 
@@ -136,54 +120,64 @@ class _TodoCardState extends State<TodoCard> {
       isFinish = true;
     }
 
-    return Container(
-      height: 87,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(26),
-        color: Theme.of(context).colorScheme.secondaryContainer,
-        gradient: RadialGradient(
-          colors: [
-            Color(widget.color),
-            Theme.of(context).colorScheme.secondaryContainer,
-          ],
-          radius: 3,
-          center: const Alignment(1.4, 0),
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 5),
-        child: Row(
-          children: [
-            Checkbox(
-              value: isFinish,
-              fillColor: getFillColor(context),
-              checkColor: getFillColor(context).value,
-              onChanged: (value) {
-                setState(() {
-                  isFinish = !isFinish;
-                });
-              },
+    final l10n = context.l10n;
+    final category = widget.category ?? l10n.uncategorized;
+
+    return GestureDetector(
+      onTap: widget.onTap,
+      child: Dismissible(
+        key: Key('todoListTile_dismissible_${widget.task.id}'),
+        direction: DismissDirection.endToStart,
+        child: Container(
+          height: 87,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(26),
+            color: Theme.of(context).colorScheme.secondaryContainer,
+            gradient: RadialGradient(
+              colors: [
+                Color(widget.color),
+                Theme.of(context).colorScheme.secondaryContainer,
+              ],
+              radius: 3,
+              center: const Alignment(1.4, 0),
             ),
-            TodoTextsColumn(
-              category: widget.category,
-              title: widget.title,
-              date: DateFormatter.formatDateTime(
-                context,
-                widget.dateTime,
-              ),
-              isNotification: widget.isNotification,
-              repeatDuringWeek: DateFormatter.formatNumberToWeekdays(
-                context,
-                widget.repeatDuringWeek,
-              ),
-              repeatDuringDay: DateFormatter.formatDateTimesToTimeString(
-                widget.repeatDuringDay,
-              ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 5),
+            child: Row(
+              children: [
+                Checkbox(
+                  value: isFinish,
+                  fillColor: getFillColor(context),
+                  checkColor: getFillColor(context).value,
+                  onChanged: (value) {
+                    setState(() {
+                      isFinish = !isFinish;
+                    });
+                  },
+                ),
+                TodoTextsColumn(
+                  category: category.toString(),
+                  title: widget.title,
+                  date: DateFormatter.formatDateTime(
+                    context,
+                    widget.dateTime,
+                  ),
+                  isNotification: widget.isNotification,
+                  repeatDuringWeek: DateFormatter.formatNumberToWeekdays(
+                    context,
+                    widget.repeatDuringWeek,
+                  ),
+                  repeatDuringDay: DateFormatter.formatDateTimesToTimeString(
+                    widget.repeatDuringDay,
+                  ),
+                ),
+                CardStar(
+                  isImportant: widget.isImportant,
+                ),
+              ],
             ),
-            CardStar(
-              isImportant: widget.isImportant,
-            ),
-          ],
+          ),
         ),
       ),
     );

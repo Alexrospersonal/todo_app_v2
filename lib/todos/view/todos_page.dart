@@ -34,6 +34,7 @@ class TodosView extends StatefulWidget {
 // TODO: додати відображення категорій із бази даних та додати зміну категорій.
 
 // TODO: написати логіку для статусу та відображення статистики.
+// TODO: додати редагування завдання
 class _TodosViewState extends State<TodosView> {
   @override
   Widget build(BuildContext context) {

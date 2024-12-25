@@ -10,13 +10,13 @@ class ColorPicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<EditTaskBloc, EditTaskState, AccentColor>(
+    return BlocSelector<EditTaskBloc, EditTaskState, int>(
       selector: (state) => state.color,
       builder: (context, selectedColor) {
         final colors = AccentColor.values.map(
           (e) => ColorPickerItem(
             selectedColor: selectedColor,
-            color: e,
+            color: e.color.value,
           ),
         );
 
@@ -30,7 +30,7 @@ class ColorPicker extends StatelessWidget {
                 borderRadius: BorderRadius.circular(26),
                 gradient: RadialGradient(
                   colors: [
-                    selectedColor.color,
+                    Color(selectedColor),
                     Theme.of(context).colorScheme.secondaryContainer,
                   ],
                   radius: 1.3,
@@ -53,8 +53,8 @@ class ColorPickerItem extends StatelessWidget {
     super.key,
   });
 
-  final AccentColor color;
-  final AccentColor selectedColor;
+  final int color;
+  final int selectedColor;
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +74,7 @@ class ColorPickerItem extends StatelessWidget {
                 : Colors.transparent,
             width: isSelected ? 2 : 0,
           ),
-          color: color.color,
+          color: Color(color),
         ),
       ),
     );
