@@ -14,6 +14,21 @@ class TodosList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<TodosBloc, TodosState>(
+      buildWhen: (previous, current) {
+        if (previous.todos.length == current.todos.length) {
+          for (var i = 0; i < previous.todos.length; i++) {
+            if (previous.todos[i] != current.todos[i]) {
+              return true;
+            }
+          }
+        }
+
+        if (previous.todos.length != current.todos.length) {
+          return true;
+        }
+
+        return false;
+      },
       builder: (context, state) {
         final l10n = context.l10n;
 

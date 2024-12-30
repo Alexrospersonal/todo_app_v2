@@ -41,7 +41,7 @@ class TaskEntity {
 
   @ignore
   List<SubTask> get subtasks {
-    if (subtasksJson == null || subtasksJson.isEmpty) {
+    if (subtasksJson.isEmpty) {
       return [];
     }
 
