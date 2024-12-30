@@ -44,8 +44,9 @@ class TodosBloc extends Bloc<TodosEvent, TodosState> {
     TodosTodoCompletionToggled event,
     Emitter<TodosState> emit,
   ) async {
-    final newTask = event.todo.copyWith(isFinished: event.isCompleted);
-    await _todosRepository.creatTask(newTask);
+    final task = event.todo..isFinished = event.isCompleted;
+
+    await _todosRepository.creatTask(task);
   }
 
   Future<void> _onTodoDeleted(

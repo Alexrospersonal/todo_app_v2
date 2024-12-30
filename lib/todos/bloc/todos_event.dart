@@ -25,7 +25,7 @@ final class TodosTodoCompletionToggled extends TodosEvent {
 }
 
 final class TodosTodoDeleted extends TodosEvent {
-  const TodosTodoDeleted(this.todo);
+  const TodosTodoDeleted({required this.todo});
 
   final TaskEntity todo;
 

@@ -24,7 +24,12 @@ class TodoDbApi {
   }
 
   Future<bool> deleteTask(int id) async {
-    return plugin.taskEntitys.delete(id);
+    late bool result;
+
+    await plugin.writeTxn(() async {
+      result = await plugin.taskEntitys.delete(id);
+    });
+    return result;
   }
 
   Future<int> creatTask(TaskEntity task) async {

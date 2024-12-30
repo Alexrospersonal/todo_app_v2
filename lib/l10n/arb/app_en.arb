@@ -67,5 +67,19 @@
     "editTask": "Edit task",
     "@editTask": {
         "description": ""
+    },
+    "taskUndoDeletionButtonText": "Undo",
+    "@taskUndoDeletionButtonText": {
+        "description": ""
+    },
+    "taskUndoDeletionMessage": "Task \"{taskName}\" deleted",
+    "@taskUndoDeletionMessage": {
+        "description": "Повідомлення для SnackBar про видалення завдання, із підстановкою назви завдання",
+        "placeholders": {
+            "taskName": {
+                "type": "String",
+                "description": ""
+            }
+        }
     }
 }

@@ -110,6 +110,13 @@ class AppTheme {
           padding: WidgetStatePropertyAll(EdgeInsets.zero),
         ),
       ),
+      snackBarTheme: const SnackBarThemeData(
+        backgroundColor: baseColor,
+        actionTextColor: primaryColor,
+        contentTextStyle: TextStyle(
+          color: greyColor,
+        ),
+      ),
     );
   }
 }

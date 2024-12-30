@@ -126,8 +126,22 @@ class _TodoCardState extends State<TodoCard> {
     return GestureDetector(
       onTap: widget.onTap,
       child: Dismissible(
-        key: Key('todoListTile_dismissible_${widget.task.id}'),
+        onDismissed: (direction) {
+          context.read<TodosBloc>().add(TodosTodoDeleted(todo: widget.task));
+        },
+        key: UniqueKey(),
         direction: DismissDirection.endToStart,
+        background: Align(
+          alignment: Alignment.centerRight,
+          child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: Icon(
+              Icons.delete_forever,
+              size: 38,
+              color: Theme.of(context).colorScheme.error,
+            ),
+          ),
+        ),
         child: Container(
           height: 87,
           decoration: BoxDecoration(
@@ -152,7 +166,14 @@ class _TodoCardState extends State<TodoCard> {
                   checkColor: getFillColor(context).value,
                   onChanged: (value) {
                     setState(() {
-                      isFinish = !isFinish;
+                      if (!isFinish) {
+                        context.read<TodosBloc>().add(
+                              TodosTodoCompletionToggled(
+                                todo: widget.task,
+                                isCompleted: true,
+                              ),
+                            );
+                      }
                     });
                   },
                 ),
