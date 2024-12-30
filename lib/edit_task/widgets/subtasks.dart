@@ -97,6 +97,7 @@ class SubtaskItem extends StatelessWidget {
         ),
         Expanded(
           child: TextFormField(
+            initialValue: subtask.title,
             style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                   decoration: subtask.completed
                       ? TextDecoration.lineThrough

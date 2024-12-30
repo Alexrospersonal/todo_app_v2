@@ -63,5 +63,9 @@
     "uncategorized": "Uncategorized",
     "@uncategorized": {
         "description": ""
+    },
+    "editTask": "Edit task",
+    "@editTask": {
+        "description": ""
     }
 }

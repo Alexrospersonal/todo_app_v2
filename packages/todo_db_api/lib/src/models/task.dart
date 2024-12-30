@@ -40,9 +40,20 @@ class TaskEntity {
   String subtasksJson = '';
 
   @ignore
-  List<SubTask> get subtasks => (jsonDecode(subtasksJson) as List)
-      .map((e) => SubTask.fromJson(e as Map<String, dynamic>))
-      .toList();
+  List<SubTask> get subtasks {
+    if (subtasksJson == null || subtasksJson.isEmpty) {
+      return [];
+    }
+
+    try {
+      final decodedJson = jsonDecode(subtasksJson) as List;
+      return decodedJson
+          .map((e) => SubTask.fromJson(e as Map<String, dynamic>))
+          .toList();
+    } catch (e) {
+      return [];
+    }
+  }
 
   set subtasks(List<SubTask> value) {
     subtasksJson = jsonEncode(value.map((e) => e.toJson()).toList());
@@ -150,6 +161,7 @@ class SubTask extends Equatable {
 
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'title': title,
       'completed': completed,
     };

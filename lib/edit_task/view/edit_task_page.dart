@@ -90,10 +90,11 @@ class _EditTaskViewState extends State<EditTaskView> {
     final l10n = context.l10n;
 
     final color = context.watch<EditTaskBloc>().state.color;
+    final initialTask = context.read<EditTaskBloc>().state.initialTodo;
 
     return Scaffold(
       appBar: CustomAppBar(
-        title: l10n.taskEditTitleName,
+        title: initialTask == null ? l10n.taskEditTitleName : l10n.editTask,
         titleTextStyle: Theme.of(context).textTheme.displaySmall,
         leading: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 14),

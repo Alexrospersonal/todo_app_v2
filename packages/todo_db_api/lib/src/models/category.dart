@@ -36,6 +36,7 @@ class CategoryEntity {
     return {'id': id, 'name': name, 'emoji': emoji};
   }
 
+  ///
   @override
   bool operator ==(Object other) =>
       identical(this, other) || (other is CategoryEntity && other.id == id);

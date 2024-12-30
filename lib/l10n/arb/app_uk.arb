@@ -63,5 +63,9 @@
     "uncategorized": "Без категорії",
     "@uncategorized": {
         "description": ""
+    },
+    "editTask": "Редагувати",
+    "@editTask": {
+        "description": ""
     }
 }
