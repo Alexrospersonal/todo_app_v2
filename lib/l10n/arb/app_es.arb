@@ -81,5 +81,25 @@
                 "description": ""
             }
         }
+    },
+    "taskFilterAll": "All",
+    "@taskFilterAll": {
+        "description": ""
+    },
+    "taskFilterIsComing": "Is coming",
+    "@taskFilterIsComing": {
+        "description": ""
+    },
+    "taskFilterImportant": "Important",
+    "@taskFilterImportant": {
+        "description": ""
+    },
+    "taskFilterDateless": "Dateless",
+    "@taskFilterDateless": {
+        "description": ""
+    },
+    "taskFilterWithDate": "With date",
+    "@taskFilterWithDate": {
+        "description": ""
     }
 }

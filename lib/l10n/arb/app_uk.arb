@@ -81,5 +81,25 @@
                 "description": ""
             }
         }
+    },
+    "taskFilterAll": "Всі",
+    "@taskFilterAll": {
+        "description": ""
+    },
+    "taskFilterIsComing": "Наближені",
+    "@taskFilterIsComing": {
+        "description": ""
+    },
+    "taskFilterImportant": "Важливі",
+    "@taskFilterImportant": {
+        "description": ""
+    },
+    "taskFilterDateless": "Без дати",
+    "@taskFilterDateless": {
+        "description": ""
+    },
+    "taskFilterWithDate": "З датою",
+    "@taskFilterWithDate": {
+        "description": ""
     }
 }

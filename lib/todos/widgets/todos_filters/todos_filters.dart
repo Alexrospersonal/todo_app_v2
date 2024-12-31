@@ -71,11 +71,11 @@ class TodoFilter extends StatelessWidget {
     final l10n = context.l10n;
 
     final name = switch (filter) {
-      TasksFilters.all => 'All',
-      TasksFilters.isComing => 'Is coming',
-      TasksFilters.important => 'Important',
-      TasksFilters.dateless => 'Dateless',
-      TasksFilters.withDate => 'With date',
+      TasksFilters.all => l10n.taskFilterAll,
+      TasksFilters.isComing => l10n.taskFilterIsComing,
+      TasksFilters.important => l10n.taskFilterImportant,
+      TasksFilters.dateless => l10n.taskFilterDateless,
+      TasksFilters.withDate => l10n.taskFilterWithDate,
     };
 
     final isSelected = filter == selectedFilter;
