@@ -11,13 +11,23 @@ class TodosRepository {
   final TodoDbApi todoApi;
 
   ///
-  Stream<List<TaskEntity>> getTasksByCategory(CategoryEntity category) =>
-      todoApi.getTasksByCategory(category);
+  Stream<List<TaskEntity>> getTasksByCategory(CategoryEntity? category) {
+    if (category != null) {
+      return todoApi.getTasksByCategory(category);
+    }
+
+    return todoApi.getAllTasks();
+  }
 
   ///
   Stream<List<TaskEntity>> getAllTasks() {
     final stream = todoApi.getAllTasks();
     return stream;
+  }
+
+  ///
+  Stream<List<CategoryEntity>> getCategoriesStream() {
+    return todoApi.getCategoriesStream();
   }
 
   ///

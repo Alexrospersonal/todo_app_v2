@@ -23,6 +23,12 @@ class TodoDbApi {
     return stream;
   }
 
+  Stream<List<CategoryEntity>> getCategoriesStream() {
+    final stream = plugin.categoryEntitys.where().watch(fireImmediately: true);
+
+    return stream;
+  }
+
   Future<bool> deleteTask(int id) async {
     late bool result;
 

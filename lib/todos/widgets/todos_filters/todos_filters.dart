@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todo_app_v2/l10n/l10n.dart';
+import 'package:todo_app_v2/todos/bloc/todos_bloc.dart';
+import 'package:todo_app_v2/todos/models/tasks_filters.dart';
 
 class TodosFilters extends StatefulWidget {
   const TodosFilters({super.key});
@@ -12,8 +16,12 @@ class _TodosFiltersState extends State<TodosFilters> {
 
   final filters = ['newest', 'oldest', 'is coming', 'important', 'fixel'];
 
+  final tasksFilters = TasksFilters.values;
+
   @override
   Widget build(BuildContext context) {
+    final selectedFilter = context.watch<TodosBloc>().state.filter;
+
     return SizedBox(
       height: 37,
       child: ListView.separated(
@@ -22,10 +30,13 @@ class _TodosFiltersState extends State<TodosFilters> {
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) => Align(
           child: TodoFilter(
-            name: filters[index],
+            filter: tasksFilters[index],
             currentIndex: index,
-            selectedIndex: selectedIndex,
+            selectedFilter: selectedFilter,
             callback: () {
+              context.read<TodosBloc>().add(
+                    TodosOverviewFilterChanged(tasksFilters[index]),
+                  );
               setState(() {
                 selectedIndex = index;
               });
@@ -43,21 +54,31 @@ class _TodosFiltersState extends State<TodosFilters> {
 
 class TodoFilter extends StatelessWidget {
   const TodoFilter({
-    required this.name,
+    required this.filter,
     required this.currentIndex,
-    required this.selectedIndex,
+    required this.selectedFilter,
     required this.callback,
     super.key,
   });
 
-  final String name;
+  final TasksFilters filter;
   final int currentIndex;
-  final int selectedIndex;
+  final TasksFilters selectedFilter;
   final VoidCallback callback;
 
   @override
   Widget build(BuildContext context) {
-    final isSelected = currentIndex == selectedIndex;
+    final l10n = context.l10n;
+
+    final name = switch (filter) {
+      TasksFilters.all => 'All',
+      TasksFilters.isComing => 'Is coming',
+      TasksFilters.important => 'Important',
+      TasksFilters.dateless => 'Dateless',
+      TasksFilters.withDate => 'With date',
+    };
+
+    final isSelected = filter == selectedFilter;
     final color = isSelected
         ? Theme.of(context).colorScheme.primary
         : Theme.of(context).colorScheme.onPrimary;

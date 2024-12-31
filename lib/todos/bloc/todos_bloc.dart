@@ -10,7 +10,12 @@ class TodosBloc extends Bloc<TodosEvent, TodosState> {
   TodosBloc({required TodosRepository todosRepository})
       : _todosRepository = todosRepository,
         super(const TodosState()) {
+    on<TodosSelectedCategoryLoading>(_onSelectedCategoryLoading);
+    on<TodosSelectedCategoryChanged>(_onSelectedCategoryChanged);
     on<TodosSubscriptionRequested>(_onSubscriptionRequested);
+    on<TodosCategoriesSubscriptionRequested>(
+      _onCategoriesSubscriptionRequested,
+    );
     on<TodosTodoCompletionToggled>(_onTodoCompletionToggled);
     on<TodosTodoDeleted>(_onTodoDeleted);
     on<TodosUndoDeletionRequested>(_onUndoDeletionRequested);
@@ -19,6 +24,34 @@ class TodosBloc extends Bloc<TodosEvent, TodosState> {
 
   final TodosRepository _todosRepository;
 
+  Future<void> _onSelectedCategoryChanged(
+    TodosSelectedCategoryChanged event,
+    Emitter<TodosState> emit,
+  ) async {
+    emit(
+      state.copyWith(
+        selectedCategory: () => event.category,
+      ),
+    );
+
+    add(const TodosSubscriptionRequested());
+  }
+
+  Future<void> _onSelectedCategoryLoading(
+    TodosSelectedCategoryLoading event,
+    Emitter<TodosState> emit,
+  ) async {
+    final categories = await _todosRepository.getAllCategories();
+    if (categories.isNotEmpty) {
+      emit(
+        state.copyWith(selectedCategory: () => categories.first),
+      );
+      add(const TodosSubscriptionRequested());
+    }
+
+    add(const TodosCategoriesSubscriptionRequested());
+  }
+
   Future<void> _onSubscriptionRequested(
     TodosSubscriptionRequested event,
     Emitter<TodosState> emit,
@@ -26,7 +59,7 @@ class TodosBloc extends Bloc<TodosEvent, TodosState> {
     emit(state.copyWith(status: () => TodosOverviewStatus.loading));
 
     await emit.forEach<List<TaskEntity>>(
-      _todosRepository.getAllTasks(),
+      _todosRepository.getTasksByCategory(state.selectedCategory),
       onData: (todos) {
         final newState = state.copyWith(
           status: () => TodosOverviewStatus.success,
@@ -35,6 +68,28 @@ class TodosBloc extends Bloc<TodosEvent, TodosState> {
         return newState;
       },
       onError: (_, __) => state.copyWith(
+        status: () => TodosOverviewStatus.failure,
+      ),
+    );
+  }
+
+  Future<void> _onCategoriesSubscriptionRequested(
+    TodosCategoriesSubscriptionRequested event,
+    Emitter<TodosState> emit,
+  ) async {
+    emit(state.copyWith(status: () => TodosOverviewStatus.loading));
+
+    await emit.forEach(
+      _todosRepository.getCategoriesStream(),
+      onData: (categories) {
+        final newState = state.copyWith(
+          status: () => TodosOverviewStatus.success,
+          categories: () => categories,
+        );
+
+        return newState;
+      },
+      onError: (error, stackTrace) => state.copyWith(
         status: () => TodosOverviewStatus.failure,
       ),
     );

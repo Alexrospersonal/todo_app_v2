@@ -7,8 +7,22 @@ sealed class TodosEvent extends Equatable {
   List<Object> get props => [];
 }
 
+final class TodosSelectedCategoryLoading extends TodosEvent {
+  const TodosSelectedCategoryLoading();
+}
+
+final class TodosSelectedCategoryChanged extends TodosEvent {
+  const TodosSelectedCategoryChanged({required this.category});
+
+  final CategoryEntity category;
+}
+
 final class TodosSubscriptionRequested extends TodosEvent {
   const TodosSubscriptionRequested();
+}
+
+final class TodosCategoriesSubscriptionRequested extends TodosEvent {
+  const TodosCategoriesSubscriptionRequested();
 }
 
 final class TodosTodoCompletionToggled extends TodosEvent {

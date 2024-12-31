@@ -1,6 +1,6 @@
 import 'package:todos_repository/todos_repository.dart';
 
-enum TasksFilters { all, isComing, important, dateless }
+enum TasksFilters { all, isComing, important, dateless, withDate }
 
 extension TaskEntityX on TasksFilters {
   bool apply(TaskEntity task) {
@@ -13,6 +13,8 @@ extension TaskEntityX on TasksFilters {
         return task.taskDate == null || false;
       case TasksFilters.all:
         return true;
+      case TasksFilters.withDate:
+        return task.taskDate != null;
     }
   }
 

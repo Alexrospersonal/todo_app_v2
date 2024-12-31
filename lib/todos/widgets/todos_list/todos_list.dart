@@ -27,6 +27,14 @@ class TodosList extends StatelessWidget {
           return true;
         }
 
+        if (previous.filter != current.filter) {
+          return true;
+        }
+
+        if (previous.selectedCategory != current.selectedCategory) {
+          return true;
+        }
+
         return false;
       },
       builder: (context, state) {
@@ -66,7 +74,7 @@ class TodosList extends StatelessWidget {
                 );
               },
               separatorBuilder: (context, index) => const SizedBox(height: 10),
-              itemCount: state.todos.length,
+              itemCount: state.filteredTodos.length,
             ),
           ),
         );

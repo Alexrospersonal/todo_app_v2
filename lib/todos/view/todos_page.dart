@@ -15,7 +15,7 @@ class TodosPage extends StatelessWidget {
     return BlocProvider(
       create: (context) => TodosBloc(
         todosRepository: context.read<TodosRepository>(),
-      )..add(const TodosSubscriptionRequested()),
+      )..add(const TodosSelectedCategoryLoading()),
       child: MultiBlocListener(
         listeners: [
           BlocListener<TodosBloc, TodosState>(
