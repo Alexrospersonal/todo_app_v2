@@ -12,37 +12,6 @@ class TodosCategories extends StatefulWidget {
 }
 
 class _TodosCategoriesState extends State<TodosCategories> {
-  // int selectedIndex = -1;
-
-  // final categories = [
-  //   ('🌞TODAY', false),
-  //   ('🏠HOME', true),
-  //   ('🏋🏼GYM', false),
-  // ];
-
-  // Widget? buildCategoryList(
-  //   BuildContext context,
-  //   int index,
-  // ) {
-  //   if (index < categories.length) {
-  //     return TodoCategory(
-  //       category: categories[index].$1,
-  //       isOverdue: categories[index].$2,
-  //       currentIndex: index,
-  //       callback: () {
-  //         setState(() {
-  //           selectedIndex = index;
-  //         });
-  //       },
-  //       selectedCategory: selectedIndex,
-  //     );
-  //   } else {
-  //     return AddCategoryButton(
-  //       callback: () {},
-  //     );
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<TodosBloc, TodosState>(
@@ -74,7 +43,11 @@ class _TodosCategoriesState extends State<TodosCategories> {
                 );
               } else {
                 return AddCategoryButton(
-                  callback: () {},
+                  callback: () => context.read<TodosBloc>().add(
+                        const TodosCreateCategoryRequested(
+                          isOpen: true,
+                        ),
+                      ),
                 );
               }
             },
@@ -83,19 +56,6 @@ class _TodosCategoriesState extends State<TodosCategories> {
         );
       },
     );
-
-    // return SizedBox(
-    //   height: 30,
-    //   child: ListView.separated(
-    //     separatorBuilder: (context, index) => const SizedBox(
-    //       width: 15,
-    //     ),
-    //     itemCount: categories.length + 1,
-    //     padding: EdgeInsets.zero,
-    //     itemBuilder: buildCategoryList,
-    //     scrollDirection: Axis.horizontal,
-    //   ),
-    // );
   }
 }
 

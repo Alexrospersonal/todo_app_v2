@@ -14,7 +14,7 @@ class TitleForm extends StatelessWidget {
       builder: (context, title) => TextFormField(
         validator: (title) {
           if (title == null || title.isEmpty) {
-            return 'Поле не може бути порожнім';
+            return l10n.titleValidationErrorMessage;
           }
           return null;
         },

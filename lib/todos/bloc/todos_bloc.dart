@@ -20,6 +20,8 @@ class TodosBloc extends Bloc<TodosEvent, TodosState> {
     on<TodosTodoDeleted>(_onTodoDeleted);
     on<TodosUndoDeletionRequested>(_onUndoDeletionRequested);
     on<TodosOverviewFilterChanged>(_onFilterChanged);
+    on<TodosCreateCategoryRequested>(_onCreateCategoryRequested);
+    on<TodosCreateNewList>(_onCreateNewList);
   }
 
   final TodosRepository _todosRepository;
@@ -131,5 +133,23 @@ class TodosBloc extends Bloc<TodosEvent, TodosState> {
     Emitter<TodosState> emit,
   ) {
     emit(state.copyWith(filter: () => event.filter));
+  }
+
+  Future<void> _onCreateNewList(
+    TodosCreateNewList event,
+    Emitter<TodosState> emit,
+  ) async {
+    await _todosRepository.createCategory(event.categoryTitle);
+    add(const TodosCreateCategoryRequested(isOpen: false));
+    add(const TodosCategoriesSubscriptionRequested());
+  }
+
+  Future<void> _onCreateCategoryRequested(
+    TodosCreateCategoryRequested event,
+    Emitter<TodosState> emit,
+  ) async {
+    emit(
+      state.copyWith(isOpenCreateCategory: () => event.isOpen),
+    );
   }
 }

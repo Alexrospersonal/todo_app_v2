@@ -12,10 +12,6 @@ class TodosFilters extends StatefulWidget {
 }
 
 class _TodosFiltersState extends State<TodosFilters> {
-  int selectedIndex = -1;
-
-  final filters = ['newest', 'oldest', 'is coming', 'important', 'fixel'];
-
   final tasksFilters = TasksFilters.values;
 
   @override
@@ -37,16 +33,13 @@ class _TodosFiltersState extends State<TodosFilters> {
               context.read<TodosBloc>().add(
                     TodosOverviewFilterChanged(tasksFilters[index]),
                   );
-              setState(() {
-                selectedIndex = index;
-              });
             },
           ),
         ),
         separatorBuilder: (context, index) => const SizedBox(
           width: 15,
         ),
-        itemCount: filters.length,
+        itemCount: tasksFilters.length,
       ),
     );
   }

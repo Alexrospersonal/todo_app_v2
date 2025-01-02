@@ -101,5 +101,21 @@
     "taskFilterWithDate": "With date",
     "@taskFilterWithDate": {
         "description": ""
+    },
+    "createNewListTitle": "Create a new list",
+    "@createNewListTitle": {
+        "description": ""
+    },
+    "submitTitleBtn": "Submit",
+    "@submitTitleBtn": {
+        "description": ""
+    },
+    "cancelTitleBtn": "Cancel",
+    "@cancelTitleBtn": {
+        "description": ""
+    },
+    "titleValidationErrorMessage": "Field can't be empty",
+    "@titleValidationErrorMessage": {
+        "description": ""
     }
 }

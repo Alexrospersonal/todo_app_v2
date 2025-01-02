@@ -101,5 +101,21 @@
     "taskFilterWithDate": "З датою",
     "@taskFilterWithDate": {
         "description": ""
+    },
+    "createNewListTitle": "Створити список",
+    "@createNewListTitle": {
+        "description": ""
+    },
+    "submitTitleBtn": "Підтвердити",
+    "@submitTitleBtn": {
+        "description": ""
+    },
+    "cancelTitleBtn": "Відхилити",
+    "@cancelTitleBtn": {
+        "description": ""
+    },
+    "titleValidationErrorMessage": "Поле не може бути порожнім",
+    "@titleValidationErrorMessage": {
+        "description": ""
     }
 }

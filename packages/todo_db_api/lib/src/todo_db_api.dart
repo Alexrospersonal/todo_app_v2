@@ -52,4 +52,12 @@ class TodoDbApi {
   Future<List<CategoryEntity>> getAllCategories() async {
     return plugin.categoryEntitys.where().findAll();
   }
+
+  Future<void> createCategory(String title) async {
+    final category = CategoryEntity(name: title);
+
+    await plugin.writeTxn(() async {
+      await plugin.categoryEntitys.put(category);
+    });
+  }
 }

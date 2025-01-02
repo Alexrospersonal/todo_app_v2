@@ -51,11 +51,27 @@ final class TodosUndoDeletionRequested extends TodosEvent {
   const TodosUndoDeletionRequested();
 }
 
-class TodosOverviewFilterChanged extends TodosEvent {
+final class TodosOverviewFilterChanged extends TodosEvent {
   const TodosOverviewFilterChanged(this.filter);
 
   final TasksFilters filter;
 
   @override
   List<Object> get props => [filter];
+}
+
+final class TodosCreateNewList extends TodosEvent {
+  const TodosCreateNewList({
+    required this.categoryTitle,
+  });
+
+  final String categoryTitle;
+}
+
+final class TodosCreateCategoryRequested extends TodosEvent {
+  const TodosCreateCategoryRequested({
+    required this.isOpen,
+  });
+
+  final bool isOpen;
 }

@@ -4,6 +4,8 @@ export 'todo_progress_bar/animated_week_progress_diagram/animated_week_progress_
 export 'todo_progress_bar/expanded_circle_progress_bar.dart';
 export 'todo_progress_bar/expanded_diagram_week_details.dart';
 export 'todo_progress_bar/todo_progress_bar.dart';
+export 'todos_categories/create_category.dart';
+export 'todos_categories/create_category_dialog.dart';
 export 'todos_categories/overdue_task_indicator.dart';
 export 'todos_categories/todos_categories.dart';
 export 'todos_filters/todos_filters.dart';

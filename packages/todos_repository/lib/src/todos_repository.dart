@@ -39,4 +39,8 @@ class TodosRepository {
   ///
   Future<List<CategoryEntity>> getAllCategories() async =>
       todoApi.getAllCategories();
+
+  ///
+  Future<void> createCategory(String title) async =>
+      todoApi.createCategory(title);
 }

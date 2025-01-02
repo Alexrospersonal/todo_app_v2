@@ -10,6 +10,7 @@ final class TodosState extends Equatable {
     this.filter = TasksFilters.all,
     this.lastDeletedTodo,
     this.categories = const [],
+    this.isOpenCreateCategory = false,
   });
 
   final TodosOverviewStatus status;
@@ -18,6 +19,7 @@ final class TodosState extends Equatable {
   final CategoryEntity? selectedCategory;
   final TaskEntity? lastDeletedTodo;
   final List<CategoryEntity> categories;
+  final bool isOpenCreateCategory;
 
   Iterable<TaskEntity> get filteredTodos => filter.applyAll(todos);
 
@@ -28,6 +30,7 @@ final class TodosState extends Equatable {
     TasksFilters Function()? filter,
     TaskEntity? Function()? lastDeletedTodo,
     CategoryEntity? Function()? selectedCategory,
+    bool Function()? isOpenCreateCategory,
   }) {
     return TodosState(
       status: status != null ? status() : this.status,
@@ -38,6 +41,9 @@ final class TodosState extends Equatable {
       filter: filter != null ? filter() : this.filter,
       lastDeletedTodo:
           lastDeletedTodo != null ? lastDeletedTodo() : this.lastDeletedTodo,
+      isOpenCreateCategory: isOpenCreateCategory != null
+          ? isOpenCreateCategory()
+          : this.isOpenCreateCategory,
     );
   }
 
@@ -49,5 +55,6 @@ final class TodosState extends Equatable {
         lastDeletedTodo,
         selectedCategory,
         categories,
+        isOpenCreateCategory,
       ];
 }
