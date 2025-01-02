@@ -18,28 +18,31 @@ class _TodosFiltersState extends State<TodosFilters> {
   Widget build(BuildContext context) {
     final selectedFilter = context.watch<TodosBloc>().state.filter;
 
-    return SizedBox(
-      height: 37,
-      child: ListView.separated(
-        clipBehavior: Clip.none,
-        padding: EdgeInsets.zero,
-        scrollDirection: Axis.horizontal,
-        itemBuilder: (context, index) => Align(
-          child: TodoFilter(
-            filter: tasksFilters[index],
-            currentIndex: index,
-            selectedFilter: selectedFilter,
-            callback: () {
-              context.read<TodosBloc>().add(
-                    TodosOverviewFilterChanged(tasksFilters[index]),
-                  );
-            },
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 1),
+      child: SizedBox(
+        height: 37,
+        child: ListView.separated(
+          clipBehavior: Clip.none,
+          padding: EdgeInsets.zero,
+          scrollDirection: Axis.horizontal,
+          itemBuilder: (context, index) => Align(
+            child: TodoFilter(
+              filter: tasksFilters[index],
+              currentIndex: index,
+              selectedFilter: selectedFilter,
+              callback: () {
+                context.read<TodosBloc>().add(
+                      TodosOverviewFilterChanged(tasksFilters[index]),
+                    );
+              },
+            ),
           ),
+          separatorBuilder: (context, index) => const SizedBox(
+            width: 15,
+          ),
+          itemCount: tasksFilters.length,
         ),
-        separatorBuilder: (context, index) => const SizedBox(
-          width: 15,
-        ),
-        itemCount: tasksFilters.length,
       ),
     );
   }
@@ -87,14 +90,6 @@ class TodoFilter extends StatelessWidget {
           )
         : null;
 
-    final shadow = isSelected
-        ? BoxShadow(
-            color: Theme.of(context).colorScheme.primary,
-            blurRadius: 10,
-            spreadRadius: 3,
-          )
-        : null;
-
     return GestureDetector(
       onTap: callback,
       child: Container(
@@ -104,7 +99,7 @@ class TodoFilter extends StatelessWidget {
           color: backgroundColor,
           border: border,
           borderRadius: BorderRadius.circular(20),
-          boxShadow: [shadow ?? const BoxShadow()],
+          // boxShadow: [shadow ?? const BoxShadow()],
         ),
         child: Text(
           name,

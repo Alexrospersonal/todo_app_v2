@@ -13,7 +13,7 @@ part 'task.g.dart';
 /// Used to store data about tasks, including categories,
 /// repetitions, reminders, and more.
 @collection
-class TaskEntity {
+class TaskEntity extends Equatable {
   /// Constructor to create a task.
   ///
   /// [title] is a required parameter for the task's title.
@@ -139,6 +139,23 @@ class TaskEntity {
       'color': color,
     };
   }
+
+  @ignore
+  @override
+  List<Object?> get props => [
+        notate,
+        taskDate,
+        hasTime,
+        hasRepeats,
+        important,
+        isFinished,
+        color,
+        isCopy,
+        notificationId,
+        repeatDuringWeek,
+        repeatDuringDay,
+        endDateOfRepeatedly,
+      ];
 }
 
 class SubTask extends Equatable {

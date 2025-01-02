@@ -15,14 +15,6 @@ class TodosList extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<TodosBloc, TodosState>(
       buildWhen: (previous, current) {
-        if (previous.todos.length == current.todos.length) {
-          for (var i = 0; i < previous.todos.length; i++) {
-            if (previous.todos[i] != current.todos[i]) {
-              return true;
-            }
-          }
-        }
-
         if (previous.todos.length != current.todos.length) {
           return true;
         }
@@ -35,7 +27,7 @@ class TodosList extends StatelessWidget {
           return true;
         }
 
-        return false;
+        return true;
       },
       builder: (context, state) {
         final l10n = context.l10n;
@@ -71,6 +63,7 @@ class TodosList extends StatelessWidget {
                   repeatDuringDay: task.repeatDuringDay,
                   isImportant: task.important,
                   color: task.color ?? baseColor.value,
+                  isFinish: task.isFinished,
                 );
               },
               separatorBuilder: (context, index) => const SizedBox(height: 10),
@@ -139,9 +132,7 @@ class _TodoCardState extends State<TodoCard> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.isFinish == true) {
-      isFinish = true;
-    }
+    isFinish = widget.isFinish;
 
     final l10n = context.l10n;
     final category = widget.category ?? l10n.uncategorized;
@@ -188,16 +179,12 @@ class _TodoCardState extends State<TodoCard> {
                   fillColor: getFillColor(context),
                   checkColor: getFillColor(context).value,
                   onChanged: (value) {
-                    setState(() {
-                      if (!isFinish) {
-                        context.read<TodosBloc>().add(
-                              TodosTodoCompletionToggled(
-                                todo: widget.task,
-                                isCompleted: true,
-                              ),
-                            );
-                      }
-                    });
+                    context.read<TodosBloc>().add(
+                          TodosTodoCompletionToggled(
+                            todo: widget.task,
+                            isCompleted: !isFinish,
+                          ),
+                        );
                   },
                 ),
                 TodoTextsColumn(

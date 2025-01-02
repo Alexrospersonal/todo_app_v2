@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo_app_v2/l10n/l10n.dart';
 import 'package:todo_app_v2/todos/bloc/todos_bloc.dart';
 
+// Deprecated class
 class CreateCategoryDialog extends StatefulWidget {
   const CreateCategoryDialog({required this.bloc, super.key});
 
@@ -68,7 +69,7 @@ class _CreateCategoryDialogState extends State<CreateCategoryDialog> {
                     TextButton(
                       onPressed: () {
                         if (_formKey.currentState?.validate() ?? false) {
-// TODO: add valiadation and create a new list using TodosBloc
+                          // create a new list using TodosBloc
                         }
                       },
                       child: Text(l10n.submitTitleBtn),

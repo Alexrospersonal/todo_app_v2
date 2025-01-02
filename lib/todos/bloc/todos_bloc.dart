@@ -104,6 +104,7 @@ class TodosBloc extends Bloc<TodosEvent, TodosState> {
     final task = event.todo..isFinished = event.isCompleted;
 
     await _todosRepository.creatTask(task);
+    add(const TodosSubscriptionRequested());
   }
 
   Future<void> _onTodoDeleted(
