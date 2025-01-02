@@ -117,5 +117,13 @@
     "titleValidationErrorMessage": "Field can't be empty",
     "@titleValidationErrorMessage": {
         "description": ""
+    },
+    "finishedTasksTitle": "Finished tasks",
+    "@finishedTasksTitle": {
+        "description": ""
+    },
+    "overdueTasksTitle": "Overdue tasks",
+    "@overdueTasksTitle": {
+        "description": ""
     }
 }

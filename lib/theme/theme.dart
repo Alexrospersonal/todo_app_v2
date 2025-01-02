@@ -117,6 +117,8 @@ class AppTheme {
           color: greyColor,
         ),
       ),
+      dividerColor: surfaceColor,
+      expansionTileTheme: ExpansionTileThemeData(),
     );
   }
 }

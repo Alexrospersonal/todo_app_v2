@@ -44,30 +44,101 @@ class TodosList extends StatelessWidget {
           }
         }
 
+        // TODO: Рефактор коду та додати візуальне оформлення для ExpansionTile
+
+        final newTasks = state.newTodos;
+        final finishedTasks = state.finishedTodos;
+        final overdueTasks = state.overdueTodos;
+
         return Expanded(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 1, vertical: 10),
-            child: ListView.separated(
-              itemBuilder: (context, index) {
-                final task = state.filteredTodos.elementAt(index);
-                return TodoCard(
-                  task: task,
-                  onTap: () => Navigator.of(context).push(
-                    EditTaskPage.route(initialTask: task),
+            child: ListView(
+              children: [
+                ListView.separated(
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    final task = newTasks.elementAt(index);
+                    return TodoCard(
+                      task: task,
+                      onTap: () => Navigator.of(context).push(
+                        EditTaskPage.route(initialTask: task),
+                      ),
+                      category: task.category.value,
+                      title: task.title,
+                      dateTime: task.taskDate,
+                      isNotification: task.notificationId != null || false,
+                      repeatDuringWeek: task.repeatDuringWeek ?? [],
+                      repeatDuringDay: task.repeatDuringDay,
+                      isImportant: task.important,
+                      color: task.color ?? baseColor.value,
+                      isFinish: task.isFinished,
+                    );
+                  },
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(height: 10),
+                  itemCount: newTasks.length,
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                if (finishedTasks.isNotEmpty)
+                  ExpansionTile(
+                    title: Text(l10n.finishedTasksTitle),
+                    tilePadding: EdgeInsets.zero,
+                    childrenPadding: const EdgeInsets.symmetric(vertical: 5),
+                    children: finishedTasks
+                        .map(
+                          (task) => Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 5),
+                            child: TodoCard(
+                              task: task,
+                              onTap: () => Navigator.of(context).push(
+                                EditTaskPage.route(initialTask: task),
+                              ),
+                              category: task.category.value,
+                              title: task.title,
+                              dateTime: task.taskDate,
+                              isNotification:
+                                  task.notificationId != null || false,
+                              repeatDuringWeek: task.repeatDuringWeek ?? [],
+                              repeatDuringDay: task.repeatDuringDay,
+                              isImportant: task.important,
+                              color: task.color ?? baseColor.value,
+                              isFinish: task.isFinished,
+                            ),
+                          ),
+                        )
+                        .toList(),
                   ),
-                  category: task.category.value,
-                  title: task.title,
-                  dateTime: task.taskDate,
-                  isNotification: task.notificationId != null || false,
-                  repeatDuringWeek: task.repeatDuringWeek ?? [],
-                  repeatDuringDay: task.repeatDuringDay,
-                  isImportant: task.important,
-                  color: task.color ?? baseColor.value,
-                  isFinish: task.isFinished,
-                );
-              },
-              separatorBuilder: (context, index) => const SizedBox(height: 10),
-              itemCount: state.filteredTodos.length,
+                if (overdueTasks.isNotEmpty)
+                  ExpansionTile(
+                    title: Text(l10n.overdueTasksTitle),
+                    children: overdueTasks
+                        .map<Padding>(
+                          (task) => Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 5),
+                            child: TodoCard(
+                              task: task,
+                              onTap: () => Navigator.of(context).push(
+                                EditTaskPage.route(initialTask: task),
+                              ),
+                              category: task.category.value,
+                              title: task.title,
+                              dateTime: task.taskDate,
+                              isNotification:
+                                  task.notificationId != null || false,
+                              repeatDuringWeek: task.repeatDuringWeek ?? [],
+                              repeatDuringDay: task.repeatDuringDay,
+                              isImportant: task.important,
+                              color: task.color ?? baseColor.value,
+                              isFinish: task.isFinished,
+                            ),
+                          ),
+                        )
+                        .toList(),
+                  ),
+              ],
             ),
           ),
         );

@@ -117,5 +117,13 @@
     "titleValidationErrorMessage": "Поле не може бути порожнім",
     "@titleValidationErrorMessage": {
         "description": ""
+    },
+    "finishedTasksTitle": "Завершені",
+    "@finishedTasksTitle": {
+        "description": ""
+    },
+    "overdueTasksTitle": "Протерміновані",
+    "@overdueTasksTitle": {
+        "description": ""
     }
 }

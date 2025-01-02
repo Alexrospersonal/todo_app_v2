@@ -23,6 +23,20 @@ final class TodosState extends Equatable {
 
   Iterable<TaskEntity> get filteredTodos => filter.applyAll(todos);
 
+  Iterable<TaskEntity> get newTodos =>
+      filteredTodos.where((task) => !task.isFinished);
+
+  Iterable<TaskEntity> get finishedTodos =>
+      filteredTodos.where((task) => task.isFinished);
+
+  Iterable<TaskEntity> get overdueTodos => filteredTodos.where(
+        (task) =>
+            task.taskDate != null &&
+            task.taskDate!.isBefore(
+              DateTime.now(),
+            ),
+      );
+
   TodosState copyWith({
     TodosOverviewStatus Function()? status,
     List<TaskEntity> Function()? todos,
