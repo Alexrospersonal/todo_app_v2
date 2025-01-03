@@ -40,6 +40,7 @@ class AppTheme {
   static ThemeData get darkTheme {
     return ThemeData(
       useMaterial3: true,
+      splashColor: primaryColor.withAlpha(10),
       iconTheme: const IconThemeData(
         size: 14,
         color: Color.fromARGB(255, 255, 255, 255),
@@ -118,7 +119,14 @@ class AppTheme {
         ),
       ),
       dividerColor: surfaceColor,
-      expansionTileTheme: ExpansionTileThemeData(),
+      expansionTileTheme: ExpansionTileThemeData(
+        collapsedShape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
     );
   }
 }
