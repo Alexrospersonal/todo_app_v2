@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_quill/quill_delta.dart';
 import 'package:todo_app_v2/common/utils/date_formatter.dart';
 import 'package:todo_app_v2/edit_task/view/view.dart';
 import 'package:todo_app_v2/l10n/l10n.dart';

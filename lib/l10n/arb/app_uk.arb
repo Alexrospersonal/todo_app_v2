@@ -125,5 +125,11 @@
     "overdueTasksTitle": "Протерміновані",
     "@overdueTasksTitle": {
         "description": ""
-    }
+    },
+    "clearBtnName": "Очистити",
+    "@clearBtnName": {},
+    "cancelBtnName": "Відмінити",
+    "@cancelBtnName": {},
+    "confirmBtnName": "Підтвердити",
+    "@confirmBtnName": {}
 }

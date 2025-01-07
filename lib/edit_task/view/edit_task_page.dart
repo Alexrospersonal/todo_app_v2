@@ -67,7 +67,6 @@ class _EditTaskViewState extends State<EditTaskView> {
   @override
   void initState() {
     super.initState();
-    // context.read<EditTaskBloc>().add(const EditTaskLoadCategories());
     final state = context.read<EditTaskBloc>().state;
 
     var document = Document.fromJson([
@@ -142,20 +141,12 @@ class _EditTaskViewState extends State<EditTaskView> {
                   height: 15,
                 ),
                 const SubtasksContainer(),
-                Row(
+                const Row(
                   children: [
-                    const DropdownCategorySelector(),
-                    const SubtaskIconButton(),
-                    SizedBox(
-                      // width: 20,
-                      height: 34,
-                      child: IconButton.filled(
-                        onPressed: () {},
-                        padding: EdgeInsets.zero,
-                        icon: const Icon(Icons.calendar_month_sharp),
-                      ),
-                    ),
-                    const ImportantIconButton(),
+                    DropdownCategorySelector(),
+                    SubtaskIconButton(),
+                    DateIconButton(),
+                    ImportantIconButton(),
                   ],
                 ),
                 const SizedBox(

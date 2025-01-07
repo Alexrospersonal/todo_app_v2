@@ -125,5 +125,11 @@
     "overdueTasksTitle": "Overdue tasks",
     "@overdueTasksTitle": {
         "description": ""
-    }
+    },
+    "clearBtnName": "Clear",
+    "@clearBtnName": {},
+    "cancelBtnName": "Cancel",
+    "@cancelBtnName": {},
+    "confirmBtnName": "Confirm",
+    "@confirmBtnName": {}
 }
