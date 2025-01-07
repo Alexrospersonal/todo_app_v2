@@ -15,7 +15,11 @@ class TodosPage extends StatelessWidget {
     return BlocProvider(
       create: (context) => TodosBloc(
         todosRepository: context.read<TodosRepository>(),
-      )..add(const TodosSelectedCategoryLoading()),
+      )
+        ..add(const TodosSelectedCategoryLoading())
+        ..add(
+          const TodosSubscriptionRequested(),
+        ),
       child: MultiBlocListener(
         listeners: [
           BlocListener<TodosBloc, TodosState>(
@@ -62,8 +66,6 @@ class TodosView extends StatefulWidget {
 }
 
 // TODO: додати нормальне відображення списків з врахуванням помилок і загруззок в Блок з уроку.
-// TODO: додати можливість згорати списки та додати тайтр для DONE та OVERDUE
-// TODO: додати відображення списків з виконаними та протермінованими
 // TODO: написати логіку для статусу та відображення статистики.
 class _TodosViewState extends State<TodosView> {
   @override

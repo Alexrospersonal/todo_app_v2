@@ -10,16 +10,25 @@ import 'package:todo_app_v2/l10n/l10n.dart';
 import 'package:todos_repository/todos_repository.dart';
 
 class EditTaskPage extends StatelessWidget {
-  const EditTaskPage({this.initialTask, super.key});
+  const EditTaskPage({
+    this.initialTask,
+    this.initialCategory,
+    super.key,
+  });
 
   final TaskEntity? initialTask;
+  final CategoryEntity? initialCategory;
 
-  static Route<void> route({TaskEntity? initialTask}) {
+  static Route<void> route({
+    TaskEntity? initialTask,
+    CategoryEntity? initialCategory,
+  }) {
     return MaterialPageRoute(
       fullscreenDialog: true,
       builder: (context) {
         return EditTaskPage(
           initialTask: initialTask,
+          initialCategory: initialCategory,
         );
       },
     );
@@ -30,6 +39,7 @@ class EditTaskPage extends StatelessWidget {
     return BlocProvider(
       create: (context) => EditTaskBloc(
         initalTask: initialTask,
+        initialCategory: initialCategory,
         tasksRepository: context.read<TodosRepository>(),
       ),
       child: BlocListener<EditTaskBloc, EditTaskState>(

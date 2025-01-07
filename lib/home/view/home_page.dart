@@ -138,7 +138,6 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     final tabs = getNestedTabs();
     final selectedTab = context.select((HomeCubit cubit) => cubit.state.tab);
-
     final tabIdx = selectedTab.index;
 
     _tabAnimationController.forward();
@@ -191,6 +190,8 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
             ),
           ),
         ),
+        // TODO: Додати можливість при створенні нового завдання, вибір категорії по замовчуванні
+        //  змінити навігацію та прочитаи про неї
         floatingActionButton: FloatingNavButton(
           tab: selectedTab,
           callback: () => Navigator.of(context).push(EditTaskPage.route()),

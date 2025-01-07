@@ -91,7 +91,7 @@ class AppTheme {
       ),
       elevatedButtonTheme: const ElevatedButtonThemeData(
         style: ButtonStyle(
-          foregroundColor: WidgetStatePropertyAll(greyColor),
+          foregroundColor: WidgetStatePropertyAll(primaryColor),
         ),
       ),
       checkboxTheme: const CheckboxThemeData(

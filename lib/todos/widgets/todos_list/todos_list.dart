@@ -97,7 +97,10 @@ class TodosList extends StatelessWidget {
                     return TodoCard(
                       task: task,
                       onTap: () => Navigator.of(context).push(
-                        EditTaskPage.route(initialTask: task),
+                        EditTaskPage.route(
+                          initialTask: task,
+                          initialCategory: state.selectedCategory,
+                        ),
                       ),
                       category: task.category.value,
                       title: task.title,

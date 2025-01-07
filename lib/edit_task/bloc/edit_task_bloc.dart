@@ -12,6 +12,7 @@ class EditTaskBloc extends Bloc<EditTaskEvent, EditTaskState> {
   EditTaskBloc({
     required TodosRepository tasksRepository,
     required TaskEntity? initalTask,
+    required CategoryEntity? initialCategory,
   })  : _tasksRepository = tasksRepository,
         super(
           EditTaskState(
@@ -19,7 +20,7 @@ class EditTaskBloc extends Bloc<EditTaskEvent, EditTaskState> {
             title: initalTask?.title ?? '',
             notate: initalTask?.notate ?? '',
             important: initalTask?.important ?? false,
-            category: initalTask?.category.value,
+            category: initialCategory,
             color: initalTask?.color ?? baseColor.value,
             subtasks: initalTask?.subtasks ?? [],
           ),
