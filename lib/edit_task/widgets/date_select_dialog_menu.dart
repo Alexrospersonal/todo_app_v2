@@ -1,32 +1,66 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+import 'package:table_calendar/table_calendar.dart';
+import 'package:todo_app_v2/edit_task/bloc/edit_task_bloc.dart';
 import 'package:todo_app_v2/l10n/l10n.dart';
 import 'package:todo_app_v2/theme/theme.dart';
 
-class DateSelectDialogMenu extends StatelessWidget {
+class DateSelectDialogMenu extends StatefulWidget {
   const DateSelectDialogMenu({super.key});
 
   @override
+  State<DateSelectDialogMenu> createState() => _DateSelectDialogMenuState();
+}
+
+class _DateSelectDialogMenuState extends State<DateSelectDialogMenu> {
+  void pickTime(DateTime? selectedDay) {
+    if (selectedDay != null) {
+      final selectedTime = showTimePicker(
+        context: context,
+        initialTime: const TimeOfDay(hour: 0, minute: 0),
+      );
+
+      context
+          .read<EditTaskBloc>()
+          .add(EditTaskTimeChanged(taskTime: selectedTime));
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+
+    final selectedDay =
+        context.select((EditTaskBloc bloc) => bloc.state.taskDate);
+
+    final hasTime = context.select((EditTaskBloc bloc) => bloc.state.hasTime);
+
+    final timeString = hasTime && selectedDay != null
+        ? DateFormat('HH:mm').format(selectedDay)
+        : l10n.noneTitle;
+
     return Dialog(
       insetPadding: const EdgeInsets.all(15),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 2.5, horizontal: 7.5),
+        padding: const EdgeInsets.symmetric(vertical: 2.5, horizontal: 10.5),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const DateSelectCalendar(),
             DateSelectButton(
-              onTap: () {},
-              isActive: true,
-              title: 'Без дати',
+              onTap: () =>
+                  context.read<EditTaskBloc>().add(const EditTaskDateChanged()),
+              isActive: selectedDay == null,
+              title: l10n.noTime,
             ),
             DateSelectButton(
-              onTap: () {},
-              isActive: true,
+              onTap: () => pickTime(selectedDay),
+              isActive: hasTime,
               icon: Icons.access_time_rounded,
-              title: 'Час',
-              description: '17:34',
+              title: l10n.time,
+              description: timeString,
             ),
             DateSelectButton(
               onTap: () {},
@@ -44,7 +78,9 @@ class DateSelectDialogMenu extends StatelessWidget {
             ),
             DateSelectConfirmButtons(
               confirm: () {},
-              cancel: () {},
+              cancel: () {
+                Navigator.of(context).pop();
+              },
               clear: () {},
             ),
           ],
@@ -59,7 +95,55 @@ class DateSelectCalendar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    final selectedDay =
+        context.select((EditTaskBloc bloc) => bloc.state.taskDate);
+
+    final selectedWeekdays = context
+        .select<EditTaskBloc, List<int>>((bloc) => bloc.state.repeatDuringWeek);
+
+    return TableCalendar<void>(
+      locale: Localizations.localeOf(context).toString(),
+      firstDay: DateTime.utc(2010, 10, 16),
+      lastDay: DateTime.utc(2030, 3, 14),
+      focusedDay: selectedDay ?? DateTime.now(),
+      selectedDayPredicate: (day) => isSameDay(day, selectedDay),
+      onDaySelected: (selectedDay, focusedDay) {
+        final now = DateTime.now();
+        final today = DateTime(now.year, now.month, now.day);
+
+        if (selectedDay.compareTo(today) >= 0) {
+          context.read<EditTaskBloc>().add(
+                EditTaskDateChanged(taskDate: selectedDay),
+              );
+        }
+      },
+      calendarBuilders: CalendarBuilders(
+        defaultBuilder: (context, day, focusedDay) {
+          if (selectedWeekdays.contains(day.weekday)) {
+            return Container(
+              alignment: Alignment.center,
+              margin: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.secondaryContainer,
+                shape: BoxShape.circle,
+              ),
+              child: Text('${day.day}'),
+            );
+          }
+          return null;
+        },
+      ),
+      calendarStyle: CalendarStyle(
+        todayDecoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.primary.withAlpha(128),
+          shape: BoxShape.circle,
+        ),
+        selectedDecoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.primary,
+          shape: BoxShape.circle,
+        ),
+      ),
+    );
   }
 }
 
@@ -177,7 +261,7 @@ class DateSelectConfirmButtons extends StatelessWidget {
                 onTap: confirm,
               ),
             ],
-          )
+          ),
         ],
       ),
     );

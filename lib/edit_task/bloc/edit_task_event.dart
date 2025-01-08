@@ -103,3 +103,15 @@ final class EditTaskSubmitted extends EditTaskEvent {
   @override
   List<Object> get props => [description];
 }
+
+final class EditTaskDateChanged extends EditTaskEvent {
+  const EditTaskDateChanged({this.taskDate});
+
+  final DateTime? taskDate;
+}
+
+final class EditTaskTimeChanged extends EditTaskEvent {
+  const EditTaskTimeChanged({this.taskTime});
+
+  final Future<TimeOfDay?>? taskTime;
+}

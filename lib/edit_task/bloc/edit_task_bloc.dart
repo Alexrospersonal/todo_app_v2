@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:todo_app_v2/theme/theme.dart';
 import 'package:todos_repository/todos_repository.dart';
 
@@ -36,6 +37,8 @@ class EditTaskBloc extends Bloc<EditTaskEvent, EditTaskState> {
     on<EditTaskSubtaskDeleted>(_onSubtaskDeleted);
     on<EditTaskSubtaskChanged>(_onSubtaskChanged);
     on<EditTaskSubtaskCompleted>(_onSubtaskCompleted);
+    on<EditTaskDateChanged>(_onDateChanged);
+    on<EditTaskTimeChanged>(_onTimeChanged);
     add(const EditTaskLoadCategories());
   }
 
@@ -161,5 +164,37 @@ class EditTaskBloc extends Bloc<EditTaskEvent, EditTaskState> {
     final categories = await _tasksRepository.getAllCategories();
     final newState = state.copyWith(categories: categories);
     emit(newState);
+  }
+
+  Future<void> _onDateChanged(
+    EditTaskDateChanged event,
+    Emitter<EditTaskState> emit,
+  ) async {
+    emit(state.copyWith(taskDate: event.taskDate));
+    if (event.taskDate == null) {
+      add(const EditTaskTimeChanged());
+    }
+  }
+
+  Future<void> _onTimeChanged(
+    EditTaskTimeChanged event,
+    Emitter<EditTaskState> emit,
+  ) async {
+    final taskTime = await event.taskTime;
+
+    if (taskTime != null && state.taskDate != null) {
+      final currentDate = state.taskDate!;
+
+      final dateWithTime = DateTime(
+        currentDate.year,
+        currentDate.month,
+        currentDate.day,
+        taskTime.hour,
+        taskTime.minute,
+      );
+      emit(state.copyWith(taskDate: dateWithTime, hasTime: true));
+    } else {
+      emit(state.copyWith(hasTime: false));
+    }
   }
 }

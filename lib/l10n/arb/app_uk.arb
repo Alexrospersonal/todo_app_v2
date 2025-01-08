@@ -131,5 +131,11 @@
     "cancelBtnName": "Відмінити",
     "@cancelBtnName": {},
     "confirmBtnName": "Підтвердити",
-    "@confirmBtnName": {}
+    "@confirmBtnName": {},
+    "noneTitle": "Немає",
+    "@noneTitle": {},
+    "time": "Час",
+    "@time": {},
+    "noTime": "Без часу",
+    "@noTime": {}
 }
