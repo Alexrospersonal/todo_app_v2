@@ -138,6 +138,8 @@
     "@time": {},
     "noTime": "No time",
     "@noTime": {},
+    "noDate": "No date",
+    "@noDate": {},
     "notification": "Notification",
     "@notification": {},
     "hourTimeDurationMessage": "in {hour} hour",

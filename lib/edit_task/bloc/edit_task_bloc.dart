@@ -175,12 +175,15 @@ class EditTaskBloc extends Bloc<EditTaskEvent, EditTaskState> {
     EditTaskDateChanged event,
     Emitter<EditTaskState> emit,
   ) async {
-    emit(state.copyWith(taskDate: event.taskDate));
     if (event.taskDate == null) {
-      add(const EditTaskTimeChanged());
+      emit(state.copyWith(taskDate: event.taskDate, hasDate: false));
+      add(const EditTaskTimeChanged(hasTime: false));
+    } else {
+      emit(state.copyWith(taskDate: event.taskDate, hasDate: true));
     }
   }
 
+  // TODO: рефактор коду
   Future<void> _onTimeChanged(
     EditTaskTimeChanged event,
     Emitter<EditTaskState> emit,
@@ -199,7 +202,25 @@ class EditTaskBloc extends Bloc<EditTaskEvent, EditTaskState> {
       );
       emit(state.copyWith(taskDate: dateWithTime, hasTime: true));
     } else {
-      emit(state.copyWith(hasTime: false));
+      if (event.hasTime == false) {
+        if (state.hasDate) {
+          final currentDate = state.taskDate!;
+
+          final dateWithTime = DateTime(
+            currentDate.year,
+            currentDate.month,
+            currentDate.day,
+          );
+
+          emit(state.copyWith(hasTime: false, taskDate: dateWithTime));
+        }
+        emit(state.copyWith(hasTime: false));
+        add(
+          const EditTaskNotificationTimeChanged(
+            reminderTime: ReminderTime.none,
+          ),
+        );
+      }
     }
   }
 
@@ -207,6 +228,19 @@ class EditTaskBloc extends Bloc<EditTaskEvent, EditTaskState> {
     EditTaskNotificationTimeChanged event,
     Emitter<EditTaskState> emit,
   ) async {
-    emit(state.copyWith(notificationReminderTime: event.reminderTime));
+    if (event.reminderTime == ReminderTime.none) {
+      emit(
+        state.copyWith(
+          notificationReminderTime: event.reminderTime,
+          hasNotification: false,
+        ),
+      );
+    } else {
+      final newState = state.copyWith(
+        notificationReminderTime: event.reminderTime,
+        hasNotification: true,
+      );
+      emit(newState);
+    }
   }
 }

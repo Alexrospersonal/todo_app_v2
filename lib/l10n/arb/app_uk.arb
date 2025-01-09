@@ -138,6 +138,8 @@
     "@time": {},
     "noTime": "Без часу",
     "@noTime": {},
+    "noDate": "Без дати",
+    "@noDate": {},
     "notification": "Сповіщення",
     "@notification": {},
     "hourTimeDurationMessage": "За {hour} годину",

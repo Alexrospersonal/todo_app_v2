@@ -19,6 +19,7 @@ class _NotificationSelectDialogMenuState
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    var prevReminder = ReminderTime.none;
 
     return BlocSelector<EditTaskBloc, EditTaskState, ReminderTime>(
       selector: (state) => state.notificationReminderTime,
@@ -87,6 +88,8 @@ class _NotificationSelectDialogMenuState
                               .toList(),
                           onChanged: (value) {
                             if (value != null) {
+                              prevReminder = selectedReminder;
+
                               context.read<EditTaskBloc>().add(
                                     EditTaskNotificationTimeChanged(
                                       reminderTime: value,
@@ -104,7 +107,11 @@ class _NotificationSelectDialogMenuState
                     Navigator.of(context).pop();
                   },
                   cancel: () {
-                    Navigator.of(context).pop();
+                    context.read<EditTaskBloc>().add(
+                          EditTaskNotificationTimeChanged(
+                            reminderTime: prevReminder,
+                          ),
+                        );
                   },
                   clear: () {
                     context.read<EditTaskBloc>().add(

@@ -1,5 +1,7 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
+// ignore_for_file: cascade_invocations
+
 part of 'task.dart';
 
 // **************************************************************************

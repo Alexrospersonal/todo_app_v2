@@ -111,9 +111,10 @@ final class EditTaskDateChanged extends EditTaskEvent {
 }
 
 final class EditTaskTimeChanged extends EditTaskEvent {
-  const EditTaskTimeChanged({this.taskTime});
+  const EditTaskTimeChanged({this.taskTime, this.hasTime});
 
   final Future<TimeOfDay?>? taskTime;
+  final bool? hasTime;
 }
 
 final class EditTaskNotificationTimeChanged extends EditTaskEvent {

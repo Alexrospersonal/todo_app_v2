@@ -20,6 +20,7 @@ final class EditTaskState extends Equatable {
     this.important = false,
     this.color = -1,
     this.category,
+    this.hasDate = false,
     this.taskDate,
     this.hasTime = false,
     this.hasRepeats = false,
@@ -27,6 +28,7 @@ final class EditTaskState extends Equatable {
     this.endDateOfRepeatedly,
     this.repeatDuringDay = const [],
     this.notificationReminderTime = ReminderTime.none,
+    this.hasNotification = false,
   });
 
   final String title;
@@ -38,6 +40,7 @@ final class EditTaskState extends Equatable {
   final int color;
   final bool important;
   final CategoryEntity? category;
+  final bool hasDate;
   final DateTime? taskDate;
   final bool hasTime;
   final bool hasRepeats;
@@ -45,6 +48,7 @@ final class EditTaskState extends Equatable {
   final DateTime? endDateOfRepeatedly;
   final List<DateTime?> repeatDuringDay;
   final ReminderTime notificationReminderTime;
+  final bool hasNotification;
 
   bool get isNewTodo => initialTodo == null;
 
@@ -58,6 +62,7 @@ final class EditTaskState extends Equatable {
     bool? important,
     int? color,
     CategoryEntity? category,
+    bool? hasDate,
     DateTime? taskDate,
     bool? hasTime,
     bool? hasRepeats,
@@ -65,6 +70,7 @@ final class EditTaskState extends Equatable {
     DateTime? endDateOfRepeatedly,
     List<DateTime?>? repeatDuringDay,
     ReminderTime? notificationReminderTime,
+    bool? hasNotification,
   }) {
     return EditTaskState(
       categories: categories ?? this.categories,
@@ -76,7 +82,8 @@ final class EditTaskState extends Equatable {
       important: important ?? this.important,
       color: color ?? this.color,
       category: category ?? this.category,
-      taskDate: taskDate,
+      hasDate: hasDate ?? this.hasDate,
+      taskDate: hasDate == false ? null : taskDate ?? this.taskDate,
       hasTime: hasTime ?? this.hasTime,
       hasRepeats: hasRepeats ?? this.hasRepeats,
       repeatDuringWeek: repeatDuringWeek ?? this.repeatDuringWeek,
@@ -84,6 +91,7 @@ final class EditTaskState extends Equatable {
       repeatDuringDay: repeatDuringDay ?? this.repeatDuringDay,
       notificationReminderTime:
           notificationReminderTime ?? this.notificationReminderTime,
+      hasNotification: hasNotification ?? this.hasNotification,
     );
   }
 
@@ -102,6 +110,7 @@ final class EditTaskState extends Equatable {
         categories,
         subtasks,
         notificationReminderTime,
+        hasNotification,
       ];
 }
 

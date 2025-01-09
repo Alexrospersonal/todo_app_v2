@@ -28,6 +28,20 @@ class _DateSelectDialogMenuState extends State<DateSelectDialogMenu> {
     }
   }
 
+  void pickNotification(BuildContext ctx, {bool hasTime = false}) {
+    if (hasTime) {
+      showDialog<void>(
+        context: ctx,
+        builder: (context) {
+          return BlocProvider<EditTaskBloc>.value(
+            value: BlocProvider.of<EditTaskBloc>(ctx),
+            child: const NotificationSelectDialogMenu(),
+          );
+        },
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -41,6 +55,12 @@ class _DateSelectDialogMenuState extends State<DateSelectDialogMenu> {
         ? DateFormat('HH:mm').format(selectedDay)
         : l10n.noneTitle;
 
+    final hasNotification =
+        context.select((EditTaskBloc bloc) => bloc.state.hasNotification);
+
+    final notificationReminderTime = context
+        .select((EditTaskBloc bloc) => bloc.state.notificationReminderTime);
+
     return Dialog(
       insetPadding: const EdgeInsets.all(15),
       child: Padding(
@@ -50,11 +70,23 @@ class _DateSelectDialogMenuState extends State<DateSelectDialogMenu> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const DateSelectCalendar(),
-            DateSelectButton(
-              onTap: () =>
-                  context.read<EditTaskBloc>().add(const EditTaskDateChanged()),
-              isActive: selectedDay == null,
-              title: l10n.noTime,
+            Row(
+              children: [
+                DateSelectButton(
+                  onTap: () => context
+                      .read<EditTaskBloc>()
+                      .add(const EditTaskDateChanged()),
+                  isActive: selectedDay == null,
+                  title: l10n.noDate,
+                ),
+                DateSelectButton(
+                  onTap: () => context
+                      .read<EditTaskBloc>()
+                      .add(const EditTaskTimeChanged(hasTime: false)),
+                  isActive: !hasTime,
+                  title: l10n.noTime,
+                ),
+              ],
             ),
             DateSelectButton(
               onTap: () => pickTime(selectedDay),
@@ -64,23 +96,11 @@ class _DateSelectDialogMenuState extends State<DateSelectDialogMenu> {
               description: timeString,
             ),
             DateSelectButton(
-              onTap: () {
-                final ctx = context;
-
-                showDialog<void>(
-                  context: ctx,
-                  builder: (context) {
-                    return BlocProvider<EditTaskBloc>.value(
-                      value: BlocProvider.of<EditTaskBloc>(ctx),
-                      child: const NotificationSelectDialogMenu(),
-                    );
-                  },
-                );
-              },
-              isActive: false,
+              onTap: () => pickNotification(context, hasTime: hasTime),
+              isActive: hasNotification,
               icon: Icons.notifications_active,
               title: l10n.notification,
-              description: 'Ні',
+              description: notificationReminderTime.formatTime(l10n),
             ),
             DateSelectButton(
               onTap: () {},
@@ -145,6 +165,10 @@ class DateSelectCalendar extends StatelessWidget {
           }
           return null;
         },
+      ),
+      headerStyle: const HeaderStyle(
+        formatButtonVisible: false,
+        titleCentered: true,
       ),
       calendarStyle: CalendarStyle(
         todayDecoration: BoxDecoration(
