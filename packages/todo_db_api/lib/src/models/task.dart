@@ -8,6 +8,7 @@ import 'package:todo_db_api/src/models/category.dart';
 
 part 'task.g.dart';
 
+//TODO: Add ReminderTime for notification
 /// Task model for the Isar database.
 ///
 /// Used to store data about tasks, including categories,
@@ -78,6 +79,8 @@ class TaskEntity extends Equatable {
   /// Indicates whether the task is a copy.
   bool isCopy = false;
 
+  int? notificationReminderTime;
+
   /// Notification ID, if any.
   int? notificationId;
 
@@ -107,6 +110,7 @@ class TaskEntity extends Equatable {
     List<int>? repeatDuringWeek,
     DateTime? endDateOfRepeatedly,
     List<DateTime?>? repeatDuringDay,
+    int? notificationReminderTime,
   }) {
     final task = TaskEntity(title: title ?? this.title);
 
@@ -122,6 +126,8 @@ class TaskEntity extends Equatable {
     task.repeatDuringWeek = repeatDuringWeek ?? this.repeatDuringWeek;
     task.endDateOfRepeatedly = endDateOfRepeatedly ?? this.endDateOfRepeatedly;
     task.repeatDuringDay = repeatDuringDay ?? this.repeatDuringDay;
+    task.notificationReminderTime =
+        notificationReminderTime ?? this.notificationReminderTime;
 
     return task;
   }
@@ -140,8 +146,8 @@ class TaskEntity extends Equatable {
     };
   }
 
-  @ignore
   @override
+  @ignore
   List<Object?> get props => [
         notate,
         taskDate,
@@ -155,6 +161,7 @@ class TaskEntity extends Equatable {
         repeatDuringWeek,
         repeatDuringDay,
         endDateOfRepeatedly,
+        notificationReminderTime,
       ];
 }
 
