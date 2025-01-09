@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:todo_app_v2/edit_task/models/reminder_time.dart';
 import 'package:todo_app_v2/theme/theme.dart';
 import 'package:todos_repository/todos_repository.dart';
 
@@ -39,6 +40,7 @@ class EditTaskBloc extends Bloc<EditTaskEvent, EditTaskState> {
     on<EditTaskSubtaskCompleted>(_onSubtaskCompleted);
     on<EditTaskDateChanged>(_onDateChanged);
     on<EditTaskTimeChanged>(_onTimeChanged);
+    on<EditTaskNotificationTimeChanged>(_onNotificationTimeChanged);
     add(const EditTaskLoadCategories());
   }
 
@@ -137,6 +139,9 @@ class EditTaskBloc extends Bloc<EditTaskEvent, EditTaskState> {
     final loadingState = state.copyWith(status: EditTaskStatus.loading);
     emit(loadingState);
 
+    //TODO: Add date, times, and create
+    //notification repository and create copies of task
+
     final task = state.initialTodo ?? TaskEntity(title: '')
       ..title = state.title
       ..notate = event.description
@@ -196,5 +201,12 @@ class EditTaskBloc extends Bloc<EditTaskEvent, EditTaskState> {
     } else {
       emit(state.copyWith(hasTime: false));
     }
+  }
+
+  Future<void> _onNotificationTimeChanged(
+    EditTaskNotificationTimeChanged event,
+    Emitter<EditTaskState> emit,
+  ) async {
+    emit(state.copyWith(notificationReminderTime: event.reminderTime));
   }
 }

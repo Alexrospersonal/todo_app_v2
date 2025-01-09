@@ -115,3 +115,9 @@ final class EditTaskTimeChanged extends EditTaskEvent {
 
   final Future<TimeOfDay?>? taskTime;
 }
+
+final class EditTaskNotificationTimeChanged extends EditTaskEvent {
+  const EditTaskNotificationTimeChanged({required this.reminderTime});
+
+  final ReminderTime reminderTime;
+}

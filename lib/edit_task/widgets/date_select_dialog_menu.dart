@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:todo_app_v2/edit_task/bloc/edit_task_bloc.dart';
+import 'package:todo_app_v2/edit_task/widgets/widgets.dart';
 import 'package:todo_app_v2/l10n/l10n.dart';
 import 'package:todo_app_v2/theme/theme.dart';
 
@@ -63,10 +64,22 @@ class _DateSelectDialogMenuState extends State<DateSelectDialogMenu> {
               description: timeString,
             ),
             DateSelectButton(
-              onTap: () {},
+              onTap: () {
+                final ctx = context;
+
+                showDialog<void>(
+                  context: ctx,
+                  builder: (context) {
+                    return BlocProvider<EditTaskBloc>.value(
+                      value: BlocProvider.of<EditTaskBloc>(ctx),
+                      child: const NotificationSelectDialogMenu(),
+                    );
+                  },
+                );
+              },
               isActive: false,
               icon: Icons.notifications_active,
-              title: 'Нагадування',
+              title: l10n.notification,
               description: 'Ні',
             ),
             DateSelectButton(

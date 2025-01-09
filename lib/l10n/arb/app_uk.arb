@@ -137,5 +137,47 @@
     "time": "Час",
     "@time": {},
     "noTime": "Без часу",
-    "@noTime": {}
+    "@noTime": {},
+    "notification": "Сповіщення",
+    "@notification": {},
+    "hourTimeDurationMessage": "За {hour} годину",
+    "@hourTimeDurationMessage": {
+        "description": "",
+        "placeholders": {
+            "hour": {
+                "type": "int",
+                "description": ""
+            }
+        }
+    },
+    "hoursTimeDurationMessage": "За {hours} години",
+    "@hoursTimeDurationMessage": {
+        "description": "",
+        "placeholders": {
+            "hours": {
+                "type": "int",
+                "description": ""
+            }
+        }
+    },
+    "inMinutesTimeDurationMessage": "За {minutes} хвилин",
+    "@inMinutesTimeDurationMessage": {
+        "description": "",
+        "placeholders": {
+            "minutes": {
+                "type": "int",
+                "description": ""
+            }
+        }
+    },
+    "minutesTimeDurationMessage": "{minutes} хвилин",
+    "@minutesTimeDurationMessage": {
+        "description": "",
+        "placeholders": {
+            "minutes": {
+                "type": "int",
+                "description": ""
+            }
+        }
+    }
 }

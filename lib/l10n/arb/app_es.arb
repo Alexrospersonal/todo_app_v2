@@ -137,5 +137,47 @@
     "time": "Time",
     "@time": {},
     "noTime": "No time",
-    "@noTime": {}
+    "@noTime": {},
+    "notification": "Notification",
+    "@notification": {},
+    "hourTimeDurationMessage": "in {hour} hour",
+    "@hourTimeDurationMessage": {
+        "description": "",
+        "placeholders": {
+            "hour": {
+                "type": "int",
+                "description": ""
+            }
+        }
+    },
+    "hoursTimeDurationMessage": "in {hours} hours",
+    "@hoursTimeDurationMessage": {
+        "description": "",
+        "placeholders": {
+            "hours": {
+                "type": "int",
+                "description": ""
+            }
+        }
+    },
+    "inMinutesTimeDurationMessage": "in {minutes} minutes",
+    "@inMinutesTimeDurationMessage": {
+        "description": "",
+        "placeholders": {
+            "minutes": {
+                "type": "int",
+                "description": ""
+            }
+        }
+    },
+    "minutesTimeDurationMessage": "{minutes} minutes",
+    "@minutesTimeDurationMessage": {
+        "description": "",
+        "placeholders": {
+            "minutes": {
+                "type": "int",
+                "description": ""
+            }
+        }
+    }
 }

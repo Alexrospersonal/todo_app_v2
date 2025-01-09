@@ -26,6 +26,7 @@ final class EditTaskState extends Equatable {
     this.repeatDuringWeek = const [],
     this.endDateOfRepeatedly,
     this.repeatDuringDay = const [],
+    this.notificationReminderTime = ReminderTime.none,
   });
 
   final String title;
@@ -43,6 +44,7 @@ final class EditTaskState extends Equatable {
   final List<int> repeatDuringWeek;
   final DateTime? endDateOfRepeatedly;
   final List<DateTime?> repeatDuringDay;
+  final ReminderTime notificationReminderTime;
 
   bool get isNewTodo => initialTodo == null;
 
@@ -62,6 +64,7 @@ final class EditTaskState extends Equatable {
     List<int>? repeatDuringWeek,
     DateTime? endDateOfRepeatedly,
     List<DateTime?>? repeatDuringDay,
+    ReminderTime? notificationReminderTime,
   }) {
     return EditTaskState(
       categories: categories ?? this.categories,
@@ -79,6 +82,8 @@ final class EditTaskState extends Equatable {
       repeatDuringWeek: repeatDuringWeek ?? this.repeatDuringWeek,
       endDateOfRepeatedly: endDateOfRepeatedly ?? this.endDateOfRepeatedly,
       repeatDuringDay: repeatDuringDay ?? this.repeatDuringDay,
+      notificationReminderTime:
+          notificationReminderTime ?? this.notificationReminderTime,
     );
   }
 
@@ -96,6 +101,7 @@ final class EditTaskState extends Equatable {
         repeatDuringWeek,
         categories,
         subtasks,
+        notificationReminderTime,
       ];
 }
 
