@@ -15,7 +15,7 @@ class DateSelectDialogMenu extends StatefulWidget {
 }
 
 class _DateSelectDialogMenuState extends State<DateSelectDialogMenu> {
-  void pickTime(DateTime? selectedDay) {
+  void pickTime(BuildContext ctx, DateTime? selectedDay) {
     if (selectedDay != null) {
       final selectedTime = showTimePicker(
         context: context,
@@ -25,6 +25,8 @@ class _DateSelectDialogMenuState extends State<DateSelectDialogMenu> {
       context
           .read<EditTaskBloc>()
           .add(EditTaskTimeChanged(taskTime: selectedTime));
+    } else {
+      showSnackBar(ctx, 'Before need pick the date');
     }
   }
 
@@ -39,7 +41,25 @@ class _DateSelectDialogMenuState extends State<DateSelectDialogMenu> {
           );
         },
       );
+    } else {
+      showSnackBar(ctx, 'Before need pick the time');
     }
+  }
+
+  void showSnackBar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          backgroundColor: Theme.of(context).colorScheme.error,
+          content: Text(
+            message,
+            style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+          ),
+          elevation: 10,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
   }
 
   @override
@@ -89,7 +109,7 @@ class _DateSelectDialogMenuState extends State<DateSelectDialogMenu> {
               ],
             ),
             DateSelectButton(
-              onTap: () => pickTime(selectedDay),
+              onTap: () => pickTime(context, selectedDay),
               isActive: hasTime,
               icon: Icons.access_time_rounded,
               title: l10n.time,

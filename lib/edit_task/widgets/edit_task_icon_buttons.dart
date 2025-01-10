@@ -89,7 +89,16 @@ class DateIconButton extends StatelessWidget {
               context: ctx,
               builder: (context) => BlocProvider.value(
                 value: BlocProvider.of<EditTaskBloc>(ctx),
-                child: const DateSelectDialogMenu(),
+                child: ScaffoldMessenger(
+                  child: Scaffold(
+                    backgroundColor: Colors.transparent,
+                    body: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () => Navigator.of(context).pop(),
+                      child: const DateSelectDialogMenu(),
+                    ),
+                  ),
+                ),
               ),
             );
           },

@@ -183,7 +183,6 @@ class EditTaskBloc extends Bloc<EditTaskEvent, EditTaskState> {
     }
   }
 
-  // TODO: рефактор коду
   Future<void> _onTimeChanged(
     EditTaskTimeChanged event,
     Emitter<EditTaskState> emit,
@@ -213,8 +212,9 @@ class EditTaskBloc extends Bloc<EditTaskEvent, EditTaskState> {
           );
 
           emit(state.copyWith(hasTime: false, taskDate: dateWithTime));
+        } else {
+          emit(state.copyWith(hasTime: false));
         }
-        emit(state.copyWith(hasTime: false));
         add(
           const EditTaskNotificationTimeChanged(
             reminderTime: ReminderTime.none,
