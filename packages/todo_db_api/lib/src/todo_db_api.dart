@@ -41,6 +41,15 @@ class TodoDbApi {
   Future<int> creatTask(TaskEntity task) async {
     late int id;
 
+    if (task.category.value?.id != null) {
+      final id = task.category.value!.id;
+      final existingCategory = await plugin.categoryEntitys.get(id);
+
+      if (existingCategory != null) {
+        task.category.value = existingCategory;
+      }
+    }
+
     await plugin.writeTxn(() async {
       id = await plugin.taskEntitys.put(task);
       await task.category.save();

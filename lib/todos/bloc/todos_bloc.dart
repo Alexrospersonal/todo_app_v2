@@ -48,10 +48,10 @@ class TodosBloc extends Bloc<TodosEvent, TodosState> {
       emit(
         state.copyWith(selectedCategory: () => categories.first),
       );
-      add(const TodosSubscriptionRequested());
     }
 
     add(const TodosCategoriesSubscriptionRequested());
+    add(const TodosSubscriptionRequested());
   }
 
   Future<void> _onSubscriptionRequested(
@@ -111,8 +111,8 @@ class TodosBloc extends Bloc<TodosEvent, TodosState> {
     TodosTodoDeleted event,
     Emitter<TodosState> emit,
   ) async {
-    emit(state.copyWith(lastDeletedTodo: () => event.todo));
     await _todosRepository.deleteTask(event.todo.id);
+    emit(state.copyWith(lastDeletedTodo: () => event.todo));
   }
 
   Future<void> _onUndoDeletionRequested(

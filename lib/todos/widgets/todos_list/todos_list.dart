@@ -13,7 +13,7 @@ import 'package:todos_repository/todos_repository.dart';
 class TodosList extends StatelessWidget {
   const TodosList({super.key});
 
-  bool _buildNewWidgetWhen(TodosState previous, TodosState current) {
+  bool _updateTodosListWhen(TodosState previous, TodosState current) {
     if (previous.todos.length != current.todos.length) {
       return true;
     }
@@ -72,7 +72,7 @@ class TodosList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<TodosBloc, TodosState>(
-      buildWhen: _buildNewWidgetWhen,
+      // buildWhen: _updateTodosListWhen,
       builder: (context, state) {
         final l10n = context.l10n;
 
