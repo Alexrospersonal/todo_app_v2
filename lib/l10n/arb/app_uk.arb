@@ -142,6 +142,10 @@
     "@noDate": {},
     "notification": "Сповіщення",
     "@notification": {},
+    "repeatsDuringWeek": "Повторення протягом тижня",
+    "@repeatsDuringWeek": {},
+    "repeatsDuringDay": "Повторення протягом дня",
+    "@repeatsDuringDay": {},
     "hourTimeDurationMessage": "За {hour} годину",
     "@hourTimeDurationMessage": {
         "description": "",

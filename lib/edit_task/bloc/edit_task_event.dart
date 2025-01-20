@@ -122,3 +122,9 @@ final class EditTaskNotificationTimeChanged extends EditTaskEvent {
 
   final ReminderTime reminderTime;
 }
+
+final class EditTaskWeekdayChanged extends EditTaskEvent {
+  const EditTaskWeekdayChanged({required this.weekday});
+
+  final int weekday;
+}

@@ -41,6 +41,7 @@ class EditTaskBloc extends Bloc<EditTaskEvent, EditTaskState> {
     on<EditTaskDateChanged>(_onDateChanged);
     on<EditTaskTimeChanged>(_onTimeChanged);
     on<EditTaskNotificationTimeChanged>(_onNotificationTimeChanged);
+    on<EditTaskWeekdayChanged>(_onWeekdayChanged);
     add(const EditTaskLoadCategories());
   }
 
@@ -242,5 +243,29 @@ class EditTaskBloc extends Bloc<EditTaskEvent, EditTaskState> {
       );
       emit(newState);
     }
+  }
+
+  Future<void> _onWeekdayChanged(
+    EditTaskWeekdayChanged event,
+    Emitter<EditTaskState> emit,
+  ) async {
+    var weekdays = <int>[];
+
+    if (state.repeatDuringWeek.contains(event.weekday)) {
+      weekdays = state.repeatDuringWeek
+          .where((weekday) => weekday != event.weekday)
+          .toList();
+    } else {
+      weekdays = [...state.repeatDuringWeek, event.weekday]..sort();
+    }
+
+    final hasRepeats = weekdays.isNotEmpty;
+
+    emit(
+      state.copyWith(
+        repeatDuringWeek: weekdays,
+        hasRepeats: hasRepeats,
+      ),
+    );
   }
 }

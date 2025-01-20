@@ -46,6 +46,22 @@ class _DateSelectDialogMenuState extends State<DateSelectDialogMenu> {
     }
   }
 
+  void pickRepeats(BuildContext ctx, {bool hasDate = false}) {
+    if (hasDate) {
+      showDialog<void>(
+        context: ctx,
+        builder: (context) {
+          return BlocProvider<EditTaskBloc>.value(
+            value: BlocProvider.of<EditTaskBloc>(ctx),
+            child: const RepeatsSelectDialogMenu(),
+          );
+        },
+      );
+    } else {
+      showSnackBar(ctx, 'Before need pick the date');
+    }
+  }
+
   void showSnackBar(BuildContext context, String message) {
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
@@ -71,12 +87,15 @@ class _DateSelectDialogMenuState extends State<DateSelectDialogMenu> {
 
     final hasTime = context.select((EditTaskBloc bloc) => bloc.state.hasTime);
 
+    final hasNotification =
+        context.select((EditTaskBloc bloc) => bloc.state.hasNotification);
+
+    final hasRepeats =
+        context.select((EditTaskBloc bloc) => bloc.state.hasRepeats);
+
     final timeString = hasTime && selectedDay != null
         ? DateFormat('HH:mm').format(selectedDay)
         : l10n.noneTitle;
-
-    final hasNotification =
-        context.select((EditTaskBloc bloc) => bloc.state.hasNotification);
 
     final notificationReminderTime = context
         .select((EditTaskBloc bloc) => bloc.state.notificationReminderTime);
@@ -92,14 +111,14 @@ class _DateSelectDialogMenuState extends State<DateSelectDialogMenu> {
             const DateSelectCalendar(),
             Row(
               children: [
-                DateSelectButton(
+                SelectButton(
                   onTap: () => context
                       .read<EditTaskBloc>()
                       .add(const EditTaskDateChanged()),
                   isActive: selectedDay == null,
                   title: l10n.noDate,
                 ),
-                DateSelectButton(
+                SelectButton(
                   onTap: () => context
                       .read<EditTaskBloc>()
                       .add(const EditTaskTimeChanged(hasTime: false)),
@@ -108,23 +127,23 @@ class _DateSelectDialogMenuState extends State<DateSelectDialogMenu> {
                 ),
               ],
             ),
-            DateSelectButton(
+            SelectButton(
               onTap: () => pickTime(context, selectedDay),
               isActive: hasTime,
               icon: Icons.access_time_rounded,
               title: l10n.time,
               description: timeString,
             ),
-            DateSelectButton(
+            SelectButton(
               onTap: () => pickNotification(context, hasTime: hasTime),
               isActive: hasNotification,
               icon: Icons.notifications_active,
               title: l10n.notification,
               description: notificationReminderTime.formatTime(l10n),
             ),
-            DateSelectButton(
-              onTap: () {},
-              isActive: false,
+            SelectButton(
+              onTap: () => pickRepeats(context, hasDate: selectedDay != null),
+              isActive: hasRepeats,
               icon: Icons.repeat,
               title: 'Повтори',
               description: 'Протягом тидня та дня',
@@ -155,6 +174,7 @@ class DateSelectCalendar extends StatelessWidget {
         .select<EditTaskBloc, List<int>>((bloc) => bloc.state.repeatDuringWeek);
 
     return TableCalendar<void>(
+      startingDayOfWeek: StartingDayOfWeek.monday,
       locale: Localizations.localeOf(context).toString(),
       firstDay: DateTime.utc(2010, 10, 16),
       lastDay: DateTime.utc(2030, 3, 14),
@@ -204,8 +224,8 @@ class DateSelectCalendar extends StatelessWidget {
   }
 }
 
-class DateSelectButton extends StatelessWidget {
-  const DateSelectButton({
+class SelectButton extends StatelessWidget {
+  const SelectButton({
     required this.onTap,
     required this.isActive,
     required this.title,

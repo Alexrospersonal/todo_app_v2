@@ -16,6 +16,37 @@ class NotificationSelectDialogMenu extends StatefulWidget {
 
 class _NotificationSelectDialogMenuState
     extends State<NotificationSelectDialogMenu> {
+  List<DropdownMenuItem<ReminderTime>> getDropdownItems(AppLocalizations l10n) {
+    return ReminderTime.values
+        .map(
+          (reminderTime) => DropdownMenuItem<ReminderTime>(
+            value: reminderTime,
+            child: Text(
+              reminderTime.formatTime(l10n),
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ),
+        )
+        .toList();
+  }
+
+  ReminderTime onChangedDropdownItem(
+    ReminderTime? value,
+    ReminderTime selectedReminder,
+  ) {
+    if (value != null) {
+      final prevReminder = selectedReminder;
+
+      context.read<EditTaskBloc>().add(
+            EditTaskNotificationTimeChanged(
+              reminderTime: value,
+            ),
+          );
+      return prevReminder;
+    }
+    return ReminderTime.none;
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -73,29 +104,10 @@ class _NotificationSelectDialogMenuState
                               ),
                             ),
                           ),
-                          items: ReminderTime.values
-                              .map(
-                                (reminderTime) =>
-                                    DropdownMenuItem<ReminderTime>(
-                                  value: reminderTime,
-                                  child: Text(
-                                    reminderTime.formatTime(l10n),
-                                    style:
-                                        Theme.of(context).textTheme.bodySmall,
-                                  ),
-                                ),
-                              )
-                              .toList(),
+                          items: getDropdownItems(l10n),
                           onChanged: (value) {
-                            if (value != null) {
-                              prevReminder = selectedReminder;
-
-                              context.read<EditTaskBloc>().add(
-                                    EditTaskNotificationTimeChanged(
-                                      reminderTime: value,
-                                    ),
-                                  );
-                            }
+                            prevReminder =
+                                onChangedDropdownItem(value, selectedReminder);
                           },
                         ),
                       ),
@@ -103,23 +115,17 @@ class _NotificationSelectDialogMenuState
                   ),
                 ),
                 DateSelectConfirmButtons(
-                  confirm: () {
-                    Navigator.of(context).pop();
-                  },
-                  cancel: () {
-                    context.read<EditTaskBloc>().add(
-                          EditTaskNotificationTimeChanged(
-                            reminderTime: prevReminder,
-                          ),
-                        );
-                  },
-                  clear: () {
-                    context.read<EditTaskBloc>().add(
-                          const EditTaskNotificationTimeChanged(
-                            reminderTime: ReminderTime.none,
-                          ),
-                        );
-                  },
+                  confirm: () => Navigator.of(context).pop(),
+                  cancel: () => context.read<EditTaskBloc>().add(
+                        EditTaskNotificationTimeChanged(
+                          reminderTime: prevReminder,
+                        ),
+                      ),
+                  clear: () => context.read<EditTaskBloc>().add(
+                        const EditTaskNotificationTimeChanged(
+                          reminderTime: ReminderTime.none,
+                        ),
+                      ),
                 ),
               ],
             ),

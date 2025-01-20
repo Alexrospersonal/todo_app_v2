@@ -6,4 +6,5 @@ export 'edit_task_icon_buttons.dart';
 export 'edit_task_title_form.dart';
 export 'form_header.dart';
 export 'notification_select_dialog_menu.dart';
+export 'repeats_select_dialog_menu.dart';
 export 'subtasks.dart';

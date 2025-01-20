@@ -142,6 +142,10 @@
     "@noDate": {},
     "notification": "Notification",
     "@notification": {},
+    "repeatsDuringWeek": "Repeats during the week",
+    "@repeatsDuringWeek": {},
+    "repeatsDuringDay": "Repeats during the day",
+    "@repeatsDuringDay": {},
     "hourTimeDurationMessage": "in {hour} hour",
     "@hourTimeDurationMessage": {
         "description": "",
