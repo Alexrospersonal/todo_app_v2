@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:table_calendar/table_calendar.dart';
 import 'package:todo_app_v2/edit_task/bloc/edit_task_bloc.dart';
+import 'package:todo_app_v2/edit_task/widgets/widgets.dart';
 import 'package:todo_app_v2/home/view/home_page.dart';
 import 'package:todo_app_v2/l10n/l10n.dart';
 
@@ -18,11 +20,28 @@ class RepeatsSelectDialogMenu extends StatelessWidget {
     }).toList();
   }
 
+  void pickEndDate(BuildContext ctx, {bool hasRepeats = false}) {
+    if (hasRepeats) {
+      showDialog<DateTime>(
+        context: ctx,
+        builder: (context) {
+          return BlocProvider<EditTaskBloc>.value(
+            value: BlocProvider.of<EditTaskBloc>(ctx),
+            child: const EndDateCalendarDialog(),
+          );
+        },
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
 
     final weekdaysTitle = _getWeekdaysTitle(context);
+
+    final hasRepeats =
+        context.select<EditTaskBloc, bool>((bloc) => bloc.state.hasRepeats);
 
     return Dialog(
       insetPadding: const EdgeInsets.all(25),
@@ -67,19 +86,137 @@ class RepeatsSelectDialogMenu extends StatelessWidget {
               },
             ),
             const SizedBox(height: 10),
-            const Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 DialogSubHeader(
                   iconData: Icons.calendar_month_outlined,
-                  header: 'Кінець повтору',
+                  header: l10n.repeatEndsOn,
                 ),
-                RepeatsEndPickButton(
+                // TODO: створити діалог з вибором дати кінця
+                RepeatsEndDatePickButton(
                   isActive: false,
+                  onTap: () => pickEndDate(context, hasRepeats: hasRepeats),
                 ),
               ],
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class EndDateCalendarDialog extends StatelessWidget {
+  const EndDateCalendarDialog({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final selectedDay = context.select(
+      (EditTaskBloc bloc) => bloc.state.endDateOfRepeatedly,
+    );
+
+    return const Dialog(
+      insetPadding: EdgeInsets.all(15),
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 2.5, horizontal: 10.5),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // TODO: додати іншй календар який обирає кінцеву дату і відображає
+            // обрану початкову дату та
+
+            // TODO: додати відображення початкової дати та повторів і змінити кольори дат
+
+            EndDateCalendar(),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class EndDateCalendar extends StatelessWidget {
+  const EndDateCalendar({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final selectedDay = context.select(
+      (EditTaskBloc bloc) => bloc.state.endDateOfRepeatedly,
+    );
+
+    final startDate =
+        context.select((EditTaskBloc bloc) => bloc.state.taskDate);
+
+    final selectedWeekdays = context
+        .select<EditTaskBloc, List<int>>((bloc) => bloc.state.repeatDuringWeek);
+
+    return TableCalendar(
+      focusedDay: selectedDay ?? DateTime.now(),
+      firstDay: DateTime.utc(2010, 10, 16),
+      lastDay: DateTime.utc(2030, 3, 14),
+      locale: Localizations.localeOf(context).toString(),
+      selectedDayPredicate: (day) => isSameDay(day, selectedDay),
+      onDaySelected: (selectedDay, focusedDay) {
+        final now = DateTime.now();
+        final today = DateTime(now.year, now.month, now.day);
+
+        if (selectedDay.compareTo(today) >= 0) {
+          context.read<EditTaskBloc>().add(
+                EditTaskEndDateOfRepeatedly(
+                  endDateOfRepeatedly: selectedDay,
+                ),
+              );
+        }
+      },
+      calendarBuilders: CalendarBuilders(
+        defaultBuilder: (context, day, focusedDay) {
+          if (startDate != null && startDate.compareTo(day) == 0) {
+            return Container(
+              alignment: Alignment.center,
+              margin: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primary,
+                shape: BoxShape.circle,
+              ),
+              child: Text(
+                '${day.day}',
+                style:
+                    TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+              ),
+            );
+          }
+
+          if (selectedWeekdays.contains(day.weekday) &&
+              day.isAfter(startDate!) &&
+              selectedDay != null &&
+              day.isBefore(selectedDay)) {
+            return Container(
+              alignment: Alignment.center,
+              margin: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.secondaryContainer,
+                shape: BoxShape.circle,
+              ),
+              child: Text('${day.day}'),
+            );
+          }
+          return null;
+        },
+      ),
+      headerStyle: const HeaderStyle(
+        formatButtonVisible: false,
+        titleCentered: true,
+      ),
+      calendarStyle: CalendarStyle(
+        todayDecoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.primary.withAlpha(128),
+          shape: BoxShape.circle,
+        ),
+        selectedDecoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.error,
+          shape: BoxShape.circle,
         ),
       ),
     );
@@ -108,28 +245,35 @@ class DialogSubHeader extends StatelessWidget {
   }
 }
 
-class RepeatsEndPickButton extends StatelessWidget {
-  const RepeatsEndPickButton({
+class RepeatsEndDatePickButton extends StatelessWidget {
+  const RepeatsEndDatePickButton({
     required this.isActive,
+    required this.onTap,
     super.key,
   });
 
   final bool isActive;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+
     final color = isActive
         ? Theme.of(context).colorScheme.primary
         : Theme.of(context).colorScheme.secondaryContainer;
 
-    return Container(
-      height: 34,
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        color: color,
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 34,
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: color,
+        ),
+        child: Center(child: Text(l10n.neverTitle)),
       ),
-      child: const Center(child: Text('Немає')),
     );
   }
 }

@@ -128,3 +128,9 @@ final class EditTaskWeekdayChanged extends EditTaskEvent {
 
   final int weekday;
 }
+
+final class EditTaskEndDateOfRepeatedly extends EditTaskEvent {
+  const EditTaskEndDateOfRepeatedly({required this.endDateOfRepeatedly});
+
+  final DateTime? endDateOfRepeatedly;
+}

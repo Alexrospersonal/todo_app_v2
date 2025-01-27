@@ -185,5 +185,9 @@
                 "description": ""
             }
         }
-    }
+    },
+    "repeatEndsOn": "Повтор закінчується на",
+    "@repeatEndsOn": {},
+    "neverTitle": "Ніколи",
+    "@neverTitle": {}
 }

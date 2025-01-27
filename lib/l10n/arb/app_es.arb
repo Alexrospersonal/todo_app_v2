@@ -185,5 +185,9 @@
                 "description": ""
             }
         }
-    }
+    },
+    "repeatEndsOn": "Repeat ends on",
+    "@repeatEndsOn": {},
+    "neverTitle": "Never",
+    "@neverTitle": {}
 }

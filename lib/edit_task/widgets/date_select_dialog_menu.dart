@@ -108,7 +108,13 @@ class _DateSelectDialogMenuState extends State<DateSelectDialogMenu> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const DateSelectCalendar(),
+            DateSelectCalendar(
+              selectedDay:
+                  context.select((EditTaskBloc bloc) => bloc.state.taskDate),
+              onDaySelected: (newDate) => context.read<EditTaskBloc>().add(
+                    EditTaskDateChanged(taskDate: newDate),
+                  ),
+            ),
             Row(
               children: [
                 SelectButton(
@@ -162,13 +168,21 @@ class _DateSelectDialogMenuState extends State<DateSelectDialogMenu> {
   }
 }
 
+// TODO: додати відображення повторів днів які з наступного місяця
 class DateSelectCalendar extends StatelessWidget {
-  const DateSelectCalendar({super.key});
+  const DateSelectCalendar({
+    required this.selectedDay,
+    required this.onDaySelected,
+    super.key,
+  });
+
+  final DateTime? selectedDay;
+  final void Function(DateTime?) onDaySelected;
 
   @override
   Widget build(BuildContext context) {
-    final selectedDay =
-        context.select((EditTaskBloc bloc) => bloc.state.taskDate);
+    final endDateOfRepeatedly =
+        context.select((EditTaskBloc bloc) => bloc.state.endDateOfRepeatedly);
 
     final selectedWeekdays = context
         .select<EditTaskBloc, List<int>>((bloc) => bloc.state.repeatDuringWeek);
@@ -185,14 +199,30 @@ class DateSelectCalendar extends StatelessWidget {
         final today = DateTime(now.year, now.month, now.day);
 
         if (selectedDay.compareTo(today) >= 0) {
-          context.read<EditTaskBloc>().add(
-                EditTaskDateChanged(taskDate: selectedDay),
-              );
+          onDaySelected(selectedDay);
+          // context.read<EditTaskBloc>().add(
+          //       EditTaskDateChanged(taskDate: selectedDay),
+          //     );
         }
       },
       calendarBuilders: CalendarBuilders(
         defaultBuilder: (context, day, focusedDay) {
-          if (selectedWeekdays.contains(day.weekday)) {
+          if (endDateOfRepeatedly != null &&
+              endDateOfRepeatedly.compareTo(day) == 0) {
+            return Container(
+              alignment: Alignment.center,
+              margin: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.error,
+                shape: BoxShape.circle,
+              ),
+              child: Text('${day.day}'),
+            );
+          }
+          if (selectedWeekdays.contains(day.weekday) &&
+              day.isAfter(focusedDay) &&
+              endDateOfRepeatedly != null &&
+              day.isBefore(endDateOfRepeatedly)) {
             return Container(
               alignment: Alignment.center,
               margin: const EdgeInsets.all(6),
