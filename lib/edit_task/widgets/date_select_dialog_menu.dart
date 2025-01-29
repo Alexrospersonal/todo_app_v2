@@ -78,6 +78,24 @@ class _DateSelectDialogMenuState extends State<DateSelectDialogMenu> {
       );
   }
 
+  String getWeekdaysTitle(BuildContext context, List<int> weekdays) {
+    if (weekdays.length == 7) {
+      return context.l10n.repeatsDuringWeek;
+    }
+
+    if (weekdays.isEmpty) {
+      return context.l10n.noneTitle;
+    }
+
+    return weekdays.map((day) {
+      final date =
+          DateTime.now().add(Duration(days: day - DateTime.now().weekday));
+      return DateFormat('E', Localizations.localeOf(context).languageCode)
+          .format(date)
+          .toUpperCase();
+    }).toString();
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -86,6 +104,9 @@ class _DateSelectDialogMenuState extends State<DateSelectDialogMenu> {
         context.select((EditTaskBloc bloc) => bloc.state.taskDate);
 
     final hasTime = context.select((EditTaskBloc bloc) => bloc.state.hasTime);
+
+    final repeatsOfWeek =
+        context.select((EditTaskBloc bloc) => bloc.state.repeatDuringWeek);
 
     final hasNotification =
         context.select((EditTaskBloc bloc) => bloc.state.hasNotification);
@@ -151,8 +172,11 @@ class _DateSelectDialogMenuState extends State<DateSelectDialogMenu> {
               onTap: () => pickRepeats(context, hasDate: selectedDay != null),
               isActive: hasRepeats,
               icon: Icons.repeat,
-              title: 'Повтори',
-              description: 'Протягом тидня та дня',
+              title: l10n.repeatsTitle,
+              description: getWeekdaysTitle(
+                context,
+                repeatsOfWeek,
+              ),
             ),
             DateSelectConfirmButtons(
               confirm: () {},
@@ -200,9 +224,6 @@ class DateSelectCalendar extends StatelessWidget {
 
         if (selectedDay.compareTo(today) >= 0) {
           onDaySelected(selectedDay);
-          // context.read<EditTaskBloc>().add(
-          //       EditTaskDateChanged(taskDate: selectedDay),
-          //     );
         }
       },
       calendarBuilders: CalendarBuilders(

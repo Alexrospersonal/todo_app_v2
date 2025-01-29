@@ -189,5 +189,9 @@
     "repeatEndsOn": "Повтор закінчується на",
     "@repeatEndsOn": {},
     "neverTitle": "Ніколи",
-    "@neverTitle": {}
+    "@neverTitle": {},
+    "endDateOfRepeats": "Кінцева дата повтору",
+    "@endDateOfRepeats": {},
+    "repeatsTitle": "Повтори",
+    "@repeatsTitle": {}
 }

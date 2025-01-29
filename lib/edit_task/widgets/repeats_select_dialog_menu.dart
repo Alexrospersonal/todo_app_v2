@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:todo_app_v2/edit_task/bloc/edit_task_bloc.dart';
 import 'package:todo_app_v2/edit_task/widgets/widgets.dart';
-import 'package:todo_app_v2/home/view/home_page.dart';
 import 'package:todo_app_v2/l10n/l10n.dart';
 
 class RepeatsSelectDialogMenu extends StatelessWidget {
@@ -42,6 +41,10 @@ class RepeatsSelectDialogMenu extends StatelessWidget {
 
     final hasRepeats =
         context.select<EditTaskBloc, bool>((bloc) => bloc.state.hasRepeats);
+
+    final endDateOfRepeats = context.select<EditTaskBloc, DateTime?>(
+      (bloc) => bloc.state.endDateOfRepeatedly,
+    );
 
     return Dialog(
       insetPadding: const EdgeInsets.all(25),
@@ -93,9 +96,8 @@ class RepeatsSelectDialogMenu extends StatelessWidget {
                   iconData: Icons.calendar_month_outlined,
                   header: l10n.repeatEndsOn,
                 ),
-                // TODO: створити діалог з вибором дати кінця
                 RepeatsEndDatePickButton(
-                  isActive: false,
+                  endDate: endDateOfRepeats,
                   onTap: () => pickEndDate(context, hasRepeats: hasRepeats),
                 ),
               ],
@@ -112,24 +114,46 @@ class EndDateCalendarDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final selectedDay = context.select(
-      (EditTaskBloc bloc) => bloc.state.endDateOfRepeatedly,
-    );
+    final l10n = context.l10n;
 
-    return const Dialog(
-      insetPadding: EdgeInsets.all(15),
+    return Dialog(
+      insetPadding: const EdgeInsets.all(15),
       child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 2.5, horizontal: 10.5),
+        padding: const EdgeInsets.symmetric(vertical: 2.5, horizontal: 10.5),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // TODO: додати іншй календар який обирає кінцеву дату і відображає
-            // обрану початкову дату та
-
-            // TODO: додати відображення початкової дати та повторів і змінити кольори дат
-
-            EndDateCalendar(),
+            Padding(
+              padding: const EdgeInsets.all(15),
+              child: DialogSubHeader(
+                iconData: Icons.date_range,
+                header: l10n.endDateOfRepeats,
+              ),
+            ),
+            const EndDateCalendar(),
+            Padding(
+              padding: const EdgeInsets.all(15),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ConfirmTextButton(
+                    name: l10n.clearBtnName,
+                    color: Theme.of(context).colorScheme.error,
+                    onTap: () => context.read<EditTaskBloc>().add(
+                          const EditTaskEndDateOfRepeatedly(
+                            endDateOfRepeatedly: null,
+                          ),
+                        ),
+                  ),
+                  ConfirmTextButton(
+                    name: l10n.confirmBtnName,
+                    color: Theme.of(context).colorScheme.primary,
+                    onTap: () => Navigator.of(context).pop(),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -170,7 +194,7 @@ class EndDateCalendar extends StatelessWidget {
               );
         }
       },
-      calendarBuilders: CalendarBuilders(
+      calendarBuilders: CalendarBuilders<void>(
         defaultBuilder: (context, day, focusedDay) {
           if (startDate != null && startDate.compareTo(day) == 0) {
             return Container(
@@ -247,32 +271,46 @@ class DialogSubHeader extends StatelessWidget {
 
 class RepeatsEndDatePickButton extends StatelessWidget {
   const RepeatsEndDatePickButton({
-    required this.isActive,
     required this.onTap,
+    required this.endDate,
     super.key,
   });
 
-  final bool isActive;
   final VoidCallback onTap;
+  final DateTime? endDate;
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
 
+    final isActive = endDate != null;
+
     final color = isActive
         ? Theme.of(context).colorScheme.primary
         : Theme.of(context).colorScheme.secondaryContainer;
+
+    final textColor = isActive
+        ? Theme.of(context).colorScheme.onPrimary
+        : Theme.of(context).colorScheme.onSecondary;
+
+    final text =
+        isActive ? DateFormat('M.dd.y').format(endDate!) : l10n.neverTitle;
 
     return GestureDetector(
       onTap: onTap,
       child: Container(
         height: 34,
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 15),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
           color: color,
         ),
-        child: Center(child: Text(l10n.neverTitle)),
+        child: Center(
+          child: Text(
+            text,
+            style: TextStyle(color: textColor),
+          ),
+        ),
       ),
     );
   }

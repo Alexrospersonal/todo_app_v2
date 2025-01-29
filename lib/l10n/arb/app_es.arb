@@ -189,5 +189,9 @@
     "repeatEndsOn": "Repeat ends on",
     "@repeatEndsOn": {},
     "neverTitle": "Never",
-    "@neverTitle": {}
+    "@neverTitle": {},
+    "endDateOfRepeats": "End date of repeats",
+    "@endDateOfRepeats": {},
+    "repeatsTitle": "Repeats",
+    "@repeatsTitle": {}
 }
