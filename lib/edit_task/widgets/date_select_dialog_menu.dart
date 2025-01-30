@@ -26,7 +26,7 @@ class _DateSelectDialogMenuState extends State<DateSelectDialogMenu> {
           .read<EditTaskBloc>()
           .add(EditTaskTimeChanged(taskTime: selectedTime));
     } else {
-      showSnackBar(ctx, 'Before need pick the date');
+      showSnackBar(ctx, ctx.l10n.beforePickDate);
     }
   }
 
@@ -42,7 +42,7 @@ class _DateSelectDialogMenuState extends State<DateSelectDialogMenu> {
         },
       );
     } else {
-      showSnackBar(ctx, 'Before need pick the time');
+      showSnackBar(ctx, ctx.l10n.beforePickTime);
     }
   }
 
@@ -58,7 +58,7 @@ class _DateSelectDialogMenuState extends State<DateSelectDialogMenu> {
         },
       );
     } else {
-      showSnackBar(ctx, 'Before need pick the date');
+      showSnackBar(ctx, ctx.l10n.beforePickDate);
     }
   }
 
@@ -192,7 +192,6 @@ class _DateSelectDialogMenuState extends State<DateSelectDialogMenu> {
   }
 }
 
-// TODO: додати відображення повторів днів які з наступного місяця
 class DateSelectCalendar extends StatelessWidget {
   const DateSelectCalendar({
     required this.selectedDay,
@@ -203,14 +202,99 @@ class DateSelectCalendar extends StatelessWidget {
   final DateTime? selectedDay;
   final void Function(DateTime?) onDaySelected;
 
+  Widget? _dayBuilder(BuildContext context, DateTime day, DateTime focusedDay) {
+    return _buildRepeatMarkers(
+      endDateOfRepeatedly:
+          context.select((EditTaskBloc bloc) => bloc.state.endDateOfRepeatedly),
+      day: day,
+      context: context,
+      selectedWeekdays:
+          context.select((EditTaskBloc bloc) => bloc.state.repeatDuringWeek),
+      focusedDay: focusedDay,
+    );
+  }
+
+  Widget? _buildRepeatMarkers({
+    required DateTime? endDateOfRepeatedly,
+    required DateTime day,
+    required BuildContext context,
+    required List<int> selectedWeekdays,
+    required DateTime focusedDay,
+  }) {
+    if (_isEndDay(endDateOfRepeatedly, day)) {
+      return _buildEndDayMarker(day, context);
+    } else if (_isRepeatedDay(
+      selectedWeekdays,
+      day,
+      focusedDay,
+      endDateOfRepeatedly,
+    )) {
+      return _buildRepeatedDayMarker(day, context);
+    }
+    return null;
+  }
+
+  bool _isEndDay(DateTime? endDateOfRepeatedly, DateTime day) {
+    return endDateOfRepeatedly != null &&
+        endDateOfRepeatedly.compareTo(day) == 0;
+  }
+
+  Widget _buildEndDayMarker(
+    DateTime day,
+    BuildContext context,
+  ) {
+    return Container(
+      alignment: Alignment.center,
+      margin: const EdgeInsets.all(6),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.error,
+        shape: BoxShape.circle,
+      ),
+      child: Text('${day.day}'),
+    );
+  }
+
+  Widget _buildRepeatedDayMarker(
+    DateTime day,
+    BuildContext context,
+  ) {
+    return Container(
+      alignment: Alignment.center,
+      margin: const EdgeInsets.all(6),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.secondaryContainer,
+        shape: BoxShape.circle,
+      ),
+      child: Text('${day.day}'),
+    );
+  }
+
+  bool _isRepeatedDay(
+    List<int> selectedWeekdays,
+    DateTime day,
+    DateTime focusedDay,
+    DateTime? endDate,
+  ) {
+    return selectedWeekdays.contains(day.weekday) &&
+        day.isAfter(focusedDay) &&
+        (endDate == null || day.isBefore(endDate));
+  }
+
+  void _selectDay(DateTime selectedDay) {
+    final today = DateTime.now().copyWith(
+      hour: 0,
+      minute: 0,
+      second: 0,
+      millisecond: 0,
+      microsecond: 0,
+    );
+    if (selectedDay.isAfter(today) || selectedDay.isAtSameMomentAs(today)) {
+      onDaySelected(selectedDay);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final endDateOfRepeatedly =
-        context.select((EditTaskBloc bloc) => bloc.state.endDateOfRepeatedly);
-
-    final selectedWeekdays = context
-        .select<EditTaskBloc, List<int>>((bloc) => bloc.state.repeatDuringWeek);
-
     return TableCalendar<void>(
       startingDayOfWeek: StartingDayOfWeek.monday,
       locale: Localizations.localeOf(context).toString(),
@@ -218,44 +302,10 @@ class DateSelectCalendar extends StatelessWidget {
       lastDay: DateTime.utc(2030, 3, 14),
       focusedDay: selectedDay ?? DateTime.now(),
       selectedDayPredicate: (day) => isSameDay(day, selectedDay),
-      onDaySelected: (selectedDay, focusedDay) {
-        final now = DateTime.now();
-        final today = DateTime(now.year, now.month, now.day);
-
-        if (selectedDay.compareTo(today) >= 0) {
-          onDaySelected(selectedDay);
-        }
-      },
+      onDaySelected: (selectedDay, focusedDay) => _selectDay(selectedDay),
       calendarBuilders: CalendarBuilders(
-        defaultBuilder: (context, day, focusedDay) {
-          if (endDateOfRepeatedly != null &&
-              endDateOfRepeatedly.compareTo(day) == 0) {
-            return Container(
-              alignment: Alignment.center,
-              margin: const EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.error,
-                shape: BoxShape.circle,
-              ),
-              child: Text('${day.day}'),
-            );
-          }
-          if (selectedWeekdays.contains(day.weekday) &&
-              day.isAfter(focusedDay) &&
-              endDateOfRepeatedly != null &&
-              day.isBefore(endDateOfRepeatedly)) {
-            return Container(
-              alignment: Alignment.center,
-              margin: const EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.secondaryContainer,
-                shape: BoxShape.circle,
-              ),
-              child: Text('${day.day}'),
-            );
-          }
-          return null;
-        },
+        outsideBuilder: _dayBuilder,
+        defaultBuilder: _dayBuilder,
       ),
       headerStyle: const HeaderStyle(
         formatButtonVisible: false,

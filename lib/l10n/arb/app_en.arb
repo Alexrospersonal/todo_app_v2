@@ -193,5 +193,9 @@
     "endDateOfRepeats": "End date of repeats",
     "@endDateOfRepeats": {},
     "repeatsTitle": "Repeats",
-    "@repeatsTitle": {}
+    "@repeatsTitle": {},
+    "beforePickDate": "Before need pick the date",
+    "@beforePickDate": {},
+    "beforePickTime": "Before need pick the time",
+    "@beforePickTime": {}
 }

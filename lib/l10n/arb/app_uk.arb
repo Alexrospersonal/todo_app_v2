@@ -193,5 +193,9 @@
     "endDateOfRepeats": "Кінцева дата повтору",
     "@endDateOfRepeats": {},
     "repeatsTitle": "Повтори",
-    "@repeatsTitle": {}
+    "@repeatsTitle": {},
+    "beforePickDate": "Спочатку виберіть дату",
+    "@beforePickDate": {},
+    "beforePickTime": "Спочатку виберіть годину",
+    "@beforePickTime": {}
 }
