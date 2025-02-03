@@ -13,22 +13,6 @@ import 'package:todos_repository/todos_repository.dart';
 class TodosList extends StatelessWidget {
   const TodosList({super.key});
 
-  bool _updateTodosListWhen(TodosState previous, TodosState current) {
-    if (previous.todos.length != current.todos.length) {
-      return true;
-    }
-
-    if (previous.filter != current.filter) {
-      return true;
-    }
-
-    if (previous.selectedCategory != current.selectedCategory) {
-      return true;
-    }
-
-    return true;
-  }
-
   Widget _buildWidgetIfTasksIsEmpty(TodosState state, AppLocalizations l10n) {
     if (state.status == TodosOverviewStatus.loading) {
       return const Center(child: CupertinoActivityIndicator());

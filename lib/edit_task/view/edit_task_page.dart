@@ -41,7 +41,7 @@ class EditTaskPage extends StatelessWidget {
         initalTask: initialTask,
         initialCategory: initialCategory,
         tasksRepository: context.read<TodosRepository>(),
-      ),
+      )..add(const EditTaskLoadCategories()),
       child: BlocListener<EditTaskBloc, EditTaskState>(
         listenWhen: (previous, current) =>
             previous.status != current.status &&

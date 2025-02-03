@@ -8,12 +8,12 @@ import 'package:todo_db_api/src/models/category.dart';
 
 part 'task.g.dart';
 
-//TODO: Add ReminderTime for notification
 /// Task model for the Isar database.
 ///
 /// Used to store data about tasks, including categories,
 /// repetitions, reminders, and more.
 @collection
+// ignore: must_be_immutable
 class TaskEntity extends Equatable {
   /// Constructor to create a task.
   ///

@@ -43,7 +43,6 @@ class EditTaskBloc extends Bloc<EditTaskEvent, EditTaskState> {
     on<EditTaskNotificationTimeChanged>(_onNotificationTimeChanged);
     on<EditTaskWeekdayChanged>(_onWeekdayChanged);
     on<EditTaskEndDateOfRepeatedly>(_onEndDateOfRepeatedlyChanged);
-    add(const EditTaskLoadCategories());
   }
 
   final TodosRepository _tasksRepository;
@@ -89,7 +88,7 @@ class EditTaskBloc extends Bloc<EditTaskEvent, EditTaskState> {
     Emitter<EditTaskState> emit,
   ) {
     final subtaskList = [...state.subtasks];
-    final randomId = Random().nextInt(10000);
+    final randomId = DateTime.now().millisecondsSinceEpoch;
     final newSubtask = SubTask(id: randomId, title: '');
     subtaskList.add(newSubtask);
 
@@ -144,6 +143,7 @@ class EditTaskBloc extends Bloc<EditTaskEvent, EditTaskState> {
     //TODO: Add date, times, and create
     //notification repository and create copies of task
 
+    // TODO: мождиво замінити мутацію на копію нового обєкта
     final task = state.initialTodo ?? TaskEntity(title: '')
       ..title = state.title
       ..notate = event.description
@@ -168,9 +168,10 @@ class EditTaskBloc extends Bloc<EditTaskEvent, EditTaskState> {
     EditTaskLoadCategories event,
     Emitter<EditTaskState> emit,
   ) async {
-    final categories = await _tasksRepository.getAllCategories();
-    final newState = state.copyWith(categories: categories);
-    emit(newState);
+    await emit.forEach(
+      _tasksRepository.getAllCategories().asStream(),
+      onData: (cateegories) => state.copyWith(categories: cateegories),
+    );
   }
 
   Future<void> _onDateChanged(
@@ -182,7 +183,21 @@ class EditTaskBloc extends Bloc<EditTaskEvent, EditTaskState> {
       add(const EditTaskTimeChanged(hasTime: false));
     } else {
       emit(state.copyWith(taskDate: event.taskDate, hasDate: true));
+      _clearEndDateIfStartDateIsAfter(event);
     }
+  }
+
+  void _clearEndDateIfStartDateIsAfter(EditTaskDateChanged event) {
+    if (state.endDateOfRepeatedly != null &&
+        (event.taskDate!.isAtSameMomentAs(state.endDateOfRepeatedly!) ||
+            event.taskDate!.isAfter(state.endDateOfRepeatedly!))) {
+      add(const EditTaskEndDateOfRepeatedly(endDateOfRepeatedly: null));
+    }
+  }
+
+  // TODO: рефактор цього коду
+  DateTime _mergeDateWithTime(DateTime date, TimeOfDay time) {
+    return DateTime(date.year, date.month, date.day, time.hour, time.minute);
   }
 
   Future<void> _onTimeChanged(
@@ -192,16 +207,21 @@ class EditTaskBloc extends Bloc<EditTaskEvent, EditTaskState> {
     final taskTime = await event.taskTime;
 
     if (taskTime != null && state.taskDate != null) {
-      final currentDate = state.taskDate!;
+      // final currentDate = state.taskDate!;
 
-      final dateWithTime = DateTime(
-        currentDate.year,
-        currentDate.month,
-        currentDate.day,
-        taskTime.hour,
-        taskTime.minute,
+      // final dateWithTime = DateTime(
+      //   currentDate.year,
+      //   currentDate.month,
+      //   currentDate.day,
+      //   taskTime.hour,
+      //   taskTime.minute,
+      // );
+      emit(
+        state.copyWith(
+          taskDate: _mergeDateWithTime(state.taskDate!, taskTime),
+          hasTime: true,
+        ),
       );
-      emit(state.copyWith(taskDate: dateWithTime, hasTime: true));
     } else {
       if (event.hasTime == false) {
         if (state.hasDate) {
