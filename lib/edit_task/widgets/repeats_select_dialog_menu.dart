@@ -165,17 +165,87 @@ class EndDateCalendarDialog extends StatelessWidget {
 class EndDateCalendar extends StatelessWidget {
   const EndDateCalendar({super.key});
 
+  Widget? _dayBuilder(
+    BuildContext context,
+    DateTime day,
+    DateTime? selectedDay,
+  ) {
+    return _buildRepeatMarkers(
+      startDate: context.select((EditTaskBloc bloc) => bloc.state.taskDate)!,
+      day: day,
+      context: context,
+      selectedWeekdays:
+          context.select((EditTaskBloc bloc) => bloc.state.repeatDuringWeek),
+      selectedDay: selectedDay,
+    );
+  }
+
+  bool _isStartDay(DateTime? startDate, DateTime day) {
+    return startDate != null && startDate.compareTo(day) == 0;
+  }
+
+  bool _isRepeatedDay(
+    List<int> selectedWeekdays,
+    DateTime day,
+    DateTime? startDate,
+  ) {
+    return selectedWeekdays.contains(day.weekday) && day.isAfter(startDate!);
+  }
+
+  Widget _buildStartDayMarker(DateTime day, BuildContext context) {
+    return Container(
+      alignment: Alignment.center,
+      margin: const EdgeInsets.all(6),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.primary,
+        shape: BoxShape.circle,
+      ),
+      child: Text(
+        '${day.day}',
+        style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+      ),
+    );
+  }
+
+  Widget? _buildRepeatMarkers({
+    required DateTime startDate,
+    required DateTime day,
+    required BuildContext context,
+    required List<int> selectedWeekdays,
+    required DateTime? selectedDay,
+  }) {
+    if (_isStartDay(startDate, day)) {
+      return _buildStartDayMarker(day, context);
+    } else if (_isRepeatedDay(selectedWeekdays, day, startDate)) {
+      if (selectedDay != null && day.isAfter(selectedDay)) {
+        return null;
+      }
+
+      return _buildRepeatedDayMarker(day, context);
+    }
+    return null;
+  }
+
+  Widget _buildRepeatedDayMarker(
+    DateTime day,
+    BuildContext context,
+  ) {
+    return Container(
+      alignment: Alignment.center,
+      margin: const EdgeInsets.all(6),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.secondaryContainer,
+        shape: BoxShape.circle,
+      ),
+      child: Text('${day.day}'),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final selectedDay = context.select(
       (EditTaskBloc bloc) => bloc.state.endDateOfRepeatedly,
     );
-
-    final startDate =
-        context.select((EditTaskBloc bloc) => bloc.state.taskDate);
-
-    final selectedWeekdays = context
-        .select<EditTaskBloc, List<int>>((bloc) => bloc.state.repeatDuringWeek);
 
     return TableCalendar(
       focusedDay: selectedDay ?? DateTime.now(),
@@ -196,39 +266,8 @@ class EndDateCalendar extends StatelessWidget {
         }
       },
       calendarBuilders: CalendarBuilders<void>(
-        defaultBuilder: (context, day, focusedDay) {
-          if (startDate != null && startDate.compareTo(day) == 0) {
-            return Container(
-              alignment: Alignment.center,
-              margin: const EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primary,
-                shape: BoxShape.circle,
-              ),
-              child: Text(
-                '${day.day}',
-                style:
-                    TextStyle(color: Theme.of(context).colorScheme.onPrimary),
-              ),
-            );
-          }
-
-          if (selectedWeekdays.contains(day.weekday) &&
-              day.isAfter(startDate!) &&
-              selectedDay != null &&
-              day.isBefore(selectedDay)) {
-            return Container(
-              alignment: Alignment.center,
-              margin: const EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.secondaryContainer,
-                shape: BoxShape.circle,
-              ),
-              child: Text('${day.day}'),
-            );
-          }
-          return null;
-        },
+        outsideBuilder: _dayBuilder,
+        defaultBuilder: _dayBuilder,
       ),
       headerStyle: const HeaderStyle(
         formatButtonVisible: false,

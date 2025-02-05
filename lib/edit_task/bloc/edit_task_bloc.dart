@@ -25,6 +25,19 @@ class EditTaskBloc extends Bloc<EditTaskEvent, EditTaskState> {
             category: initialCategory,
             color: initalTask?.color ?? baseColor.value,
             subtasks: initalTask?.subtasks ?? [],
+            taskDate: initalTask?.taskDate,
+            hasDate: initalTask?.taskDate != null,
+            hasTime: initalTask?.hasTime ?? false,
+            hasRepeats: initalTask?.hasRepeats ?? false,
+            repeatDuringWeek: initalTask?.repeatDuringWeek ?? [],
+            hasEndDateOfRepeatedly: initalTask?.endDateOfRepeatedly != null,
+            endDateOfRepeatedly: initalTask?.endDateOfRepeatedly,
+            notificationReminderTime:
+                ReminderTime.fromMinutes(initalTask?.notificationReminderTime),
+            hasNotification: ReminderTime.fromMinutes(
+                  initalTask?.notificationReminderTime,
+                ) !=
+                ReminderTime.none,
           ),
         ) {
     on<EditTaskTitleChanged>(_onTitleChanged);
@@ -43,6 +56,7 @@ class EditTaskBloc extends Bloc<EditTaskEvent, EditTaskState> {
     on<EditTaskNotificationTimeChanged>(_onNotificationTimeChanged);
     on<EditTaskWeekdayChanged>(_onWeekdayChanged);
     on<EditTaskEndDateOfRepeatedly>(_onEndDateOfRepeatedlyChanged);
+    on<EditTaskClearWeekdays>(_onClearWeekdays);
   }
 
   final TodosRepository _tasksRepository;
@@ -140,21 +154,28 @@ class EditTaskBloc extends Bloc<EditTaskEvent, EditTaskState> {
     final loadingState = state.copyWith(status: EditTaskStatus.loading);
     emit(loadingState);
 
-    //TODO: Add date, times, and create
-    //notification repository and create copies of task
-
     // TODO: мождиво замінити мутацію на копію нового обєкта
     final task = state.initialTodo ?? TaskEntity(title: '')
       ..title = state.title
       ..notate = event.description
       ..color = state.color
-      ..important = state.important;
+      ..important = state.important
+      ..taskDate = state.taskDate
+      ..hasTime = state.hasTime
+      ..hasRepeats = state.hasRepeats
+      ..repeatDuringWeek = state.repeatDuringWeek
+      ..endDateOfRepeatedly = state.endDateOfRepeatedly
+      ..notificationReminderTime = state.notificationReminderTime.minutes;
+
+    //TODO: add notification
 
     task.category.value = state.category;
 
     if (state.subtasks.isNotEmpty) {
       task.subtasks = state.subtasks;
     }
+
+    // TODO: create copies of task
 
     try {
       await _tasksRepository.creatTask(task);
@@ -181,6 +202,7 @@ class EditTaskBloc extends Bloc<EditTaskEvent, EditTaskState> {
     if (event.taskDate == null) {
       emit(state.copyWith(taskDate: event.taskDate, hasDate: false));
       add(const EditTaskTimeChanged(hasTime: false));
+      add(const EditTaskClearWeekdays());
     } else {
       emit(state.copyWith(taskDate: event.taskDate, hasDate: true));
       _clearEndDateIfStartDateIsAfter(event);
@@ -195,7 +217,6 @@ class EditTaskBloc extends Bloc<EditTaskEvent, EditTaskState> {
     }
   }
 
-  // TODO: рефактор цього коду
   DateTime _mergeDateWithTime(DateTime date, TimeOfDay time) {
     return DateTime(date.year, date.month, date.day, time.hour, time.minute);
   }
@@ -207,42 +228,30 @@ class EditTaskBloc extends Bloc<EditTaskEvent, EditTaskState> {
     final taskTime = await event.taskTime;
 
     if (taskTime != null && state.taskDate != null) {
-      // final currentDate = state.taskDate!;
-
-      // final dateWithTime = DateTime(
-      //   currentDate.year,
-      //   currentDate.month,
-      //   currentDate.day,
-      //   taskTime.hour,
-      //   taskTime.minute,
-      // );
       emit(
         state.copyWith(
           taskDate: _mergeDateWithTime(state.taskDate!, taskTime),
           hasTime: true,
         ),
       );
-    } else {
-      if (event.hasTime == false) {
-        if (state.hasDate) {
-          final currentDate = state.taskDate!;
-
-          final dateWithTime = DateTime(
-            currentDate.year,
-            currentDate.month,
-            currentDate.day,
-          );
-
-          emit(state.copyWith(hasTime: false, taskDate: dateWithTime));
-        } else {
-          emit(state.copyWith(hasTime: false));
-        }
-        add(
-          const EditTaskNotificationTimeChanged(
-            reminderTime: ReminderTime.none,
-          ),
-        );
-      }
+    } else if (event.hasTime == false) {
+      emit(
+        state.copyWith(
+          hasTime: false,
+          taskDate: state.hasDate
+              ? DateTime(
+                  state.taskDate!.year,
+                  state.taskDate!.month,
+                  state.taskDate!.day,
+                )
+              : null,
+        ),
+      );
+      add(
+        const EditTaskNotificationTimeChanged(
+          reminderTime: ReminderTime.none,
+        ),
+      );
     }
   }
 
@@ -313,5 +322,18 @@ class EditTaskBloc extends Bloc<EditTaskEvent, EditTaskState> {
         ),
       );
     }
+  }
+
+  Future<void> _onClearWeekdays(
+    EditTaskClearWeekdays event,
+    Emitter<EditTaskState> emit,
+  ) async {
+    emit(
+      state.copyWith(
+        repeatDuringWeek: [],
+        hasRepeats: false,
+        hasEndDateOfRepeatedly: false,
+      ),
+    );
   }
 }

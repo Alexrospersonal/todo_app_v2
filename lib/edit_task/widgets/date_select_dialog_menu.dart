@@ -179,11 +179,10 @@ class _DateSelectDialogMenuState extends State<DateSelectDialogMenu> {
               ),
             ),
             DateSelectConfirmButtons(
-              confirm: () {},
-              cancel: () {
-                Navigator.of(context).pop();
-              },
-              clear: () {},
+              confirm: () => Navigator.of(context).pop(),
+              cancel: () => Navigator.of(context).pop(),
+              clear: () =>
+                  context.read<EditTaskBloc>().add(const EditTaskDateChanged()),
             ),
           ],
         ),

@@ -134,3 +134,7 @@ final class EditTaskEndDateOfRepeatedly extends EditTaskEvent {
 
   final DateTime? endDateOfRepeatedly;
 }
+
+final class EditTaskClearWeekdays extends EditTaskEvent {
+  const EditTaskClearWeekdays();
+}

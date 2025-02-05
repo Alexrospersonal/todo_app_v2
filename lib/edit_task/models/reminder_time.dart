@@ -37,4 +37,13 @@ enum ReminderTime {
       return l10n.inMinutesTimeDurationMessage(remainingMinutes);
     }
   }
+
+  static ReminderTime fromMinutes(int? minutes) {
+    if (minutes == null) {
+      return ReminderTime.none;
+    }
+
+    return ReminderTime.values
+        .firstWhere((reminderTime) => reminderTime.minutes == minutes);
+  }
 }
