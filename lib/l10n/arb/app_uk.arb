@@ -197,5 +197,7 @@
     "beforePickDate": "Спочатку виберіть дату",
     "@beforePickDate": {},
     "beforePickTime": "Спочатку виберіть годину",
-    "@beforePickTime": {}
+    "@beforePickTime": {},
+    "allTitle": "Всі",
+    "@allTitle": {}
 }

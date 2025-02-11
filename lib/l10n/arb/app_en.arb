@@ -197,5 +197,7 @@
     "beforePickDate": "Before need pick the date",
     "@beforePickDate": {},
     "beforePickTime": "Before need pick the time",
-    "@beforePickTime": {}
+    "@beforePickTime": {},
+    "allTitle": "All",
+    "@allTitle": {}
 }

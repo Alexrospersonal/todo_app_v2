@@ -19,12 +19,13 @@ class EditTaskPage extends StatelessWidget {
   final TaskEntity? initialTask;
   final CategoryEntity? initialCategory;
 
-  static Route<void> route({
+  static Route<bool> route({
     TaskEntity? initialTask,
     CategoryEntity? initialCategory,
   }) {
     return MaterialPageRoute(
       fullscreenDialog: true,
+      maintainState: false,
       builder: (context) {
         return EditTaskPage(
           initialTask: initialTask,

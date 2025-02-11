@@ -14,7 +14,7 @@ final class TodosSelectedCategoryLoading extends TodosEvent {
 final class TodosSelectedCategoryChanged extends TodosEvent {
   const TodosSelectedCategoryChanged({required this.category});
 
-  final CategoryEntity category;
+  final CategoryEntity? category;
 }
 
 final class TodosSubscriptionRequested extends TodosEvent {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todo_app_v2/l10n/l10n.dart';
 import 'package:todo_app_v2/todos/bloc/todos_bloc.dart';
 import 'package:todo_app_v2/todos/widgets/widgets.dart';
 import 'package:todos_repository/todos_repository.dart';
@@ -12,6 +13,64 @@ class TodosCategories extends StatefulWidget {
 }
 
 class _TodosCategoriesState extends State<TodosCategories> {
+  Widget? buildCategoriesButtons(BuildContext context, int index) {
+    final state = context.read<TodosBloc>().state;
+    final categories = state.categories;
+
+    if (index == 0) {
+      return buildAllCategoriesButton(state.selectedCategory);
+    } else if (index < categories.length + 1) {
+      return buildTodoCategoryButton(
+        categories,
+        index - 1,
+        state.selectedCategory,
+      );
+    } else {
+      return buildCreateCategoryButton();
+    }
+  }
+
+  Widget buildAllCategoriesButton(CategoryEntity? selectedCategory) {
+    return AllCategories(
+      selectedCategory: selectedCategory,
+      callback: () => context.read<TodosBloc>().add(
+            const TodosSelectedCategoryChanged(
+              category: null,
+            ),
+          ),
+    );
+  }
+
+  Widget buildCreateCategoryButton() {
+    return AddCategoryButton(
+      callback: () => context.read<TodosBloc>().add(
+            const TodosCreateCategoryRequested(
+              isOpen: true,
+            ),
+          ),
+    );
+  }
+
+  Widget buildTodoCategoryButton(
+    List<CategoryEntity> categories,
+    int index,
+    CategoryEntity? selectedCategory,
+  ) {
+    return TodoCategory(
+      category: categories[index],
+      // isOverdue: false,
+      currentIndex: index,
+      callback: () {
+        context.read<TodosBloc>().add(
+              TodosSelectedCategoryChanged(
+                category: categories[index],
+              ),
+            );
+      },
+      selectedCategory: selectedCategory,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<TodosBloc, TodosState>(
@@ -24,37 +83,42 @@ class _TodosCategoriesState extends State<TodosCategories> {
             separatorBuilder: (context, index) => const SizedBox(
               width: 15,
             ),
-            itemCount: categories.length + 1,
+            itemCount: categories.length + 2,
             padding: EdgeInsets.zero,
-            itemBuilder: (context, index) {
-              if (index < categories.length) {
-                return TodoCategory(
-                  category: categories[index],
-                  // isOverdue: false,
-                  currentIndex: index,
-                  callback: () {
-                    context.read<TodosBloc>().add(
-                          TodosSelectedCategoryChanged(
-                            category: categories[index],
-                          ),
-                        );
-                  },
-                  selectedCategory: state.selectedCategory,
-                );
-              } else {
-                return AddCategoryButton(
-                  callback: () => context.read<TodosBloc>().add(
-                        const TodosCreateCategoryRequested(
-                          isOpen: true,
-                        ),
-                      ),
-                );
-              }
-            },
+            itemBuilder: buildCategoriesButtons,
             scrollDirection: Axis.horizontal,
           ),
         );
       },
+    );
+  }
+}
+
+class AllCategories extends StatelessWidget {
+  const AllCategories({
+    required this.selectedCategory,
+    required this.callback,
+    this.isOverdue = false,
+    super.key,
+  });
+
+  final bool isOverdue;
+  final VoidCallback callback;
+  final CategoryEntity? selectedCategory;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+
+    final color = selectedCategory == null
+        ? Theme.of(context).colorScheme.primary
+        : Theme.of(context).colorScheme.onPrimary;
+
+    return CategoryButton(
+      title: l10n.allTitle,
+      callback: callback,
+      color: color,
+      isOverdue: isOverdue,
     );
   }
 }
@@ -80,13 +144,38 @@ class TodoCategory extends StatelessWidget {
         ? Theme.of(context).colorScheme.primary
         : Theme.of(context).colorScheme.onPrimary;
 
+    return CategoryButton(
+      title: category.toString(),
+      callback: callback,
+      color: color,
+      isOverdue: isOverdue,
+    );
+  }
+}
+
+class CategoryButton extends StatelessWidget {
+  const CategoryButton({
+    required this.title,
+    required this.callback,
+    required this.color,
+    required this.isOverdue,
+    super.key,
+  });
+
+  final String title;
+  final VoidCallback callback;
+  final Color color;
+  final bool isOverdue;
+
+  @override
+  Widget build(BuildContext context) {
     return GestureDetector(
       onTap: callback,
       child: Stack(
         clipBehavior: Clip.none,
         children: [
           Text(
-            category.toString(),
+            title,
             style: TextStyle(
               color: color,
               fontSize: 20,

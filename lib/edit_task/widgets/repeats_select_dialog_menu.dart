@@ -161,7 +161,6 @@ class EndDateCalendarDialog extends StatelessWidget {
   }
 }
 
-// TODO: перенести зміни з DateSelectCalendar сюди
 class EndDateCalendar extends StatelessWidget {
   const EndDateCalendar({super.key});
 

@@ -56,7 +56,6 @@ class TodosList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<TodosBloc, TodosState>(
-      // buildWhen: _updateTodosListWhen,
       builder: (context, state) {
         final l10n = context.l10n;
 
@@ -79,7 +78,7 @@ class TodosList extends StatelessWidget {
                     final task = newTasks.elementAt(index);
                     return TodoCard(
                       task: task,
-                      onTap: () => Navigator.of(context).push(
+                      onTap: () => Navigator.of(context).push<bool>(
                         EditTaskPage.route(
                           initialTask: task,
                           initialCategory: state.selectedCategory,
