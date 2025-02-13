@@ -92,37 +92,64 @@ class TodosBloc extends Bloc<TodosEvent, TodosState> {
     emit(state.copyWith(status: () => TodosOverviewStatus.loading));
 
     await emit.forEach(
-      _todosRepository.getCategoriesStream(),
-      onData: (categories) {
-        final categoriesObj = categories.map((category) {
-          category.tasks.loadSync();
-          final overdueTasks = category.tasks.where(
-            (task) =>
-                task.taskDate != null &&
-                task.isFinished == false &&
-                task.taskDate!.isBefore(DateTime.now()),
-          );
-          return CategoryObject(
-            categoryEntity: category,
-            isOverdue: overdueTasks.isNotEmpty,
-          );
-        });
+      _todosRepository
+          .getCategoriesStream()
+          .asyncMap<List<CategoryObject>>((categories) async {
+        final categoriesObjects = await Future.wait(
+          categories.map((category) async {
+            final isOverdue = await _todosRepository.hasOverdueTasks(category);
 
-        final ifHasOverdueTasks =
-            categoriesObj.where((category) => category.isOverdue).isNotEmpty;
+            return CategoryObject(
+              categoryEntity: category,
+              isOverdue: isOverdue,
+            );
+          }),
+        );
 
-        // TODO: переписати логіку для категорії All
+        final ifHasOverdueTasks = await _todosRepository.hasOverdueTasks(null);
+
         final categoryForAllTasks = CategoryObject(
           categoryEntity: CategoryEntity(name: 'All'),
           isOverdue: ifHasOverdueTasks,
         );
 
-        final newState = state.copyWith(
-          status: () => TodosOverviewStatus.success,
-          categories: () => [categoryForAllTasks, ...categoriesObj],
-        );
+        return [categoryForAllTasks, ...categoriesObjects];
+      }),
+      onData: (categories) {
+        // final categoriesObj = categories.map((category) {
+        //   category.tasks.loadSync();
+        //   final overdueTasks = category.tasks.where(
+        //     (task) =>
+        //         task.taskDate != null &&
+        //         task.isFinished == false &&
+        //         task.taskDate!.isBefore(DateTime.now()),
+        //   );
+        //   return CategoryObject(
+        //     categoryEntity: category,
+        //     isOverdue: overdueTasks.isNotEmpty,
+        //   );
+        // });
 
-        return newState;
+        // final ifHasOverdueTasks =
+        //     categoriesObj.where((category) => category.isOverdue).isNotEmpty;
+
+        // // TODO: переписати логіку для категорії All і решту категорій
+        // final categoryForAllTasks = CategoryObject(
+        //   categoryEntity: CategoryEntity(name: 'All'),
+        //   isOverdue: ifHasOverdueTasks,
+        // );
+
+        // final newState = state.copyWith(
+        //   status: () => TodosOverviewStatus.success,
+        //   categories: () => [categoryForAllTasks, ...categoriesObj],
+        // );
+
+        // return newState;
+
+        return state.copyWith(
+          status: () => TodosOverviewStatus.success,
+          categories: () => categories,
+        );
       },
       onError: (error, stackTrace) => state.copyWith(
         status: () => TodosOverviewStatus.failure,

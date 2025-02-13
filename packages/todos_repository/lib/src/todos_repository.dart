@@ -43,4 +43,13 @@ class TodosRepository {
   ///
   Future<void> createCategory(String title) async =>
       todoApi.createCategory(title);
+
+  /// Checks if there are any tasks that are overdue.
+  ///
+  /// This function iterates through the list of tasks
+  /// and determines if any of them have a due date that is before the current
+  /// date and time. If at least one overdue task is found,
+  /// the function returns `true`; otherwise, it returns `false`.
+  Future<bool> hasOverdueTasks(CategoryEntity? category) async =>
+      todoApi.hasOverdueTasks(category);
 }

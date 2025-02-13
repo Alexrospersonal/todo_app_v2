@@ -73,15 +73,18 @@ class TodoDbApi {
   /// Checks if there are overdue tasks.
   /// If [category] is provided, only tasks in this category are checked.
   Future<bool> hasOverdueTasks(CategoryEntity? category) async {
-    final query = plugin.taskEntitys
+    var query = plugin.taskEntitys
         .filter()
         .isFinishedEqualTo(false)
+        .taskDateIsNotNull()
         .taskDateLessThan(DateTime.now());
 
     if (category != null) {
-      query.category((q) => q.idEqualTo(category.id));
+      query = query.category((q) => q.idEqualTo(category.id));
     }
 
-    return await query.findFirst() != null;
+    final overdueTask = await query.findFirst();
+
+    return overdueTask != null;
   }
 }
