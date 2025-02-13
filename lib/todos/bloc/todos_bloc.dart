@@ -6,6 +6,16 @@ import 'package:todos_repository/todos_repository.dart';
 part 'todos_event.dart';
 part 'todos_state.dart';
 
+class CategoryObject {
+  const CategoryObject({
+    required this.categoryEntity,
+    required this.isOverdue,
+  });
+
+  final CategoryEntity categoryEntity;
+  final bool isOverdue;
+}
+
 class TodosBloc extends Bloc<TodosEvent, TodosState> {
   TodosBloc({required TodosRepository todosRepository})
       : _todosRepository = todosRepository,
@@ -84,9 +94,32 @@ class TodosBloc extends Bloc<TodosEvent, TodosState> {
     await emit.forEach(
       _todosRepository.getCategoriesStream(),
       onData: (categories) {
+        final categoriesObj = categories.map((category) {
+          category.tasks.loadSync();
+          final overdueTasks = category.tasks.where(
+            (task) =>
+                task.taskDate != null &&
+                task.isFinished == false &&
+                task.taskDate!.isBefore(DateTime.now()),
+          );
+          return CategoryObject(
+            categoryEntity: category,
+            isOverdue: overdueTasks.isNotEmpty,
+          );
+        });
+
+        final ifHasOverdueTasks =
+            categoriesObj.where((category) => category.isOverdue).isNotEmpty;
+
+        // TODO: переписати логіку для категорії All
+        final categoryForAllTasks = CategoryObject(
+          categoryEntity: CategoryEntity(name: 'All'),
+          isOverdue: ifHasOverdueTasks,
+        );
+
         final newState = state.copyWith(
           status: () => TodosOverviewStatus.success,
-          categories: () => categories,
+          categories: () => [categoryForAllTasks, ...categoriesObj],
         );
 
         return newState;
@@ -105,6 +138,7 @@ class TodosBloc extends Bloc<TodosEvent, TodosState> {
 
     await _todosRepository.creatTask(task);
     add(const TodosSubscriptionRequested());
+    add(const TodosCategoriesSubscriptionRequested());
   }
 
   Future<void> _onTodoDeleted(

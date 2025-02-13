@@ -61,7 +61,6 @@ class TodosView extends StatefulWidget {
   State<TodosView> createState() => _TodosViewState();
 }
 
-// TODO: додати нормальне відображення списків з врахуванням помилок і загруззок в Блок з уроку.
 // TODO: написати логіку для статусу та відображення статистики.
 class _TodosViewState extends State<TodosView> {
   @override

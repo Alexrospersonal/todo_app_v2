@@ -18,7 +18,7 @@ final class TodosState extends Equatable {
   final TasksFilters filter;
   final CategoryEntity? selectedCategory;
   final TaskEntity? lastDeletedTodo;
-  final List<CategoryEntity> categories;
+  final List<CategoryObject> categories;
   final bool isOpenCreateCategory;
 
   Iterable<TaskEntity> get filteredTodos => filter.applyAll(todos);
@@ -39,6 +39,7 @@ final class TodosState extends Equatable {
   Iterable<TaskEntity> get overdueTodos => filteredTodos.where(
         (task) =>
             task.taskDate != null &&
+            task.isFinished == false &&
             task.taskDate!.isBefore(
               DateTime.now(),
             ),
@@ -47,7 +48,7 @@ final class TodosState extends Equatable {
   TodosState copyWith({
     TodosOverviewStatus Function()? status,
     List<TaskEntity> Function()? todos,
-    List<CategoryEntity> Function()? categories,
+    List<CategoryObject> Function()? categories,
     TasksFilters Function()? filter,
     TaskEntity? Function()? lastDeletedTodo,
     CategoryEntity? Function()? selectedCategory,

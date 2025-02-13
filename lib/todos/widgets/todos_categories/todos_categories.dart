@@ -17,22 +17,33 @@ class _TodosCategoriesState extends State<TodosCategories> {
     final state = context.read<TodosBloc>().state;
     final categories = state.categories;
 
-    if (index == 0) {
-      return buildAllCategoriesButton(state.selectedCategory);
-    } else if (index < categories.length + 1) {
-      return buildTodoCategoryButton(
-        categories,
-        index - 1,
-        state.selectedCategory,
-      );
+    if (state.status == TodosOverviewStatus.success) {
+      if (index == 0) {
+        return buildAllCategoriesButton(
+          state.selectedCategory,
+          isOverdue: categories[0].isOverdue,
+        );
+      } else if (index < categories.length) {
+        return buildTodoCategoryButton(
+          categories,
+          index,
+          state.selectedCategory,
+        );
+      } else {
+        return buildCreateCategoryButton();
+      }
     } else {
-      return buildCreateCategoryButton();
+      return const SizedBox();
     }
   }
 
-  Widget buildAllCategoriesButton(CategoryEntity? selectedCategory) {
+  Widget buildAllCategoriesButton(
+    CategoryEntity? selectedCategory, {
+    required bool isOverdue,
+  }) {
     return AllCategories(
       selectedCategory: selectedCategory,
+      isOverdue: isOverdue,
       callback: () => context.read<TodosBloc>().add(
             const TodosSelectedCategoryChanged(
               category: null,
@@ -52,18 +63,18 @@ class _TodosCategoriesState extends State<TodosCategories> {
   }
 
   Widget buildTodoCategoryButton(
-    List<CategoryEntity> categories,
+    List<CategoryObject> categories,
     int index,
     CategoryEntity? selectedCategory,
   ) {
     return TodoCategory(
-      category: categories[index],
-      // isOverdue: false,
+      category: categories[index].categoryEntity,
+      isOverdue: categories[index].isOverdue,
       currentIndex: index,
       callback: () {
         context.read<TodosBloc>().add(
               TodosSelectedCategoryChanged(
-                category: categories[index],
+                category: categories[index].categoryEntity,
               ),
             );
       },
