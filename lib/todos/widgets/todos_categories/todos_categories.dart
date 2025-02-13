@@ -17,7 +17,8 @@ class _TodosCategoriesState extends State<TodosCategories> {
     final state = context.read<TodosBloc>().state;
     final categories = state.categories;
 
-    if (state.status == TodosOverviewStatus.success) {
+    if (state.status == TodosOverviewStatus.success &&
+        state.categories.isNotEmpty) {
       if (index == 0) {
         return buildAllCategoriesButton(
           state.selectedCategory,

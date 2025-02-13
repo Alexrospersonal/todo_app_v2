@@ -113,6 +113,8 @@ class TodosList extends StatelessWidget {
                 if (overdueTasks.isNotEmpty)
                   ExpansionTile(
                     title: Text(l10n.overdueTasksTitle),
+                    tilePadding: EdgeInsets.zero,
+                    childrenPadding: const EdgeInsets.symmetric(vertical: 5),
                     children:
                         _createTaskCartForExpansionTile(overdueTasks, context),
                   ),

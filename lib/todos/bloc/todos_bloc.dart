@@ -116,36 +116,6 @@ class TodosBloc extends Bloc<TodosEvent, TodosState> {
         return [categoryForAllTasks, ...categoriesObjects];
       }),
       onData: (categories) {
-        // final categoriesObj = categories.map((category) {
-        //   category.tasks.loadSync();
-        //   final overdueTasks = category.tasks.where(
-        //     (task) =>
-        //         task.taskDate != null &&
-        //         task.isFinished == false &&
-        //         task.taskDate!.isBefore(DateTime.now()),
-        //   );
-        //   return CategoryObject(
-        //     categoryEntity: category,
-        //     isOverdue: overdueTasks.isNotEmpty,
-        //   );
-        // });
-
-        // final ifHasOverdueTasks =
-        //     categoriesObj.where((category) => category.isOverdue).isNotEmpty;
-
-        // // TODO: переписати логіку для категорії All і решту категорій
-        // final categoryForAllTasks = CategoryObject(
-        //   categoryEntity: CategoryEntity(name: 'All'),
-        //   isOverdue: ifHasOverdueTasks,
-        // );
-
-        // final newState = state.copyWith(
-        //   status: () => TodosOverviewStatus.success,
-        //   categories: () => [categoryForAllTasks, ...categoriesObj],
-        // );
-
-        // return newState;
-
         return state.copyWith(
           status: () => TodosOverviewStatus.success,
           categories: () => categories,

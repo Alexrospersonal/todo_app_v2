@@ -15,10 +15,7 @@ class TodoDbApi {
   }
 
   Stream<List<TaskEntity>> getAllTasks() {
-    final stream = plugin.taskEntitys
-        .filter()
-        .isFinishedEqualTo(false)
-        .watch(fireImmediately: true);
+    final stream = plugin.taskEntitys.where().watch(fireImmediately: true);
 
     return stream;
   }
