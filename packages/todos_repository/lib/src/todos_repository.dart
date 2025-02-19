@@ -52,4 +52,15 @@ class TodosRepository {
   /// the function returns `true`; otherwise, it returns `false`.
   Future<bool> hasOverdueTasks(CategoryEntity? category) async =>
       todoApi.hasOverdueTasks(category);
+
+  ///
+  Future<List<TaskEntity>> getRecurringTasks() async =>
+      todoApi.getRecurringTasks();
+
+  ///
+  Future<TaskEntity?> getCopyOfTheOriginalTaskByDate(
+    DateTime taskDate,
+    int orinalTaskId,
+  ) =>
+      todoApi.getCopyOfTheOriginalTaskByDate(taskDate, orinalTaskId);
 }

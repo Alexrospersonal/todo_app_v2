@@ -84,4 +84,27 @@ class TodoDbApi {
 
     return overdueTask != null;
   }
+
+  Future<List<TaskEntity>> getRecurringTasks() async {
+    return plugin.taskEntitys
+        .filter()
+        .isFinishedEqualTo(false)
+        .taskDateIsNotNull()
+        .taskDateGreaterThan(DateTime.now())
+        .hasRepeatsEqualTo(true)
+        .findAll();
+  }
+
+  Future<TaskEntity?> getCopyOfTheOriginalTaskByDate(
+    DateTime taskDate,
+    int orinalTaskId,
+  ) {
+    return plugin.taskEntitys
+        .filter()
+        .isFinishedEqualTo(false)
+        .isCopyEqualTo(true)
+        .taskDateEqualTo(taskDate)
+        .originalTask((q) => q.idEqualTo(orinalTaskId))
+        .findFirst();
+  }
 }

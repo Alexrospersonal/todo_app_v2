@@ -87,7 +87,8 @@ class TodosList extends StatelessWidget {
                       category: task.category.value,
                       title: task.title,
                       dateTime: task.taskDate,
-                      isNotification: task.notificationId != null || false,
+                      isNotification: task.notificationReminderTime != null &&
+                          task.notificationReminderTime! > 0,
                       repeatDuringWeek: task.repeatDuringWeek ?? [],
                       repeatDuringDay: task.repeatDuringDay,
                       isImportant: task.important,
@@ -351,11 +352,11 @@ class TodoTextsColumn extends StatelessWidget {
               const SizedBox(
                 width: 3,
               ),
-              TodoTextsColumnRowWidget(
-                iconData: Icons.av_timer_sharp,
-                flag: repeatDuringDay.isNotEmpty,
-                text: repeatDuringDay,
-              ),
+              // TodoTextsColumnRowWidget(
+              //   iconData: Icons.av_timer_sharp,
+              //   flag: repeatDuringDay.isNotEmpty,
+              //   text: repeatDuringDay,
+              // ),
             ],
           ),
         ],
