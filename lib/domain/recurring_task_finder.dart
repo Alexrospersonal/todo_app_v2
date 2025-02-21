@@ -1,3 +1,4 @@
+import 'package:todo_app_v2/domain/reccuring_task_dto.dart';
 import 'package:todos_repository/todos_repository.dart';
 
 class RecurringTaskFinder {
@@ -18,7 +19,9 @@ class RecurringTaskFinder {
     return recurringTasksWithoutNearestCopy.whereType<TaskEntity>().toList();
   }
 
-  Future<TaskEntity?> _returnTaskIfHasNoNearestCopy(TaskEntity task) async {
+  Future<ReccuringTaskDto?> _returnTaskIfHasNoNearestCopy(
+    TaskEntity task,
+  ) async {
     final nearestDate = _getNearestDate(task.taskDate!, task.repeatDuringWeek!);
 
     final copyOfTask = await _taskRepository.getCopyOfTheOriginalTaskByDate(
@@ -26,7 +29,12 @@ class RecurringTaskFinder {
       task.id,
     );
 
-    return copyOfTask == null ? task : null;
+    return copyOfTask == null
+        ? ReccuringTaskDto(
+            recurringTask: task,
+            nextDate: nearestDate,
+          )
+        : null;
   }
 
   DateTime _getNearestDate(DateTime taskDate, List<int> weekdays) {

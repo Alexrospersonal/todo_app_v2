@@ -173,10 +173,12 @@ class EditTaskBloc extends Bloc<EditTaskEvent, EditTaskState> {
       task.subtasks = state.subtasks;
     }
 
-    // TODO: create copies of task
-
     try {
       await _tasksRepository.creatTask(task);
+
+      /// TODO: протестувати цю функцію
+      if (task.hasRepeats) {}
+
       emit(state.copyWith(status: EditTaskStatus.success));
     } catch (e) {
       emit(state.copyWith(status: EditTaskStatus.failure));

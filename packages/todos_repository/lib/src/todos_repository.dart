@@ -63,4 +63,11 @@ class TodosRepository {
     int orinalTaskId,
   ) =>
       todoApi.getCopyOfTheOriginalTaskByDate(taskDate, orinalTaskId);
+
+  ///
+  Future<void> saveRecurringTask(
+    TaskEntity recurringTask,
+    TaskEntity originalTask,
+  ) async =>
+      todoApi.saveRecurringTask(recurringTask, originalTask);
 }

@@ -107,4 +107,19 @@ class TodoDbApi {
         .originalTask((q) => q.idEqualTo(orinalTaskId))
         .findFirst();
   }
+
+  Future<void> saveRecurringTask(
+    TaskEntity recurringTask,
+    TaskEntity originalTask,
+  ) async {
+    await plugin.writeTxn(() async {
+      await originalTask.category.load();
+
+      recurringTask.category.value = originalTask.category.value;
+      recurringTask.originalTask.value = originalTask;
+
+      await plugin.taskEntitys.put(recurringTask);
+      await recurringTask.category.save();
+    });
+  }
 }
