@@ -22,7 +22,7 @@ class RecurringTaskFinder {
   Future<ReccuringTaskDto?> _returnTaskIfHasNoNearestCopy(
     TaskEntity task,
   ) async {
-    final nearestDate = _getNearestDate(task.taskDate!, task.repeatDuringWeek!);
+    final nearestDate = getNearestDate(task.taskDate!, task.repeatDuringWeek!);
 
     final copyOfTask = await _taskRepository.getCopyOfTheOriginalTaskByDate(
       nearestDate,
@@ -37,13 +37,32 @@ class RecurringTaskFinder {
         : null;
   }
 
-  DateTime _getNearestDate(DateTime taskDate, List<int> weekdays) {
+  static DateTime getNearestDate(DateTime taskDate, List<int> weekdays) {
     final now = DateTime.now();
-    final daysToAdd = (7 - now.weekday + weekdays.first) % 7;
+    final nearestWeekday = getNearestWeekday(weekdays);
+    final daysToAdd = (7 - now.weekday + nearestWeekday) % 7;
 
-    final nextDate = now.add(Duration(days: daysToAdd));
+    final nextDate = now.add(Duration(days: daysToAdd)).copyWith(
+          hour: taskDate.hour,
+          minute: taskDate.minute,
+        );
+
     final differenceWithTaskAndNextDates = nextDate.difference(taskDate);
 
-    return taskDate.add(differenceWithTaskAndNextDates);
+    final nearestDate = taskDate.add(differenceWithTaskAndNextDates);
+
+    return nearestDate;
+  }
+
+  static int getNearestWeekday(List<int> weekdays) {
+    final now = DateTime.now();
+    final currentWeekday = now.weekday;
+
+    final nextWeekday = weekdays.firstWhere(
+      (weekday) => weekday >= currentWeekday,
+      orElse: () => weekdays.first,
+    );
+
+    return nextWeekday;
   }
 }

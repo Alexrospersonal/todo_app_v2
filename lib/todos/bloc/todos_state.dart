@@ -27,6 +27,9 @@ final class TodosState extends Equatable {
         if (!task.isFinished && task.taskDate == null) {
           return true;
         } else if (!task.isFinished && task.taskDate!.isAfter(DateTime.now())) {
+          if (task.hasRepeats && !task.isCopy) {
+            return false;
+          }
           return true;
         } else {
           return false;

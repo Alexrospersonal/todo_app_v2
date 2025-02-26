@@ -1,6 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:todo_app_v2/domain/recurring_task_builder.dart';
+import 'package:todo_app_v2/domain/recurring_task_finder.dart';
 import 'package:todo_app_v2/edit_task/models/reminder_time.dart';
 import 'package:todo_app_v2/theme/theme.dart';
 import 'package:todos_repository/todos_repository.dart';
@@ -177,7 +179,15 @@ class EditTaskBloc extends Bloc<EditTaskEvent, EditTaskState> {
       await _tasksRepository.creatTask(task);
 
       /// TODO: протестувати цю функцію
-      if (task.hasRepeats) {}
+      if (task.hasRepeats && !task.isCopy) {
+        final nearestDate = RecurringTaskFinder.getNearestDate(
+          task.taskDate!,
+          task.repeatDuringWeek!,
+        );
+
+        await RecurringTaskBuilder(todosRepository: _tasksRepository)
+            .buildReccuringTask(task, nearestDate);
+      }
 
       emit(state.copyWith(status: EditTaskStatus.success));
     } catch (e) {

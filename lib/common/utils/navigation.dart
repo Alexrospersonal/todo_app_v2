@@ -1,4 +1,5 @@
 enum RouteNames {
+  home(name: '/home'),
   userProfile(name: '/user_profile'),
   lists(name: '/lists'),
   archive(name: '/archive'),
