@@ -199,5 +199,7 @@
     "beforePickTime": "Спочатку виберіть годину",
     "@beforePickTime": {},
     "allTitle": "Всі",
-    "@allTitle": {}
+    "@allTitle": {},
+    "reminderTitle": "Нагадування",
+    "@reminderTitle": {}
 }

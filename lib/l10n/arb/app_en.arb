@@ -199,5 +199,7 @@
     "beforePickTime": "Before need pick the time",
     "@beforePickTime": {},
     "allTitle": "All",
-    "@allTitle": {}
+    "@allTitle": {},
+    "reminderTitle": "Reminder",
+    "@reminderTitle": {}
 }

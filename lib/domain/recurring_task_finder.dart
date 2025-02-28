@@ -37,7 +37,7 @@ class RecurringTaskFinder {
         : null;
   }
 
-  static DateTime getNearestDate(DateTime taskDate, List<int> weekdays) {
+  DateTime getNearestDate(DateTime taskDate, List<int> weekdays) {
     final now = DateTime.now();
     final nearestWeekday = getNearestWeekday(weekdays);
     final daysToAdd = (7 - now.weekday + nearestWeekday) % 7;
@@ -54,7 +54,7 @@ class RecurringTaskFinder {
     return nearestDate;
   }
 
-  static int getNearestWeekday(List<int> weekdays) {
+  int getNearestWeekday(List<int> weekdays) {
     final now = DateTime.now();
     final currentWeekday = now.weekday;
 
