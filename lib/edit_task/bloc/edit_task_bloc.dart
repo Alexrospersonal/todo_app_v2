@@ -1,8 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:todo_app_v2/common/utils/navigation.dart';
-import 'package:todo_app_v2/domain/notification_service.dart';
 import 'package:todo_app_v2/domain/recurring_task_builder.dart';
 import 'package:todo_app_v2/domain/recurring_task_finder.dart';
 import 'package:todo_app_v2/domain/task_notification_service.dart';
@@ -171,60 +169,12 @@ class EditTaskBloc extends Bloc<EditTaskEvent, EditTaskState> {
       taskNotificationService: taskNoticationService,
     );
 
-    // final task = state.initialTodo ?? TaskEntity(title: '')
-    //   ..title = state.title
-    //   ..notate = event.description
-    //   ..color = state.color
-    //   ..important = state.important
-    //   ..taskDate = state.taskDate
-    //   ..hasTime = state.hasTime
-    //   ..hasRepeats = state.hasRepeats
-    //   ..repeatDuringWeek = state.repeatDuringWeek
-    //   ..endDateOfRepeatedly = state.endDateOfRepeatedly
-    //   ..notificationReminderTime = state.notificationReminderTime.minutes;
-
-    // task.category.value = state.category;
-
-    // if (state.subtasks.isNotEmpty) {
-    //   task.subtasks = state.subtasks;
-    // }
-
-    // if (state.notificationReminderTime != ReminderTime.none) {
-    //   task.notificationId = DateTime.now().millisecondsSinceEpoch;
-
-    //   final scheduledTime = task.taskDate!
-    //       .subtract(Duration(minutes: task.notificationReminderTime!));
-
-    //   await NotificationService.showNotification(
-    //     task.notificationId!,
-    //     'Нагадування про завдання:',
-    //     task.title,
-    //     scheduledTime,
-    //     RouteNames.home,
-    //   );
-    // } else if (task.notificationId != null &&
-    //     state.notificationReminderTime == ReminderTime.none) {
-    //   await NotificationService.cancelNotification(task.notificationId!);
-    // }
-
     try {
       await taskService.buildTask(
         state.initialTodo ?? TaskEntity(title: ''),
         state,
+        event.description,
       );
-
-      // await _tasksRepository.creatTask(task);
-
-      /// TODO: протестувати цю функцію
-      // if (task.hasRepeats && !task.isCopy) {
-      //   final nearestDate = RecurringTaskFinder.getNearestDate(
-      //     task.taskDate!,
-      //     task.repeatDuringWeek!,
-      //   );
-
-      //   await RecurringTaskBuilder(todosRepository: _tasksRepository)
-      //       .buildReccuringTask(task, nearestDate);
-      // }
 
       emit(state.copyWith(status: EditTaskStatus.success));
     } catch (e) {

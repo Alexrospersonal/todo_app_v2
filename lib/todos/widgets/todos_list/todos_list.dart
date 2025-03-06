@@ -296,7 +296,14 @@ class TodoTextsColumn extends StatelessWidget {
   }
 
   String extractPlainText(String jsonString) {
-    final json = jsonDecode(jsonString) as List<dynamic>;
+    late List<dynamic> json;
+
+    try {
+      json = jsonDecode(jsonString) as List<dynamic>;
+    } catch (_) {
+      json = [];
+    }
+
     final buffer = StringBuffer();
 
     for (final operation in json) {

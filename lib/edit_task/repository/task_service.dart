@@ -21,23 +21,43 @@ class TaskService {
   final RecurringTaskBuilder _recurringTaskBuilder;
   final TaskNotificationService _taskNotificationService;
 
-  Future<void> buildTask(TaskEntity task, EditTaskState state) async {
-    final updatedTask = _copyDataFromStateToTask(task, state);
+  Future<void> buildTask(
+    TaskEntity task,
+    EditTaskState state,
+    String notate,
+  ) async {
+    // TODO: реалізувати підміну копії на оригінал якщо це редагується копія
+    // та замінити існуючі копії на нові. Тобтов видали
+    //існуючі які ще не завершені або протерміновані.
+
+    // TODO: провірити чи це редагування чи це стоврення бо при редагуванні не має створюватись копія.
+    // або заміняти на нову копію.
+    final updatedTask = _copyDataFromStateToTask(task, state, notate);
 
     await _todosRepository.creatTask(updatedTask);
 
-    await _taskNotificationService.updateNotification(
-      task,
-      state.notificationReminderTime,
-    );
+    //TODO: подумати що робити коли завдання редагується як себе має поверсти сповіщення
+    if (!updatedTask.hasRepeats) {
+      await _taskNotificationService.updateNotification(
+        updatedTask,
+        state.notificationReminderTime,
+      );
+    }
 
-    await _buildReccuringTasks(task, _todosRepository);
+    if (updatedTask.hasRepeats) {
+      await _buildReccuringTasks(updatedTask, _todosRepository);
+    }
   }
 
-  TaskEntity _copyDataFromStateToTask(TaskEntity task, EditTaskState state) {
+  TaskEntity _copyDataFromStateToTask(
+    TaskEntity task,
+    EditTaskState state,
+    String notate,
+  ) {
     final copyOfTask = task.copyWith(
+      id: task.id,
       title: state.title,
-      notate: state.notate,
+      notate: notate,
       color: state.color,
       important: state.important,
       taskDate: state.taskDate,
@@ -63,8 +83,6 @@ class TaskService {
     TaskEntity task,
     TodosRepository todosRepository,
   ) async {
-    if (!task.hasRepeats) return;
-
     final nearestDate = _recurringTaskFinder.getNearestDate(
       task.taskDate!,
       task.repeatDuringWeek!,

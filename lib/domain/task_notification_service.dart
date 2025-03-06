@@ -2,7 +2,6 @@ import 'dart:ui';
 
 import 'package:todo_app_v2/common/utils/navigation.dart';
 import 'package:todo_app_v2/domain/notification_service.dart';
-import 'package:todo_app_v2/edit_task/bloc/edit_task_bloc.dart';
 import 'package:todo_app_v2/edit_task/models/reminder_time.dart';
 import 'package:todo_app_v2/l10n/l10n.dart';
 import 'package:todos_repository/todos_repository.dart';

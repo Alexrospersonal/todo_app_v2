@@ -96,6 +96,7 @@ class TaskEntity extends Equatable {
 
   /// Creates a copy of the task with updated values.
   TaskEntity copyWith({
+    int? id,
     String? title,
     String? notate,
     CategoryEntity? category,
@@ -114,6 +115,7 @@ class TaskEntity extends Equatable {
   }) {
     final task = TaskEntity(title: title ?? this.title);
 
+    task.id = id ?? this.id;
     task.notate = notate ?? this.notate;
     task.taskDate = taskDate ?? this.taskDate;
     task.hasTime = hasTime ?? this.hasTime;
