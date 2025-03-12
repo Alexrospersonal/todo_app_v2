@@ -26,10 +26,10 @@ class TaskService {
     EditTaskState state,
     String notate,
   ) async {
-    final orinalTask = task.isCopy ? await getOriginalTaskByCopy(task) : null;
+    final originalTask = task.isCopy ? await getOriginalTaskByCopy(task) : null;
 
     final updatedTask = _copyDataFromStateToTask(
-      orinalTask ?? task,
+      originalTask ?? task,
       state,
       notate,
     );
@@ -43,14 +43,24 @@ class TaskService {
       );
     }
 
-    // TODO: якщо були внесені зміни то видалити старії копії які ще не завершені та їх сповіщення
-    if (orinalTask != null) {
-      // Remove copies of task and their notifications if tasks is not finished now.
+    if (originalTask != null) {
+      await _removeCopiesOfTaskAndCancelTheirNotification(originalTask);
     }
 
     if (updatedTask.hasRepeats) {
       await _buildReccuringTasks(updatedTask, _todosRepository);
     }
+  }
+
+  Future<void> _removeCopiesOfTaskAndCancelTheirNotification(
+      TaskEntity originalTask) async {
+    final copiesOfOriginalTask =
+        await _todosRepository.getCopiesOfTaskByOriginalTaskId(originalTask.id);
+
+    final notificationIdList = _getNotificationsIds(copiesOfOriginalTask);
+
+    await _removeCopiesOfTask(originalTask);
+    await _taskNotificationService.cancelAllNotification(notificationIdList);
   }
 
   Future<TaskEntity?> getOriginalTaskByCopy(TaskEntity task) async {
@@ -87,7 +97,21 @@ class TaskService {
     return copyOfTask;
   }
 
-  Future<void> removeCopiesOfTask(TaskEntity originalTask) async {}
+  List<int> _getNotificationsIds(List<TaskEntity> tasks) {
+    return tasks
+        .where((task) => task.notificationId != null)
+        .map((task) => task.id)
+        .toList();
+  }
+
+  Future<void> _removeCopiesOfTask(TaskEntity originalTask) async {
+    final copies =
+        await _todosRepository.getCopiesOfTaskByOriginalTaskId(originalTask.id);
+
+    final copiesId = copies.map((task) => task.id);
+
+    await _todosRepository.deleteTasks(copiesId.toList());
+  }
 
   Future<void> _buildReccuringTasks(
     TaskEntity task,

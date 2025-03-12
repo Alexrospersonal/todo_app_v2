@@ -82,4 +82,10 @@ class TaskNotificationService {
       data.route,
     );
   }
+
+  Future<void> cancelAllNotification(List<int> ids) async {
+    for (final id in ids) {
+      await NotificationService.cancelNotification(id);
+    }
+  }
 }
