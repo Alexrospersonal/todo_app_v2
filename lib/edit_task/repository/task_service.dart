@@ -26,17 +26,17 @@ class TaskService {
     EditTaskState state,
     String notate,
   ) async {
-    // TODO: реалізувати підміну копії на оригінал якщо це редагується копія
-    // та замінити існуючі копії на нові. Тобтов видали
-    //існуючі які ще не завершені або протерміновані.
+    final orinalTask = task.isCopy ? await getOriginalTaskByCopy(task) : null;
 
-    // TODO: провірити чи це редагування чи це стоврення бо при редагуванні не має створюватись копія.
-    // або заміняти на нову копію.
-    final updatedTask = _copyDataFromStateToTask(task, state, notate);
+    final updatedTask = _copyDataFromStateToTask(
+      orinalTask ?? task,
+      state,
+      notate,
+    );
 
     await _todosRepository.creatTask(updatedTask);
 
-    //TODO: подумати що робити коли завдання редагується як себе має поверсти сповіщення
+    //TODO: додати провірку чи завдання редаговане
     if (!updatedTask.hasRepeats) {
       await _taskNotificationService.updateNotification(
         updatedTask,
@@ -44,9 +44,15 @@ class TaskService {
       );
     }
 
+    // TODO: якщо були внесені зміни то видалити старії копії які ще не завершені та їх сповіщення
+
     if (updatedTask.hasRepeats) {
       await _buildReccuringTasks(updatedTask, _todosRepository);
     }
+  }
+
+  Future<TaskEntity?> getOriginalTaskByCopy(TaskEntity task) async {
+    return _todosRepository.getOriginalTaskByCopy(task);
   }
 
   TaskEntity _copyDataFromStateToTask(

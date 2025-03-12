@@ -122,4 +122,9 @@ class TodoDbApi {
       await recurringTask.category.save();
     });
   }
+
+  Future<TaskEntity?> getOriginalTaskByCopy(TaskEntity taskCopy) async {
+    await taskCopy.originalTask.load();
+    return taskCopy.originalTask.value;
+  }
 }
