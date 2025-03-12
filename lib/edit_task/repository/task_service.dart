@@ -36,7 +36,6 @@ class TaskService {
 
     await _todosRepository.creatTask(updatedTask);
 
-    //TODO: додати провірку чи завдання редаговане
     if (!updatedTask.hasRepeats) {
       await _taskNotificationService.updateNotification(
         updatedTask,
@@ -45,6 +44,9 @@ class TaskService {
     }
 
     // TODO: якщо були внесені зміни то видалити старії копії які ще не завершені та їх сповіщення
+    if (orinalTask != null) {
+      // Remove copies of task and their notifications if tasks is not finished now.
+    }
 
     if (updatedTask.hasRepeats) {
       await _buildReccuringTasks(updatedTask, _todosRepository);
@@ -84,6 +86,8 @@ class TaskService {
 
     return copyOfTask;
   }
+
+  Future<void> removeCopiesOfTask(TaskEntity originalTask) async {}
 
   Future<void> _buildReccuringTasks(
     TaskEntity task,

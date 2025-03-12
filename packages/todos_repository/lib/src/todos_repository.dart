@@ -72,6 +72,13 @@ class TodosRepository {
       todoApi.saveRecurringTask(recurringTask, originalTask);
 
   ///
-  Future<TaskEntity?> getOriginalTaskByCopy(TaskEntity taskCopy) =>
+  Future<TaskEntity?> getOriginalTaskByCopy(TaskEntity taskCopy) async =>
       todoApi.getOriginalTaskByCopy(taskCopy);
+
+  ///
+  Future<int> deleteTasks(List<int> ids) async => todoApi.deleteTasks(ids);
+
+  ///
+  Future<List<TaskEntity>> getCopiesOfTaskByOriginalTaskId(int id) async =>
+      todoApi.getCopiesOfTaskByOriginalTaskId(id);
 }

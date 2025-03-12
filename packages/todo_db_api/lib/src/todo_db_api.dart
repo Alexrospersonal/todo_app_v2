@@ -35,6 +35,23 @@ class TodoDbApi {
     return result;
   }
 
+  Future<int> deleteTasks(List<int> ids) async {
+    late int deletedResult;
+
+    await plugin.writeTxn(() async {
+      deletedResult = await plugin.taskEntitys.deleteAll(ids);
+    });
+
+    return deletedResult;
+  }
+
+  Future<List<TaskEntity>> getCopiesOfTaskByOriginalTaskId(int id) async {
+    return plugin.taskEntitys
+        .filter()
+        .originalTask((q) => q.idEqualTo(id))
+        .findAll();
+  }
+
   Future<int> creatTask(TaskEntity task) async {
     late int id;
 
