@@ -53,11 +53,15 @@ class TaskService {
   }
 
   Future<void> _removeCopiesOfTaskAndCancelTheirNotification(
-      TaskEntity originalTask) async {
+    TaskEntity originalTask,
+  ) async {
     final copiesOfOriginalTask =
         await _todosRepository.getCopiesOfTaskByOriginalTaskId(originalTask.id);
 
-    final notificationIdList = _getNotificationsIds(copiesOfOriginalTask);
+    final copiesIsNotFinishedYet =
+        copiesOfOriginalTask.where((task) => task.isFinished == false).toList();
+
+    final notificationIdList = _getNotificationsIds(copiesIsNotFinishedYet);
 
     await _removeCopiesOfTask(originalTask);
     await _taskNotificationService.cancelAllNotification(notificationIdList);
