@@ -1,3 +1,4 @@
+import 'package:background_fetch/background_fetch.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -31,6 +32,19 @@ void main() async {
   final todosRepository = TodosRepository(todoApi: TodoDbApi(plugin: isar));
 
   await runOncePerDay(todosRepository);
+
+  await BackgroundFetch.configure(
+      BackgroundFetchConfig(
+        minimumFetchInterval: 1440,
+        stopOnTerminate: false,
+        enableHeadless: true,
+      ), (String taskId) async {
+    await runOncePerDay(todosRepository);
+
+    await BackgroundFetch.finish(taskId);
+  }, (String taskId) async {
+    await BackgroundFetch.finish(taskId);
+  });
 
   await bootstrap(
     () => App(

@@ -95,7 +95,7 @@ class _TodosCategoriesState extends State<TodosCategories> {
             separatorBuilder: (context, index) => const SizedBox(
               width: 15,
             ),
-            itemCount: categories.length + 2,
+            itemCount: categories.length + 1,
             padding: EdgeInsets.zero,
             itemBuilder: buildCategoriesButtons,
             scrollDirection: Axis.horizontal,
