@@ -1,5 +1,11 @@
+import 'dart:ui';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:todo_app_v2/common/utils/navigation.dart';
+import 'package:todo_app_v2/domain/notification_service.dart';
+import 'package:todo_app_v2/domain/task_notification_service.dart';
+import 'package:todo_app_v2/l10n/l10n.dart';
 import 'package:todo_app_v2/todos/models/tasks_filters.dart';
 import 'package:todos_repository/todos_repository.dart';
 
@@ -133,9 +139,37 @@ class TodosBloc extends Bloc<TodosEvent, TodosState> {
   ) async {
     final task = event.todo..isFinished = event.isCompleted;
 
+    if (task.notificationId != null) {
+      final taskNotificationData =
+          await TaskNotificationData.buildTaskNotificationData(
+        task,
+        schedulteTime: task.taskDate!
+            .subtract(Duration(minutes: task.notificationReminderTime!)),
+      );
+
+      await _updateTaskNotification(event.isCompleted, taskNotificationData);
+    }
+
     await _todosRepository.creatTask(task);
     add(const TodosSubscriptionRequested());
     add(const TodosCategoriesSubscriptionRequested());
+  }
+
+  Future<void> _updateTaskNotification(
+    bool isCompleted,
+    TaskNotificationData taskNotificationData,
+  ) async {
+    if (isCompleted) {
+      await NotificationService.cancelNotification(taskNotificationData.id);
+    } else {
+      await NotificationService.showNotification(
+        taskNotificationData.id,
+        taskNotificationData.title,
+        taskNotificationData.body,
+        taskNotificationData.schedulteTime!,
+        RouteNames.home,
+      );
+    }
   }
 
   Future<void> _onTodoDeleted(

@@ -20,6 +20,23 @@ class TaskNotificationData {
   final String body;
   final DateTime? schedulteTime;
   final RouteNames route;
+
+  static Future<TaskNotificationData> buildTaskNotificationData(
+    TaskEntity task, {
+    required DateTime schedulteTime,
+    RouteNames route = RouteNames.home,
+  }) async {
+    final locale = PlatformDispatcher.instance.locale;
+    final localizations = await AppLocalizations.delegate.load(locale);
+
+    return TaskNotificationData(
+      id: task.notificationId!,
+      title: localizations.reminderTitle,
+      body: task.title,
+      schedulteTime: schedulteTime,
+      route: route,
+    );
+  }
 }
 
 class TaskNotificationService {
