@@ -75,3 +75,7 @@ final class TodosCreateCategoryRequested extends TodosEvent {
 
   final bool isOpen;
 }
+
+final class TodosUpdateOverdueTodosValue extends TodosEvent {
+  const TodosUpdateOverdueTodosValue();
+}

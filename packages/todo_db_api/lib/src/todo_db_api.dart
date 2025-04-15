@@ -144,4 +144,15 @@ class TodoDbApi {
     await taskCopy.originalTask.load();
     return taskCopy.originalTask.value;
   }
+
+  Future<int> getTaskOverdueAmount() async {
+    final now = DateTime.now();
+
+    return plugin.taskEntitys
+        .filter()
+        .isFinishedEqualTo(false)
+        .taskDateIsNotNull()
+        .taskDateLessThan(now)
+        .count();
+  }
 }

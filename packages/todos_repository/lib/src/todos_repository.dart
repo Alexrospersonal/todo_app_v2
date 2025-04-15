@@ -81,4 +81,7 @@ class TodosRepository {
   ///
   Future<List<TaskEntity>> getCopiesOfTaskByOriginalTaskId(int id) async =>
       todoApi.getCopiesOfTaskByOriginalTaskId(id);
+
+  ///
+  Future<int> getTaskOverdueAmount() async => todoApi.getTaskOverdueAmount();
 }

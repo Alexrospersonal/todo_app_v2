@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo_app_v2/l10n/l10n.dart';
 import 'package:todo_app_v2/l10n/user_status_provider.dart';
+import 'package:todo_app_v2/todos/bloc/todos_bloc.dart';
 
 class UserStatusBar extends StatelessWidget {
   const UserStatusBar({super.key});
@@ -56,25 +58,29 @@ class TodayUserStatus extends StatelessWidget {
 class DeterminatedTasksStatus extends StatelessWidget {
   const DeterminatedTasksStatus({super.key});
 
+  // TODO: Додати отримання протермінованих завдань використовуючи Блок
+
   @override
   Widget build(BuildContext context) {
-    return RichText(
-      text: TextSpan(
-        text: 'determinated\ntasks:',
-        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              height: 1,
+    return BlocBuilder<TodosBloc, TodosState>(
+      builder: (context, state) => RichText(
+        text: TextSpan(
+          text: 'determinated\ntasks:',
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                height: 1,
+              ),
+          children: [
+            TextSpan(
+              text: state.taskOverdueCount.toString(),
+              style: Theme.of(context)
+                  .textTheme
+                  .titleSmall
+                  ?.copyWith(height: 1, color: Colors.red),
             ),
-        children: [
-          TextSpan(
-            text: '${7}',
-            style: Theme.of(context)
-                .textTheme
-                .titleSmall
-                ?.copyWith(height: 1, color: Colors.red),
-          ),
-        ],
+          ],
+        ),
+        textAlign: TextAlign.right,
       ),
-      textAlign: TextAlign.right,
     );
   }
 }

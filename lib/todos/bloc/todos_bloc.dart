@@ -1,11 +1,8 @@
-import 'dart:ui';
-
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:todo_app_v2/common/utils/navigation.dart';
 import 'package:todo_app_v2/domain/notification_service.dart';
 import 'package:todo_app_v2/domain/task_notification_service.dart';
-import 'package:todo_app_v2/l10n/l10n.dart';
 import 'package:todo_app_v2/todos/models/tasks_filters.dart';
 import 'package:todos_repository/todos_repository.dart';
 
@@ -38,6 +35,7 @@ class TodosBloc extends Bloc<TodosEvent, TodosState> {
     on<TodosOverviewFilterChanged>(_onFilterChanged);
     on<TodosCreateCategoryRequested>(_onCreateCategoryRequested);
     on<TodosCreateNewList>(_onCreateNewList);
+    on<TodosUpdateOverdueTodosValue>(_onUpdateOvedueTodosValue);
   }
 
   final TodosRepository _todosRepository;
@@ -68,6 +66,7 @@ class TodosBloc extends Bloc<TodosEvent, TodosState> {
 
     add(const TodosCategoriesSubscriptionRequested());
     add(const TodosSubscriptionRequested());
+    add(const TodosUpdateOverdueTodosValue());
   }
 
   Future<void> _onSubscriptionRequested(
@@ -177,6 +176,21 @@ class TodosBloc extends Bloc<TodosEvent, TodosState> {
     Emitter<TodosState> emit,
   ) async {
     await _todosRepository.deleteTask(event.todo.id);
+
+    final task = event.todo;
+
+    // Remove notification.
+    if (task.notificationId != null) {
+      final taskNotificationData =
+          await TaskNotificationData.buildTaskNotificationData(
+        task,
+        schedulteTime: task.taskDate!
+            .subtract(Duration(minutes: task.notificationReminderTime!)),
+      );
+
+      await _updateTaskNotification(true, taskNotificationData);
+    }
+
     emit(state.copyWith(lastDeletedTodo: () => event.todo));
   }
 
@@ -189,9 +203,21 @@ class TodosBloc extends Bloc<TodosEvent, TodosState> {
       'Last deleted todo can not be null.',
     );
 
-    final todo = state.lastDeletedTodo!;
+    final task = state.lastDeletedTodo!;
     emit(state.copyWith(lastDeletedTodo: () => null));
-    await _todosRepository.creatTask(todo);
+    await _todosRepository.creatTask(task);
+
+    // Add notification
+    if (task.notificationId != null) {
+      final taskNotificationData =
+          await TaskNotificationData.buildTaskNotificationData(
+        task,
+        schedulteTime: task.taskDate!
+            .subtract(Duration(minutes: task.notificationReminderTime!)),
+      );
+
+      await _updateTaskNotification(false, taskNotificationData);
+    }
   }
 
   void _onFilterChanged(
@@ -217,5 +243,16 @@ class TodosBloc extends Bloc<TodosEvent, TodosState> {
     emit(
       state.copyWith(isOpenCreateCategory: () => event.isOpen),
     );
+  }
+
+  Future<void> _onUpdateOvedueTodosValue(
+    TodosUpdateOverdueTodosValue event,
+    Emitter<TodosState> emit,
+  ) async {
+    final tasksOverdueAmount = await _todosRepository.getTaskOverdueAmount();
+
+    final updateState = state.copyWith(taskOverdueCount: tasksOverdueAmount);
+
+    emit(updateState);
   }
 }
