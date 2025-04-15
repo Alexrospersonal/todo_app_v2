@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todo_app_v2/app/view/app.dart';
 import 'package:todo_app_v2/l10n/l10n.dart';
 import 'package:todo_app_v2/l10n/user_status_provider.dart';
 import 'package:todo_app_v2/todos/bloc/todos_bloc.dart';
@@ -58,14 +59,14 @@ class TodayUserStatus extends StatelessWidget {
 class DeterminatedTasksStatus extends StatelessWidget {
   const DeterminatedTasksStatus({super.key});
 
-  // TODO: Додати отримання протермінованих завдань використовуючи Блок
-
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+
     return BlocBuilder<TodosBloc, TodosState>(
       builder: (context, state) => RichText(
         text: TextSpan(
-          text: 'determinated\ntasks:',
+          text: l10n.overdueTasks,
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 height: 1,
               ),

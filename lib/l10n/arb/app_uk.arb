@@ -201,5 +201,7 @@
     "allTitle": "Всі",
     "@allTitle": {},
     "reminderTitle": "Нагадування",
-    "@reminderTitle": {}
+    "@reminderTitle": {},
+    "overdueTasks": "Протерміновані\nзавдання:",
+    "@overdueTasks": {}
 }

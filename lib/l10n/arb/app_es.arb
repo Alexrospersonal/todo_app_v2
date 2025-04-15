@@ -201,5 +201,7 @@
     "allTitle": "All",
     "@allTitle": {},
     "reminderTitle": "Reminder",
-    "@reminderTitle": {}
+    "@reminderTitle": {},
+    "overdueTasks": "Overdue\ntasks:",
+    "@overdueTasks": {}
 }
